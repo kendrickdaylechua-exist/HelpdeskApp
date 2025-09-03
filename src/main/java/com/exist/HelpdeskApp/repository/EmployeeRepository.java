@@ -1,4 +1,4 @@
-package com.exist.HelpdeskApp.service.repository;
+package com.exist.HelpdeskApp.repository;
 
 import com.exist.HelpdeskApp.model.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
