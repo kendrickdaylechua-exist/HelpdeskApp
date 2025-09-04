@@ -4,12 +4,14 @@ import com.exist.HelpdeskApp.dto.employee.EmployeeRequest;
 import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
 import com.exist.HelpdeskApp.dto.role.RoleRequest;
 import com.exist.HelpdeskApp.dto.role.RoleResponse;
+import com.exist.HelpdeskApp.dto.ticket.TicketRequest;
+import com.exist.HelpdeskApp.dto.ticket.TicketResponse;
 import com.exist.HelpdeskApp.service.EmployeeService;
 import com.exist.HelpdeskApp.service.RoleService;
+import com.exist.HelpdeskApp.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -18,11 +20,15 @@ public class AdminController {
 
     EmployeeService employeeService;
     RoleService roleService;
+    TicketService ticketService;
 
     @Autowired
-    public AdminController(EmployeeService employeeService, RoleService roleService) {
+    public AdminController(EmployeeService employeeService,
+                           RoleService roleService,
+                           TicketService ticketService) {
         this.employeeService = employeeService;
         this.roleService = roleService;
+        this.ticketService = ticketService;
     }
 
     @RequestMapping("")
@@ -58,6 +64,7 @@ public class AdminController {
         employeeService.deleteEmployee(id);
     }
 
+    /// ===============================================================================
     @GetMapping("/roles")
     public List<RoleResponse> getRoles() {
         return roleService.getRoles();
@@ -81,6 +88,28 @@ public class AdminController {
     @DeleteMapping("/roles/{id}")
     public void deleteRole(@PathVariable int id) {
         roleService.deleteRole(id);
+    }
+
+    /// ===============================================================================
+
+    @GetMapping("tickets")
+    public List<TicketResponse> getTickets() {
+        return ticketService.getTickets();
+    }
+
+    @GetMapping("tickets/{ticketId}")
+    public TicketResponse getTicket(@PathVariable int ticketId) {
+        return ticketService.getTicket(ticketId);
+    }
+
+    @PatchMapping("tickets/{ticketId}/update")
+    public TicketResponse updateTicket(@PathVariable int ticketId, @RequestBody TicketRequest ticketRequest) {
+        return ticketService.updateTicket(1, ticketId, ticketRequest);
+    }
+
+    @PatchMapping("tickets/{ticketId}/respond")
+    public TicketResponse respondTicket(@PathVariable int ticketId, @RequestBody TicketRequest ticketRequest) {
+        return ticketService.respondTicket(ticketId, ticketRequest);
     }
 
 }

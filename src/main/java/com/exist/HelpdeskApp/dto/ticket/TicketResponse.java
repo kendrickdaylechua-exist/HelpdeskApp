@@ -1,6 +1,5 @@
 package com.exist.HelpdeskApp.dto.ticket;
 
-import com.exist.HelpdeskApp.model.Employee;
 import com.exist.HelpdeskApp.model.TicketStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,11 +14,11 @@ public class TicketResponse {
     private int ticketNumber;
     private String title;
     private String body;
-    private Employee assignee;
+    private String assigneeName;
     private TicketStatus status;
     private Instant createDate;
-    private Employee createdBy;
+    private String createdByEmployeeName;
     private Instant updatedDate;
-    private Employee updatedBy;
+    private String updatedByEmployeeName;
     private String remarks;
 }

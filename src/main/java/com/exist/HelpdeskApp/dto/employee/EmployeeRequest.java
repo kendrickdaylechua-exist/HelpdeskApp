@@ -4,8 +4,8 @@ import com.exist.HelpdeskApp.model.EmploymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -14,14 +14,12 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployeeRequest {
-
-    private Integer id;
-
     @NotBlank(message = "Name must not be blank")
     private String name;
 
     @NotNull(message = "Age is required")
     @Min(value = 16, message = "Age must be at least 16 to be able to work")
+    @Max(value = 130, message = "A person cannot be that old! That's impossible!")
     private Integer age;
 
     @NotBlank(message = "Address must not be blank")

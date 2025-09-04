@@ -24,8 +24,8 @@ public class Ticket {
     @Column(nullable = false)
     private String body;
 
-    @OneToOne
-    @Column(nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "assignee_id", nullable = false)
     private Employee assignee;
 
     @Enumerated(EnumType.STRING)
@@ -37,13 +37,14 @@ public class Ticket {
     private Instant createDate;
 
     @ManyToOne
-    @Column(nullable = false)
+    @JoinColumn(name = "created_by_id", nullable = false)
     private Employee createdBy;
 
     @UpdateTimestamp
     private Instant updatedDate;
 
     @ManyToOne
+    @JoinColumn(name = "updated_by_id", nullable = false)
     private Employee updatedBy;
 
     private String remarks;

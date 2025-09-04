@@ -3,7 +3,6 @@ package com.exist.HelpdeskApp.service;
 import com.exist.HelpdeskApp.dto.employee.EmployeeMapper;
 import com.exist.HelpdeskApp.dto.employee.EmployeeRequest;
 import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
-import com.exist.HelpdeskApp.dto.role.RoleMapper;
 import com.exist.HelpdeskApp.model.Employee;
 import com.exist.HelpdeskApp.model.Role;
 import com.exist.HelpdeskApp.repository.EmployeeRepository;
@@ -20,26 +19,21 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final RoleRepository roleRepository;
     private final EmployeeMapper employeeMapper;
-    private final RoleMapper roleMapper;
 
     @Autowired
     public EmployeeService(EmployeeRepository employeeRepository,
                            EmployeeMapper employeeMapper,
-                           RoleRepository roleRepository,
-                           RoleMapper roleMapper) {
+                           RoleRepository roleRepository) {
         this.employeeRepository = employeeRepository;
         this.employeeMapper = employeeMapper;
         this.roleRepository = roleRepository;
-        this.roleMapper = roleMapper;
     }
 
-    @Transactional
     public List<EmployeeResponse> getEmployees() {
         List<Employee> employees = employeeRepository.findAll();
         return employeeMapper.toResponseList(employees);
     }
 
-    @Transactional
     public EmployeeResponse getEmployee(int id) {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Not found"));
@@ -47,27 +41,26 @@ public class EmployeeService {
     }
 
     @Transactional
-    public void addEmployee(EmployeeRequest request) {
-        Employee employee = employeeMapper.toEntity(request);
-        Role role = (request.getRoleId() != null)
-                ? roleRepository.findById(request.getRoleId())
+    public void addEmployee(EmployeeRequest employeeRequest) {
+        Employee employee = employeeMapper.toEntity(employeeRequest);
+        Role role = (employeeRequest.getRoleId() != null)
+                ? roleRepository.findById(employeeRequest.getRoleId())
                 .orElseGet(() -> roleRepository.findById(1)
                         .orElseThrow(() -> new RuntimeException("Default role not found")))
                 : roleRepository.findById(1)
                 .orElseThrow(() -> new RuntimeException("Default role not found"));
-
         employee.setRole(role);
-
         employeeRepository.save(employee);
     }
 
     @Transactional
-    public EmployeeResponse updateEmployee(int id, EmployeeRequest request) {
-        Employee employee = employeeRepository.findById(id)
+    public EmployeeResponse updateEmployee(int employeeId, EmployeeRequest request) {
+        Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new RuntimeException("Not found"));
         Role role = roleRepository.findById(request.getRoleId())
                         .orElseThrow(() -> new RuntimeException("Not found"));
         employee.setRole(role);
+
         employeeMapper.toUpdate(request, employee);
         Employee updated = employeeRepository.save(employee);
         return employeeMapper.toResponse(updated);

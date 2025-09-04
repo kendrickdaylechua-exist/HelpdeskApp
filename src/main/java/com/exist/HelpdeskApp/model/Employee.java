@@ -3,11 +3,8 @@ package com.exist.HelpdeskApp.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 
 
 @Data
@@ -28,7 +25,6 @@ public class Employee {
     @Column(nullable = false)
     private String address;
 
-    @NonNull
     @Column(nullable = false)
     private String contactNumber;
 

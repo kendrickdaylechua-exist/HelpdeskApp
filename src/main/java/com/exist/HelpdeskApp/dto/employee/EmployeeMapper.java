@@ -20,5 +20,6 @@ public interface EmployeeMapper {
     EmployeeResponse toResponse(Employee employee);
 
     void toUpdate(EmployeeRequest request, @MappingTarget Employee entity);
+
     List<EmployeeResponse> toResponseList(List<Employee> employees);
 }

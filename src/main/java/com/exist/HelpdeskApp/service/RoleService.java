@@ -21,8 +21,8 @@ public class RoleService {
     public RoleService(RoleMapper roleMapper, RoleRepository roleRepository) {
         this.roleMapper = roleMapper;
         this.roleRepository = roleRepository;
-        Role noRole = new Role(1, "No Role", 0);
-        roleRepository.save(noRole);
+//        Role noRole = new Role(1, "No Role", 0);
+//        roleRepository.save(noRole);
     }
 
     @Transactional

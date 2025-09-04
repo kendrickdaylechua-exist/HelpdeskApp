@@ -13,6 +13,7 @@ spring:
   sql:
     init:
       platform: h2
+      mode: never #This will be handled in initialization programmatically
 
   jpa:
     hibernate:
