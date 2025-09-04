@@ -2,21 +2,27 @@ package com.exist.HelpdeskApp.controller;
 
 import com.exist.HelpdeskApp.dto.employee.EmployeeRequest;
 import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
-import com.exist.HelpdeskApp.service.AdminService;
+import com.exist.HelpdeskApp.dto.role.RoleRequest;
+import com.exist.HelpdeskApp.dto.role.RoleResponse;
+import com.exist.HelpdeskApp.service.EmployeeService;
+import com.exist.HelpdeskApp.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
 
-    AdminService adminService;
+    EmployeeService employeeService;
+    RoleService roleService;
 
     @Autowired
-    public AdminController(AdminService adminService) {
-        this.adminService = adminService;
+    public AdminController(EmployeeService employeeService, RoleService roleService) {
+        this.employeeService = employeeService;
+        this.roleService = roleService;
     }
 
     @RequestMapping("")
@@ -29,27 +35,52 @@ public class AdminController {
 
     @GetMapping("/employees")
     public List<EmployeeResponse> getEmployees() {
-        return adminService.getEmployees();
+        return employeeService.getEmployees();
     }
 
     @GetMapping("/employees/{id}")
     public EmployeeResponse getEmployee(@PathVariable int id) {
-        return adminService.getEmployee(id);
+        return employeeService.getEmployee(id);
     }
 
     @PostMapping("/employees")
-    public void addEmployee(@RequestBody EmployeeRequest request) {
-        adminService.addEmployee(request);
+    public void addEmployee( @RequestBody EmployeeRequest request) {
+        employeeService.addEmployee(request);
     }
 
     @PatchMapping("/employees/{id}")
     public EmployeeResponse updateEmployeeName(@PathVariable int id, @RequestBody EmployeeRequest request) {
-        return adminService.updateEmployee(id, request);
+        return employeeService.updateEmployee(id, request);
     }
 
     @DeleteMapping("/employees/{id}")
     public void deleteEmployee(@PathVariable int id) {
-        adminService.deleteEmployee(id);
+        employeeService.deleteEmployee(id);
+    }
+
+    @GetMapping("/roles")
+    public List<RoleResponse> getRoles() {
+        return roleService.getRoles();
+    }
+
+    @GetMapping("/roles/{id}")
+    public RoleResponse getRole(@PathVariable int id) {
+        return roleService.getRole(id);
+    }
+
+    @PostMapping("/roles")
+    public void addRole(@RequestBody RoleRequest request) {
+        roleService.addRoles(request);
+    }
+
+    @PatchMapping("/roles/{id}")
+    public void updateRole(@PathVariable int id, @RequestBody RoleRequest request) {
+        roleService.updateRole(id, request);
+    }
+
+    @DeleteMapping("/roles/{id}")
+    public void deleteRole(@PathVariable int id) {
+        roleService.deleteRole(id);
     }
 
 }

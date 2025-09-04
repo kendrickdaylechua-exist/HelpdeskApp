@@ -3,8 +3,11 @@ package com.exist.HelpdeskApp.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 
 
 @Data
@@ -14,22 +17,34 @@ import javax.persistence.*;
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int employeeId;
+    private int id;
+
+    @Column(nullable = false)
     private String name;
-    private int age;
+
+    @Column(nullable = false)
+    private Integer age;
+
+    @Column(nullable = false)
     private String address;
+
+    @NonNull
+    @Column(nullable = false)
     private String contactNumber;
+
     @Enumerated(EnumType.STRING)
     private EmploymentStatus employmentStatus;
-//    @OneToOne
-//    private Role role;
+
+    @ManyToOne
+    private Role role;
+
     @Version
     private int version;
 
     @Override
     public String toString() {
         return "Employee{" +
-                "employeeId=" + employeeId +
+                "employeeId=" + id +
                 "name=" + name +
                 "age=" + age +
                 "address=" + address +
