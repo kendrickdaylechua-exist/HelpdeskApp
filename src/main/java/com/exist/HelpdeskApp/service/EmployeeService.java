@@ -4,7 +4,9 @@ import com.exist.HelpdeskApp.dto.employee.EmployeeMapper;
 import com.exist.HelpdeskApp.dto.employee.EmployeeRequest;
 import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
 import com.exist.HelpdeskApp.model.Employee;
+import com.exist.HelpdeskApp.model.Role;
 import com.exist.HelpdeskApp.repository.EmployeeRepository;
+import com.exist.HelpdeskApp.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +17,16 @@ import java.util.NoSuchElementException;
 @Service
 public class AdminService {
     private final EmployeeRepository employeeRepository;
+    private final RoleRepository roleRepository;
     private final EmployeeMapper employeeMapper;
 
     @Autowired
-    public AdminService(EmployeeRepository employeeRepository, EmployeeMapper employeeMapper) {
+    public AdminService(EmployeeRepository employeeRepository,
+                        EmployeeMapper employeeMapper,
+                        RoleRepository roleRepository) {
         this.employeeRepository = employeeRepository;
         this.employeeMapper = employeeMapper;
+        this.roleRepository = roleRepository;
     }
 
     @Transactional
@@ -31,19 +37,24 @@ public class AdminService {
 
     @Transactional
     public EmployeeResponse getEmployee(int id) {
-        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Not found"));
         return employeeMapper.toResponse(employee);
     }
 
     @Transactional
     public void addEmployee(EmployeeRequest request) {
         Employee employee = employeeMapper.toEntity(request);
+        Role role = roleRepository.findById(request.getRoleId())
+                .orElseThrow(() -> new RuntimeException("Role not found!"));
+        employee.setRole(role);
         employeeRepository.save(employee);
     }
 
     @Transactional
     public EmployeeResponse updateEmployee(int id, EmployeeRequest request) {
-        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Not found"));
         employeeMapper.toUpdate(request, employee);
         Employee updated = employeeRepository.save(employee);
         return employeeMapper.toResponse(updated);
