@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(nullable = false)
     private String name;
@@ -35,5 +35,5 @@ public class Employee {
     private Role role;
 
     @Version
-    private int version;
+    private Integer version;
 }

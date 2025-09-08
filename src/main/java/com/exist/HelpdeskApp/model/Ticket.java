@@ -16,7 +16,7 @@ import java.time.Instant;
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int ticketNumber;
+    private Integer ticketNumber;
 
     @Column(nullable = false)
     private String title;
@@ -50,5 +50,5 @@ public class Ticket {
     private String remarks;
 
     @Version
-    private int version;
+    private Integer version;
 }

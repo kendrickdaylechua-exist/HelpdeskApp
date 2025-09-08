@@ -12,6 +12,7 @@ import com.exist.HelpdeskApp.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -44,24 +45,24 @@ public class AdminController {
         return employeeService.getEmployees();
     }
 
-    @GetMapping("/employees/{id}")
-    public EmployeeResponse getEmployee(@PathVariable int id) {
-        return employeeService.getEmployee(id);
+    @GetMapping("/employees/{employeeId}")
+    public EmployeeResponse getEmployee(@PathVariable Integer employeeId) {
+        return employeeService.getEmployee(employeeId);
     }
 
     @PostMapping("/employees")
-    public EmployeeResponse addEmployee( @RequestBody EmployeeRequest request) {
+    public EmployeeResponse addEmployee(@RequestBody @Valid EmployeeRequest request) {
         return employeeService.addEmployee(request);
     }
 
-    @PatchMapping("/employees/{id}")
-    public EmployeeResponse updateEmployee(@PathVariable int id, @RequestBody EmployeeRequest request) {
-        return employeeService.updateEmployee(id, request);
+    @PatchMapping("/employees/{employeeId}")
+    public EmployeeResponse updateEmployee(@PathVariable Integer employeeId, @RequestBody EmployeeRequest request) {
+        return employeeService.updateEmployee(employeeId, request);
     }
 
-    @DeleteMapping("/employees/{id}")
-    public void deleteEmployee(@PathVariable int id) {
-        employeeService.deleteEmployee(id);
+    @DeleteMapping("/employees/{employeeId}")
+    public void deleteEmployee(@PathVariable Integer employeeId) {
+        employeeService.deleteEmployee(employeeId);
     }
 
     /// ===============================================================================
@@ -70,9 +71,9 @@ public class AdminController {
         return roleService.getRoles();
     }
 
-    @GetMapping("/roles/{id}")
-    public RoleResponse getRole(@PathVariable int id) {
-        return roleService.getRole(id);
+    @GetMapping("/roles/{roleId}")
+    public RoleResponse getRole(@PathVariable Integer roleId) {
+        return roleService.getRole(roleId);
     }
 
     @PostMapping("/roles")
@@ -80,14 +81,14 @@ public class AdminController {
         return roleService.addRole(request);
     }
 
-    @PatchMapping("/roles/{id}")
-    public RoleResponse updateRole(@PathVariable int employeeId, @RequestBody RoleRequest request) {
-        return roleService.updateRole(employeeId, request);
+    @PatchMapping("/roles/{roleId}")
+    public RoleResponse updateRole(@PathVariable Integer roleId, @RequestBody RoleRequest request) {
+        return roleService.updateRole(roleId, request);
     }
 
-    @DeleteMapping("/roles/{id}")
-    public void deleteRole(@PathVariable int id) {
-        roleService.deleteRole(id);
+    @DeleteMapping("/roles/{roleId}")
+    public void deleteRole(@PathVariable Integer roleId) {
+        roleService.deleteRole(roleId);
     }
 
     /// ===============================================================================
@@ -98,12 +99,12 @@ public class AdminController {
     }
 
     @GetMapping("tickets/{ticketId}")
-    public TicketResponse getTicket(@PathVariable int ticketId) {
+    public TicketResponse getTicket(@PathVariable Integer ticketId) {
         return ticketService.getTicket(1, ticketId);
     }
 
     @PatchMapping("tickets/{ticketId}")
-    public TicketResponse updateTicket(@PathVariable int ticketId, @RequestBody TicketRequest ticketRequest) {
+    public TicketResponse updateTicket(@PathVariable Integer ticketId, @RequestBody TicketRequest ticketRequest) {
         return ticketService.updateTicket(1, ticketId, ticketRequest);
     }
 

@@ -2,26 +2,29 @@ package com.exist.HelpdeskApp;
 
 import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
 import com.exist.HelpdeskApp.dto.role.RoleResponse;
+import com.exist.HelpdeskApp.model.Employee;
 import com.exist.HelpdeskApp.model.EmploymentStatus;
+import com.exist.HelpdeskApp.model.Role;
 
 public class TestDataFactory {
-    public static EmployeeResponse admin() {
-        return new EmployeeResponse(
+    public static Employee admin() {
+        return new Employee(
                 1,
                 "Admin",
                 30,
                 "N/A",
                 "N/A",
                 EmploymentStatus.FULL_TIME,
-                1,
-                "Admin"
+                adminRole(),
+                1
         );
     }
 
-    public static RoleResponse adminRole() {
-        return new RoleResponse(
+    public static Role adminRole() {
+        return new Role(
                 1,
-                "Admin"
+                "Admin",
+                1
         );
     }
 }

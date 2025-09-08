@@ -1,10 +1,7 @@
 package com.exist.HelpdeskApp.controller;
 
 import com.exist.HelpdeskApp.dto.error.ErrorResponse;
-import com.exist.HelpdeskApp.exception.EmployeeNotFoundException;
-import com.exist.HelpdeskApp.exception.RoleNotFoundException;
-import com.exist.HelpdeskApp.exception.TicketNotFoundException;
-import com.exist.HelpdeskApp.exception.UnauthorizedActionException;
+import com.exist.HelpdeskApp.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -85,6 +82,19 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(InvalidEmployeeStatusException.class)
+    public ResponseEntity<ErrorResponse> handleBadRequestException(InvalidEmployeeStatusException ex, HttpServletRequest request) {
+        log.error("Unhandled exception at {}: {}", request.getRequestURI(), ex.getMessage(), ex);
+        ErrorResponse error = new ErrorResponse(
+                Instant.now().toString(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Bad Request",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex, HttpServletRequest request) {
         log.error("Unhandled exception at {}: {}", request.getRequestURI(), ex.getMessage(), ex);
@@ -92,7 +102,7 @@ public class GlobalExceptionHandler {
                 Instant.now().toString(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Internal Server Error",
-                ex.getMessage(),
+                "Please contact the devs",
                 request.getRequestURI()
         );
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);

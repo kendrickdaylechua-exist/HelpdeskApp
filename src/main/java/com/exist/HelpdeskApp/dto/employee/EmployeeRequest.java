@@ -22,14 +22,15 @@ public class EmployeeRequest {
     @Max(value = 130, message = "A person cannot be that old! That's impossible!")
     private Integer age;
 
-    @NotBlank(message = "Address must not be blank")
+    @NotBlank(message = "Address is required")
     private String address;
 
-    @NotBlank(message = "Contact number must not be blank")
+    @NotBlank(message = "Contact number is required")
     private String contactNumber;
 
     @NotNull(message = "Employment status is required")
     private EmploymentStatus employmentStatus;
 
+    @NotNull(message = "Employee must have a role")
     private Integer roleId;
 }

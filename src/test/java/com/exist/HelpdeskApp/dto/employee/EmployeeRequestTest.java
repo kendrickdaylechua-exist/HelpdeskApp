@@ -4,14 +4,12 @@ import com.exist.HelpdeskApp.model.EmploymentStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.validation.*;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,14 +23,20 @@ public class EmployeeRequestTest {
         validator = factory.getValidator();
     }
 
-    @Test
-    void testAllValidRequests() {
+    @ParameterizedTest
+    @CsvSource({
+            "name1, 30, test address 1, 09123456789, FULL_TIME",
+            "name2, 25, test address 2, 09123456789, PART_TIME",
+            "name3, 35, test address 3, 09123456789, CONTRACT",
+            "name4, 45, test address 4, 09123456789, INTERN",
+    })
+    void testAllValidRequests(String name, int age, String address, String contactNumber, EmploymentStatus employmentStatus) {
         EmployeeRequest request = new EmployeeRequest(
-                "name1",
-                25,
-                "test address 1",
-                "09~~~~~~~~~~",
-                EmploymentStatus.FULL_TIME,
+                name,
+                age,
+                address,
+                contactNumber,
+                employmentStatus,
                 1
         );
         Set<ConstraintViolation<EmployeeRequest>> violations = validator.validate(request);
@@ -52,7 +56,7 @@ public class EmployeeRequestTest {
         );
         Set<ConstraintViolation<EmployeeRequest>> violations = validator.validate(request);
         assertFalse(violations.isEmpty());
-        assertNotNull(violations, "There should be a violation for the name field");
+        assertNotNull(violations);
         assertEquals("Name must not be blank", violations.iterator().next().getMessage());
     }
 
@@ -69,13 +73,13 @@ public class EmployeeRequestTest {
         );
         Set<ConstraintViolation<EmployeeRequest>> violations = validator.validate(request);
         assertFalse(violations.isEmpty());
-        assertNotNull(violations, "There should be a violation for the name field");
+        assertNotNull(violations);
         assertEquals("Name must not be blank", violations.iterator().next().getMessage());
     }
 
     @ParameterizedTest
     @ValueSource(ints = {16, 25, 50, 130})
-    void testValidAge(int tests) {
+    void testValidAge(Integer tests) {
         EmployeeRequest request = new EmployeeRequest(
                 "name1",
                 tests,
@@ -90,7 +94,7 @@ public class EmployeeRequestTest {
 
     @ParameterizedTest
     @ValueSource(ints = {-5, 0, 1, 10, 15})
-    void testBelowAge(int tests) {
+    void testBelowAge(Integer tests) {
         EmployeeRequest request = new EmployeeRequest(
                 "name1",
                 tests,
@@ -107,7 +111,7 @@ public class EmployeeRequestTest {
 
     @ParameterizedTest
     @ValueSource(ints = {131, 150, 200, 99999})
-    void testAboveAge(int tests) {
+    void testAboveAge(Integer tests) {
         EmployeeRequest request = new EmployeeRequest(
                 "name1",
                 tests,
@@ -124,7 +128,7 @@ public class EmployeeRequestTest {
 
     @ParameterizedTest
     @NullSource()
-    void testNullAge(int test) {
+    void testNullAge(Integer test) {
         EmployeeRequest request = new EmployeeRequest(
                 "name1",
                 test,
@@ -138,4 +142,69 @@ public class EmployeeRequestTest {
         assertNotNull(violations);
         assertEquals("Age is required" ,violations.iterator().next().getMessage());
     }
+
+    @Test
+    void testNullAddress() {
+        EmployeeRequest request = new EmployeeRequest(
+                "name1",
+                25,
+                null,
+                "09~~~~~~~~~~",
+                EmploymentStatus.FULL_TIME,
+                1
+        );
+        Set<ConstraintViolation<EmployeeRequest>> violations = validator.validate(request);
+        assertFalse(violations.isEmpty());
+        assertNotNull(violations);
+        assertEquals("Address is required" ,violations.iterator().next().getMessage());
+    }
+
+    @Test
+    void testNullContactNumber() {
+        EmployeeRequest request = new EmployeeRequest(
+                "name1",
+                25,
+                "test address 1",
+                null,
+                EmploymentStatus.FULL_TIME,
+                1
+        );
+        Set<ConstraintViolation<EmployeeRequest>> violations = validator.validate(request);
+        assertFalse(violations.isEmpty());
+        assertNotNull(violations);
+        assertEquals("Contact number is required" ,violations.iterator().next().getMessage());
+    }
+
+    @Test
+    void testNullEmploymentStatus() {
+        EmployeeRequest request = new EmployeeRequest(
+                "name1",
+                25,
+                "test address 1",
+                "09~~~~~~~~~~",
+                null,
+                1
+        );
+        Set<ConstraintViolation<EmployeeRequest>> violations = validator.validate(request);
+        assertFalse(violations.isEmpty());
+        assertNotNull(violations);
+        assertEquals("Employment status is required" ,violations.iterator().next().getMessage());
+    }
+
+    @Test
+    void testNullRole() {
+        EmployeeRequest request = new EmployeeRequest(
+                "name1",
+                25,
+                "test address 1",
+                "09~~~~~~~~~~",
+                EmploymentStatus.FULL_TIME,
+                null
+        );
+        Set<ConstraintViolation<EmployeeRequest>> violations = validator.validate(request);
+        assertFalse(violations.isEmpty());
+        assertNotNull(violations);
+        assertEquals("Employee must have a role" ,violations.iterator().next().getMessage());
+    }
+
 }

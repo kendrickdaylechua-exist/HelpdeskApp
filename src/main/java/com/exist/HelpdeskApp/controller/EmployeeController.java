@@ -31,12 +31,12 @@ public class EmployeeController {
     }
 
     @GetMapping("{employeeId}")
-    public EmployeeResponse getOwnProfile(@PathVariable int employeeId) {
+    public EmployeeResponse getOwnProfile(@PathVariable Integer employeeId) {
         return employeeService.getEmployee(employeeId);
     }
 
     @PostMapping("{employeeId}/tickets")
-    public TicketResponse fileTicket(@PathVariable int employeeId, @Valid @RequestBody TicketRequest request) {
+    public TicketResponse fileTicket(@PathVariable Integer employeeId, @Valid @RequestBody TicketRequest request) {
         return ticketService.fileTicket(employeeId, request);
     }
 
@@ -46,17 +46,17 @@ public class EmployeeController {
     }
 
     @GetMapping("{employeeId}/tickets/{ticketId}")
-    public TicketResponse getTicket(@PathVariable int employeeId, @PathVariable int ticketId) {
+    public TicketResponse getTicket(@PathVariable Integer employeeId, @PathVariable Integer ticketId) {
         return ticketService.getTicket(employeeId, ticketId);
     }
 
     @PatchMapping("{employeeId}/tickets/{ticketId}")
-    public TicketResponse updateTicket(@PathVariable int employeeId, @PathVariable int ticketId, @RequestBody TicketRequest ticketRequest) {
+    public TicketResponse updateTicket(@PathVariable Integer employeeId, @PathVariable Integer ticketId, @RequestBody TicketRequest ticketRequest) {
         return ticketService.updateTicket(employeeId, ticketId, ticketRequest);
     }
 
     @GetMapping("{employeeId}/tickets/assigned")
-    public List<TicketResponse> assignedTickets(@PathVariable int employeeId) {
+    public List<TicketResponse> assignedTickets(@PathVariable Integer employeeId) {
         return ticketService.getAssignedTickets(employeeId);
     }
 }

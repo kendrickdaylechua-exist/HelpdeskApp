@@ -35,14 +35,14 @@ public class TicketService {
     }
 
     @Transactional
-    public List<TicketResponse> getTickets(int employeeId) {
+    public List<TicketResponse> getTickets(Integer employeeId) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + employeeId + " not found!"));
         return ticketMapper.toResponseList(ticketRepository.findAll());
     }
 
     @Transactional
-    public TicketResponse getTicket(int employeeId, int ticketId) {
+    public TicketResponse getTicket(Integer employeeId, Integer ticketId) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + employeeId + " not found!"));
         Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(() -> new TicketNotFoundException("Ticket number " + ticketId + " not found!"));
@@ -50,13 +50,13 @@ public class TicketService {
     }
 
     @Transactional
-    public TicketResponse fileTicket(int employeeId, TicketRequest ticketRequest) {
-        Ticket ticket = ticketMapper.toEntity(ticketRequest);
+    public TicketResponse fileTicket(Integer employeeId, TicketRequest ticketRequest) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + employeeId + " not found!"));
         Employee assignedEmployee = employeeRepository.findById(ticketRequest.getAssigneeId())
                 .orElseThrow(() -> new EmployeeNotFoundException("Assigned employee with ID " + ticketRequest.getAssigneeId() + " not found!"));
 
+        Ticket ticket = ticketMapper.toEntity(ticketRequest);
         ticket.setCreateDate(Instant.now());
         ticket.setCreatedBy(employee);
         ticket.setUpdatedDate(Instant.now());
@@ -67,7 +67,7 @@ public class TicketService {
     }
 
     @Transactional
-    public TicketResponse updateTicket(int employeeId, int ticketId, TicketRequest ticketRequest) {
+    public TicketResponse updateTicket(Integer employeeId, Integer ticketId, TicketRequest ticketRequest) {
         Employee updater = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EmployeeNotFoundException("Updater employee with ID " + employeeId + " not found!"));
         Ticket ticket = ticketRepository.findById(ticketId)
@@ -93,20 +93,7 @@ public class TicketService {
         return ticketMapper.toResponse(updated);
     }
 
-//    @Transactional
-//    public TicketResponse respondTicket(int ticketId, TicketRequest ticketRequest) {
-//        Ticket ticket = ticketRepository.findById(ticketId)
-//                .orElseThrow(() -> new TicketNotFoundException("Ticket number " + ticketId + " not found!"));
-//        ticket.setRemarks(ticketRequest.getRemarks());
-//        ticket.setStatus(ticketRequest.getStatus());
-//        ticket.setUpdatedDate(Instant.now());
-//        ticket.setUpdatedBy(employeeRepository.findById(1).orElseThrow(() -> new EmployeeNotFoundException("Admin not found! Please contact the devs!")));
-//        ticketMapper.toUpdate(ticketRequest, ticket);
-//        Ticket updated = ticketRepository.save(ticket);
-//        return ticketMapper.toResponse(updated);
-//    }
-
-    public List<TicketResponse> getAssignedTickets(int employeeId) {
+    public List<TicketResponse> getAssignedTickets(Integer employeeId) {
         employeeRepository.findById(employeeId).orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + employeeId + " not found!"));
         return ticketMapper.toResponseList(ticketRepository.findByAssigneeId(employeeId));
     }

@@ -38,7 +38,7 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     void testGetInvalidEmployee_ShouldReturnNotFound() throws Exception {
-        int invalidEmployeeId = 99;
+        Integer invalidEmployeeId = 99;
         when(employeeService.getEmployee(invalidEmployeeId))
                 .thenThrow(new EmployeeNotFoundException("Employee with ID " + invalidEmployeeId + " not found!"));
 
@@ -54,7 +54,7 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     void testGetInvalidRole_ShouldReturnNotFound() throws Exception {
-        int roleId = 99;
+        Integer roleId = 99;
         when(roleService.getRole(roleId))
                 .thenThrow(new RoleNotFoundException("Role not found!"));
 
@@ -69,8 +69,8 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     void testGetInvalidTicket_ShouldReturnNotFound() throws Exception {
-        int employeeId = 1;
-        int ticketId = 99;
+        Integer employeeId = 1;
+        Integer ticketId = 99;
         when(ticketService.getTicket(employeeId, ticketId))
                 .thenThrow(new RoleNotFoundException("Ticket not found!"));
 

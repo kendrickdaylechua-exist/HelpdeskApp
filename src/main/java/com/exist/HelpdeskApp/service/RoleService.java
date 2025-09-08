@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.util.List;
 
 @Service
@@ -31,21 +32,21 @@ public class RoleService {
     }
 
     @Transactional
-    public RoleResponse getRole(int roleId) {
+    public RoleResponse getRole(Integer roleId) {
         Role role = roleRepository.findById(roleId)
                 .orElseThrow(() -> new RoleNotFoundException("Role with ID " + roleId + " not found!"));
         return roleMapper.toResponse(role);
     }
 
     @Transactional
-    public RoleResponse addRole(RoleRequest request) {
+    public RoleResponse addRole(@Valid RoleRequest request) {
         Role role = roleMapper.toEntity(request);
         Role updated = roleRepository.save(role);
         return roleMapper.toResponse(updated);
     }
 
     @Transactional
-    public RoleResponse updateRole(int roleId, RoleRequest request) {
+    public RoleResponse updateRole(Integer roleId, RoleRequest request) {
         Role role = roleRepository.findById(roleId)
                 .orElseThrow(() -> new RoleNotFoundException("Role with ID " + roleId + " not found!"));
         roleMapper.toUpdate(request, role);
@@ -54,7 +55,7 @@ public class RoleService {
     }
 
     @Transactional
-    public void deleteRole(int roleId) {
+    public void deleteRole(Integer roleId) {
         Role role = roleRepository.findById(roleId)
                 .orElseThrow(() -> new RoleNotFoundException("Role with ID " + roleId + " not found!"));
         roleRepository.delete(role);

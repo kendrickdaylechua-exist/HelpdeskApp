@@ -10,8 +10,6 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoleRequest {
-//    private Integer id;
-
     @NotBlank(message = "Role name must not be blank")
     private String roleName;
 }

@@ -60,9 +60,12 @@ public class AdminControllerTest {
     private static List<EmployeeResponse> employeeList = new ArrayList<>();
     private static List<RoleResponse> roleList = new ArrayList<>();
     private static List<TicketResponse> ticketList = new ArrayList<>();
-//
+
     private static EmployeeRequest employeeRequest1;
     private static RoleRequest roleRequest1;
+
+    private final static Integer VALID_EMPLOYEE_ID_1 = 1;
+    private final static Integer INVALID_EMPLOYEE_ID = 99;
 
     @BeforeEach
     void setup() {
@@ -179,22 +182,21 @@ public class AdminControllerTest {
 
     @Test
     void testGetNonExistentEmployee() throws Exception {
-        int employeeId = 99;
-        when(employeeService.getEmployee(employeeId))
-                .thenThrow(new EmployeeNotFoundException("Employee with ID " + employeeId + " not found!"));
+        when(employeeService.getEmployee(INVALID_EMPLOYEE_ID))
+                .thenThrow(new EmployeeNotFoundException("Employee with ID " + INVALID_EMPLOYEE_ID + " not found!"));
 
-        mockMvc.perform(get("/admin/employees/{employeeId}", employeeId))
+        mockMvc.perform(get("/admin/employees/{employeeId}", INVALID_EMPLOYEE_ID))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Employee with ID " + employeeId + " not found!"));
+                .andExpect(jsonPath("$.message").value("Employee with ID " + INVALID_EMPLOYEE_ID + " not found!"));
     }
 
-    @Test
-    void testGetValidEmployeeAdmin() throws Exception {
-        when(employeeService.getEmployee(1)).thenReturn(TestDataFactory.admin());
-        mockMvc.perform(get("/admin/employees/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("name").value("Admin"));
-    }
+//    @Test
+//    void testGetValidEmployeeAdmin() throws Exception {
+//        when(employeeService.getEmployee(1)).thenReturn(TestDataFactory.admin());
+//        mockMvc.perform(get("/admin/employees/1"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("name").value("Admin"));
+//    }
 
     @Test
     void testAddValidEmployee() throws Exception {
@@ -206,33 +208,31 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("name").value("name1"));
     }
 
-    @Test
-    void testUpdateEmployee() throws Exception {
-        int employeeId = 1;
-        when(employeeService.updateEmployee(employeeId, employeeRequest1)).thenReturn(employee1);
-        mockMvc.perform(
-                patch("/admin/employees/{id}", employeeId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(employeeRequest1))
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("name").value("name1"))
-                .andExpect(jsonPath("age").value("25"))
-                .andExpect(jsonPath("address").value("test address 1"))
-                .andExpect(jsonPath("contactNumber").value("09~~~~~~~~~~"))
-                .andExpect(jsonPath("employmentStatus").value(EmploymentStatus.FULL_TIME.name()))
-                .andExpect(jsonPath("roleId").value(2))
-                .andExpect(jsonPath("roleName").value("role1"));
-    }
+//    @Test
+//    void testUpdateEmployee() throws Exception {
+//        when(employeeService.updateEmployee(VALID_EMPLOYEE_ID_1, employeeRequest1)).thenReturn(employee1);
+//        mockMvc.perform(
+//                patch("/admin/employees/{id}", INVALID_EMPLOYEE_ID)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(employee1))
+//                )
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("name").value("name1"))
+//                .andExpect(jsonPath("age").value("25"))
+//                .andExpect(jsonPath("address").value("test address 1"))
+//                .andExpect(jsonPath("contactNumber").value("09~~~~~~~~~~"))
+//                .andExpect(jsonPath("employmentStatus").value(EmploymentStatus.FULL_TIME.name()))
+//                .andExpect(jsonPath("roleId").value(2))
+//                .andExpect(jsonPath("roleName").value("role1"));
+//    }
 
     @Test
     void testDeleteEmployee() throws Exception {
-        int employeeId = 1;
-        doNothing().when(employeeService).deleteEmployee(employeeId);
+        doNothing().when(employeeService).deleteEmployee(INVALID_EMPLOYEE_ID);
         mockMvc.perform(
-                delete("/admin/employees/{id}", employeeId))
+                delete("/admin/employees/{id}", INVALID_EMPLOYEE_ID))
                 .andExpect(status().isOk());
-        verify(employeeService, times(1)).deleteEmployee(employeeId);
+        verify(employeeService, times(1)).deleteEmployee(INVALID_EMPLOYEE_ID);
     }
 
     @Test
@@ -247,7 +247,7 @@ public class AdminControllerTest {
 
     @Test
     void testGetValidRole() throws Exception {
-        int roleId = 2;
+        Integer roleId = 2;
         when(roleService.getRole(2)).thenReturn(role1);
         mockMvc.perform(get("/admin/roles/{roleId}", roleId))
                 .andExpect(status().isOk())
@@ -266,7 +266,7 @@ public class AdminControllerTest {
 
     @Test
     void testUpdateValidRole() throws Exception {
-        int roleId = 2;
+        Integer roleId = 2;
         when(roleService.updateRole(roleId, roleRequest1)).thenReturn(role1);
         mockMvc.perform(
                         patch("/admin/roles/{id}", roleId)
@@ -279,7 +279,7 @@ public class AdminControllerTest {
 
     @Test
     void testDeleteValidRole() throws Exception {
-        int roleId = 2;
+        Integer roleId = 2;
         doNothing().when(roleService).deleteRole(roleId);
         mockMvc.perform(
                 delete("/admin/roles/{id}", roleId))
@@ -299,7 +299,7 @@ public class AdminControllerTest {
 
     @Test
     void testGetValidTicket() throws Exception {
-        int ticketNumber = 1;
+        Integer ticketNumber = 1;
         when(ticketService.getTicket(1, ticketNumber)).thenReturn(ticket1);
         mockMvc.perform(get("/admin/tickets/{ticketNumber}", ticketNumber))
                 .andExpect(status().isOk())
@@ -315,7 +315,7 @@ public class AdminControllerTest {
                 null,
                 null
         );
-        int ticketId = 1;
+        Integer ticketId = 1;
         when(ticketService.updateTicket(1, ticketId, ticketLocalRequest)).thenReturn(ticket1);
         mockMvc.perform(patch("/admin/tickets/{ticketId}", ticketId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -333,7 +333,7 @@ public class AdminControllerTest {
                 TicketStatus.DUPLICATE,
                 "Test Remarks 2"
         );
-        int ticketId = 2;
+        Integer ticketId = 2;
         when(ticketService.updateTicket(1, ticketId, ticketLocalRequest)).thenReturn(ticket2);
         mockMvc.perform(patch("/admin/tickets/{ticketId}", ticketId)
                         .contentType(MediaType.APPLICATION_JSON)

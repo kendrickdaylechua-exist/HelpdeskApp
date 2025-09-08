@@ -11,7 +11,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TicketResponse {
-    private int ticketNumber;
+    private Integer ticketNumber;
     private String title;
     private String body;
     private String assigneeName;

@@ -53,8 +53,8 @@ public class EmployeeControllerTest {
     private static TicketRequest ticketRequest1;
     private static TicketRequest ticketRequest2;
 
-    private static final int VALID_EMPLOYEE_ID_1 = 2;
-    private static final int INVALID_EMPLOYEE_ID = 99;
+    private static final Integer VALID_EMPLOYEE_ID_1 = 2;
+    private static final Integer INVALID_EMPLOYEE_ID = 99;
 
     @BeforeEach
     void setup() {
@@ -198,7 +198,7 @@ public class EmployeeControllerTest {
 
     @Test
     void testGetValidTicket() throws Exception {
-        int ticketId = 1;
+        Integer ticketId = 1;
         when(ticketService.getTicket(VALID_EMPLOYEE_ID_1, ticketId))
                 .thenReturn(ticket1);
         mockMvc.perform(get("/employees/{VALID_EMPLOYEE_ID_1}/tickets/{ticketId}", VALID_EMPLOYEE_ID_1, ticketId))
@@ -208,7 +208,7 @@ public class EmployeeControllerTest {
 
     @Test
     void testGetInvalidTicket() throws Exception {
-        int ticketId = 99;
+        Integer ticketId = 99;
         when(ticketService.getTicket(VALID_EMPLOYEE_ID_1, ticketId))
                 .thenThrow(new TicketNotFoundException("Ticket number " + ticketId + " not found!"));
         mockMvc.perform(get("/employees/{VALID_EMPLOYEE_ID_1}/tickets/{ticketId}", VALID_EMPLOYEE_ID_1, ticketId))
@@ -218,7 +218,7 @@ public class EmployeeControllerTest {
 
     @Test
     void testGetInvalidEmployeeToGetTicket() throws Exception{
-        int ticketId = 1;
+        Integer ticketId = 1;
         when(ticketService.getTicket(INVALID_EMPLOYEE_ID, ticketId))
                 .thenThrow(new EmployeeNotFoundException("Employee with ID " + INVALID_EMPLOYEE_ID + " not found!"));
         mockMvc.perform(get("/employees/{INVALID_EMPLOYEE_ID}/tickets/{ticketId}", INVALID_EMPLOYEE_ID, ticketId))
@@ -228,7 +228,7 @@ public class EmployeeControllerTest {
 
     @Test
     void testUpdateValidTicket() throws Exception{
-        int ticketId = 1;
+        Integer ticketId = 1;
         when(ticketService.updateTicket(VALID_EMPLOYEE_ID_1, ticketId, ticketRequest2)).thenReturn(ticket2);
         mockMvc.perform(patch("/employees/{VALID_EMPLOYEE_ID_1}/tickets/{ticketId}", VALID_EMPLOYEE_ID_1, ticketId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -240,7 +240,7 @@ public class EmployeeControllerTest {
 
     @Test
     void testUpdateInvalidTicket() throws Exception{
-        int ticketId = 99;
+        Integer ticketId = 99;
         when(ticketService.updateTicket(VALID_EMPLOYEE_ID_1, ticketId, ticketRequest2))
                 .thenThrow(new TicketNotFoundException("Ticket number " + ticketId + " not found!"));
         mockMvc.perform(patch("/employees/{VALID_EMPLOYEE_ID_1}/tickets/{ticketId}", VALID_EMPLOYEE_ID_1, ticketId)
@@ -252,7 +252,7 @@ public class EmployeeControllerTest {
 
     @Test
     void testUpdateInvalidEmployeeToUpdateTicket() throws Exception {
-        int ticketId = 2;
+        Integer ticketId = 2;
         when(ticketService.updateTicket(INVALID_EMPLOYEE_ID, ticketId, ticketRequest2))
                 .thenThrow(new EmployeeNotFoundException("Employee with ID " + INVALID_EMPLOYEE_ID + " not found!"));
         mockMvc.perform(patch("/employees/{INVALID_EMPLOYEE_ID}/tickets/{ticketId}", INVALID_EMPLOYEE_ID, ticketId)
