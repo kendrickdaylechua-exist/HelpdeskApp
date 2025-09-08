@@ -36,17 +36,4 @@ public class Employee {
 
     @Version
     private int version;
-
-    @Override
-    public String toString() {
-        return "Employee{" +
-                "employeeId=" + id +
-                "name=" + name +
-                "age=" + age +
-                "address=" + address +
-                "contactNumber=" + contactNumber +
-                "employmentStatus=" + employmentStatus +
-                "version=" + version +
-                "}";
-    }
 }

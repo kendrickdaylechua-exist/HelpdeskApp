@@ -50,12 +50,12 @@ public class AdminController {
     }
 
     @PostMapping("/employees")
-    public void addEmployee( @RequestBody EmployeeRequest request) {
-        employeeService.addEmployee(request);
+    public EmployeeResponse addEmployee( @RequestBody EmployeeRequest request) {
+        return employeeService.addEmployee(request);
     }
 
     @PatchMapping("/employees/{id}")
-    public EmployeeResponse updateEmployeeName(@PathVariable int id, @RequestBody EmployeeRequest request) {
+    public EmployeeResponse updateEmployee(@PathVariable int id, @RequestBody EmployeeRequest request) {
         return employeeService.updateEmployee(id, request);
     }
 
@@ -76,13 +76,13 @@ public class AdminController {
     }
 
     @PostMapping("/roles")
-    public void addRole(@RequestBody RoleRequest request) {
-        roleService.addRoles(request);
+    public RoleResponse addRole(@RequestBody RoleRequest request) {
+        return roleService.addRole(request);
     }
 
     @PatchMapping("/roles/{id}")
-    public void updateRole(@PathVariable int id, @RequestBody RoleRequest request) {
-        roleService.updateRole(id, request);
+    public RoleResponse updateRole(@PathVariable int employeeId, @RequestBody RoleRequest request) {
+        return roleService.updateRole(employeeId, request);
     }
 
     @DeleteMapping("/roles/{id}")
@@ -94,22 +94,17 @@ public class AdminController {
 
     @GetMapping("tickets")
     public List<TicketResponse> getTickets() {
-        return ticketService.getTickets();
+        return ticketService.getTickets(1);
     }
 
     @GetMapping("tickets/{ticketId}")
     public TicketResponse getTicket(@PathVariable int ticketId) {
-        return ticketService.getTicket(ticketId);
+        return ticketService.getTicket(1, ticketId);
     }
 
-    @PatchMapping("tickets/{ticketId}/update")
+    @PatchMapping("tickets/{ticketId}")
     public TicketResponse updateTicket(@PathVariable int ticketId, @RequestBody TicketRequest ticketRequest) {
         return ticketService.updateTicket(1, ticketId, ticketRequest);
-    }
-
-    @PatchMapping("tickets/{ticketId}/respond")
-    public TicketResponse respondTicket(@PathVariable int ticketId, @RequestBody TicketRequest ticketRequest) {
-        return ticketService.respondTicket(ticketId, ticketRequest);
     }
 
 }

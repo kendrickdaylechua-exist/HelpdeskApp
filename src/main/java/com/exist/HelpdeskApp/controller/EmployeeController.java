@@ -8,6 +8,7 @@ import com.exist.HelpdeskApp.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -35,18 +36,18 @@ public class EmployeeController {
     }
 
     @PostMapping("{employeeId}/tickets")
-    public void fileTicket(@PathVariable int employeeId, @RequestBody TicketRequest request) {
-        ticketService.fileTicket(employeeId, request);
+    public TicketResponse fileTicket(@PathVariable int employeeId, @Valid @RequestBody TicketRequest request) {
+        return ticketService.fileTicket(employeeId, request);
     }
 
     @GetMapping("{employeeId}/tickets")
-    public List<TicketResponse> getTickets() {
-        return ticketService.getTickets();
+    public List<TicketResponse> getTickets(@PathVariable Integer employeeId) {
+        return ticketService.getTickets(employeeId);
     }
 
     @GetMapping("{employeeId}/tickets/{ticketId}")
-    public TicketResponse fileTicket(@PathVariable int ticketId) {
-        return ticketService.getTicket(ticketId);
+    public TicketResponse getTicket(@PathVariable int employeeId, @PathVariable int ticketId) {
+        return ticketService.getTicket(employeeId, ticketId);
     }
 
     @PatchMapping("{employeeId}/tickets/{ticketId}")

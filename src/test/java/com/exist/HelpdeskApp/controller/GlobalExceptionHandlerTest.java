@@ -1,0 +1,102 @@
+package com.exist.HelpdeskApp.controller;
+
+import com.exist.HelpdeskApp.exception.EmployeeNotFoundException;
+import com.exist.HelpdeskApp.exception.RoleNotFoundException;
+import com.exist.HelpdeskApp.service.EmployeeService;
+import com.exist.HelpdeskApp.service.RoleService;
+import com.exist.HelpdeskApp.service.TicketService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(controllers = {EmployeeController.class, AdminController.class})
+@Import(GlobalExceptionHandler.class)
+public class GlobalExceptionHandlerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
+    private EmployeeService employeeService;
+
+    @MockBean
+    private RoleService roleService;
+
+    @MockBean
+    private TicketService ticketService;
+
+    @Test
+    void testGetInvalidEmployee_ShouldReturnNotFound() throws Exception {
+        int invalidEmployeeId = 99;
+        when(employeeService.getEmployee(invalidEmployeeId))
+                .thenThrow(new EmployeeNotFoundException("Employee with ID " + invalidEmployeeId + " not found!"));
+
+        mockMvc.perform(get("/employees/{employeeId}", invalidEmployeeId))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.error").value("Not Found"))
+                .andExpect(jsonPath("$.message").value("Employee with ID " + invalidEmployeeId + " not found!"))
+                .andExpect(jsonPath("$.path").value("/employees/" + invalidEmployeeId))
+                .andExpect(jsonPath("$.timestamp").exists());
+    }
+
+
+    @Test
+    void testGetInvalidRole_ShouldReturnNotFound() throws Exception {
+        int roleId = 99;
+        when(roleService.getRole(roleId))
+                .thenThrow(new RoleNotFoundException("Role not found!"));
+
+        mockMvc.perform(get("/admin/roles/{roleId}", roleId))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.error").value("Not Found"))
+                .andExpect(jsonPath("$.message").value("Role not found!"))
+                .andExpect(jsonPath("$.path").value("/admin/roles/" + roleId))
+                .andExpect(jsonPath("$.timestamp").exists());
+    }
+
+    @Test
+    void testGetInvalidTicket_ShouldReturnNotFound() throws Exception {
+        int employeeId = 1;
+        int ticketId = 99;
+        when(ticketService.getTicket(employeeId, ticketId))
+                .thenThrow(new RoleNotFoundException("Ticket not found!"));
+
+        mockMvc.perform(get("/admin/tickets/{ticketId}", ticketId))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.error").value("Not Found"))
+                .andExpect(jsonPath("$.message").value("Ticket not found!"))
+                .andExpect(jsonPath("$.path").value("/admin/tickets/" + ticketId))
+                .andExpect(jsonPath("$.timestamp").exists());
+    }
+
+    @Test
+    void testHandleRuntimeException_ShouldReturnInternalServerError() throws Exception {
+        when(employeeService.getEmployee(1))
+                .thenThrow(new RuntimeException("Unexpected failure"));
+
+        mockMvc.perform(get("/employees/{id}", 1))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.status").value(500))
+                .andExpect(jsonPath("$.error").value("Internal Server Error"))
+                .andExpect(jsonPath("$.message").value("Unexpected failure"))
+                .andExpect(jsonPath("$.path").value("/employees/1"))
+                .andExpect(jsonPath("$.timestamp").exists());
+    }
+
+
+
+}

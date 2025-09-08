@@ -3,6 +3,7 @@ package com.exist.HelpdeskApp.service;
 import com.exist.HelpdeskApp.dto.role.RoleMapper;
 import com.exist.HelpdeskApp.dto.role.RoleRequest;
 import com.exist.HelpdeskApp.dto.role.RoleResponse;
+import com.exist.HelpdeskApp.exception.RoleNotFoundException;
 import com.exist.HelpdeskApp.model.Role;
 import com.exist.HelpdeskApp.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,6 @@ public class RoleService {
     public RoleService(RoleMapper roleMapper, RoleRepository roleRepository) {
         this.roleMapper = roleMapper;
         this.roleRepository = roleRepository;
-//        Role noRole = new Role(1, "No Role", 0);
-//        roleRepository.save(noRole);
     }
 
     @Transactional
@@ -32,29 +31,32 @@ public class RoleService {
     }
 
     @Transactional
-    public RoleResponse getRole(int id) {
-        Role role = roleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("ID not found!"));
+    public RoleResponse getRole(int roleId) {
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new RoleNotFoundException("Role with ID " + roleId + " not found!"));
         return roleMapper.toResponse(role);
     }
 
     @Transactional
-    public void addRoles(RoleRequest request) {
+    public RoleResponse addRole(RoleRequest request) {
         Role role = roleMapper.toEntity(request);
-        roleRepository.save(role);
+        Role updated = roleRepository.save(role);
+        return roleMapper.toResponse(updated);
     }
 
     @Transactional
-    public void updateRole(int id, RoleRequest request) {
-        Role role = roleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("ID not found!"));
+    public RoleResponse updateRole(int roleId, RoleRequest request) {
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new RoleNotFoundException("Role with ID " + roleId + " not found!"));
         roleMapper.toUpdate(request, role);
+        Role updated = roleRepository.save(role);
+        return roleMapper.toResponse(updated);
     }
 
     @Transactional
-    public void deleteRole(int id) {
-        Role role = roleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("ID not found!"));
+    public void deleteRole(int roleId) {
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new RoleNotFoundException("Role with ID " + roleId + " not found!"));
         roleRepository.delete(role);
     }
 }

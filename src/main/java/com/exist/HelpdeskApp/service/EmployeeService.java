@@ -3,6 +3,8 @@ package com.exist.HelpdeskApp.service;
 import com.exist.HelpdeskApp.dto.employee.EmployeeMapper;
 import com.exist.HelpdeskApp.dto.employee.EmployeeRequest;
 import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
+import com.exist.HelpdeskApp.exception.EmployeeNotFoundException;
+import com.exist.HelpdeskApp.exception.RoleNotFoundException;
 import com.exist.HelpdeskApp.model.Employee;
 import com.exist.HelpdeskApp.model.Role;
 import com.exist.HelpdeskApp.repository.EmployeeRepository;
@@ -12,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class EmployeeService {
@@ -34,23 +35,25 @@ public class EmployeeService {
         return employeeMapper.toResponseList(employees);
     }
 
-    public EmployeeResponse getEmployee(int id) {
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Not found"));
+    @Transactional
+    public EmployeeResponse getEmployee(int employeeId) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + employeeId + " not found!"));
         return employeeMapper.toResponse(employee);
     }
 
     @Transactional
-    public void addEmployee(EmployeeRequest employeeRequest) {
+    public EmployeeResponse addEmployee(EmployeeRequest employeeRequest) {
         Employee employee = employeeMapper.toEntity(employeeRequest);
         Role role = (employeeRequest.getRoleId() != null)
                 ? roleRepository.findById(employeeRequest.getRoleId())
                 .orElseGet(() -> roleRepository.findById(1)
-                        .orElseThrow(() -> new RuntimeException("Default role not found")))
+                        .orElseThrow(() -> new RoleNotFoundException("Default role not found")))
                 : roleRepository.findById(1)
-                .orElseThrow(() -> new RuntimeException("Default role not found"));
+                .orElseThrow(() -> new RoleNotFoundException("Default role not found"));
         employee.setRole(role);
-        employeeRepository.save(employee);
+        Employee updated = employeeRepository.save(employee);
+        return employeeMapper.toResponse(updated);
     }
 
     @Transactional
@@ -67,9 +70,15 @@ public class EmployeeService {
     }
 
     @Transactional
-    public void deleteEmployee(int id) {
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Employee not found with id: " + id));
+    public void deleteEmployee(int employeeId) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + employeeId + " not found!"));
         employeeRepository.delete(employee);
     }
+//
+//    @Transactional
+//    public void checkEmployeeId(int employeeId) {
+//        employeeRepository.findById(employeeId)
+//                .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + employeeId + " not found!"));
+//    }
 }
