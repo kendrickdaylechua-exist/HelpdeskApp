@@ -6,6 +6,7 @@ import com.exist.HelpdeskApp.dto.ticket.TicketRequest;
 import com.exist.HelpdeskApp.dto.ticket.TicketResponse;
 import com.exist.HelpdeskApp.exception.EmployeeNotFoundException;
 import com.exist.HelpdeskApp.exception.TicketNotFoundException;
+import com.exist.HelpdeskApp.exception.TicketNotFoundExceptionTest;
 import com.exist.HelpdeskApp.exception.UnauthorizedActionException;
 import com.exist.HelpdeskApp.model.Employee;
 import com.exist.HelpdeskApp.model.Ticket;

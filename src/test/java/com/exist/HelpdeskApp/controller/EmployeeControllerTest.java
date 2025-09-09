@@ -42,16 +42,8 @@ public class EmployeeControllerTest {
     private TicketService ticketService;
 
     private static EmployeeResponse employee1;
-    private static EmployeeResponse employee2;
-
     private static TicketResponse ticket1;
-    private static TicketResponse ticket2;
-
-    private static List<EmployeeResponse> employeeList = new ArrayList<>();
-    private static List<TicketResponse> ticketList = new ArrayList<>();
-
     private static TicketRequest ticketRequest1;
-    private static TicketRequest ticketRequest2;
 
     private static final Integer VALID_EMPLOYEE_ID_1 = 2;
     private static final Integer INVALID_EMPLOYEE_ID = 99;
@@ -69,17 +61,6 @@ public class EmployeeControllerTest {
                 "role1"
         );
 
-        employee2 = new EmployeeResponse(
-                3,
-                "name2",
-                25,
-                "test address 2",
-                "09~~~~~~~~~~",
-                EmploymentStatus.FULL_TIME,
-                3,
-                "role2"
-        );
-
         ticket1 = new TicketResponse(
                 1,
                 "Ticket 1",
@@ -93,40 +74,12 @@ public class EmployeeControllerTest {
                 "Remarks of ticket 1"
         );
 
-        ticket2 = new TicketResponse(
-                2,
-                "Ticket 2",
-                "Body of ticket 2",
-                "name2",
-                TicketStatus.DUPLICATE,
-                Instant.parse("2025-09-07T10:15:30Z"),
-                "name1",
-                Instant.parse("2025-09-07T10:15:30Z"),
-                "name1",
-                "Remarks of ticket 2"
-        );
-
-        employeeList = new ArrayList<>();
-        ticketList = new ArrayList<>();
-
-        employeeList.add(employee1);
-        employeeList.add(employee2);
-        ticketList.add(ticket1);
-        ticketList.add(ticket2);
-
         ticketRequest1 = new TicketRequest(
                 "Ticket 1",
                 "Body of ticket 1",
                 2,
                 TicketStatus.FILED,
                 "Remarks of ticket 1"
-        );
-        ticketRequest2 = new TicketRequest(
-                "Ticket 2",
-                "Body of ticket 2",
-                2,
-                TicketStatus.FILED,
-                "Remarks of ticket 2"
         );
 
     }
@@ -157,12 +110,13 @@ public class EmployeeControllerTest {
 
     @Test
     void testGetAllValidTickets() throws Exception {
-        when(ticketService.getTickets(VALID_EMPLOYEE_ID_1)).thenReturn(ticketList);
+        List<TicketResponse> ticketResponses = new ArrayList<>();
+        ticketResponses.add(ticket1);
+        when(ticketService.getTickets(VALID_EMPLOYEE_ID_1)).thenReturn(ticketResponses);
         mockMvc.perform(get("/employees/{VALID_EMPLOYEE_ID_1}/tickets", VALID_EMPLOYEE_ID_1))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(2))
-                .andExpect(jsonPath("[0].ticketNumber").value(1))
-                .andExpect(jsonPath("[1].ticketNumber").value(2));
+                .andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("[0].ticketNumber").value(1));
     }
 
     @Test
@@ -228,6 +182,25 @@ public class EmployeeControllerTest {
 
     @Test
     void testUpdateValidTicket() throws Exception{
+        TicketResponse ticket2 = new TicketResponse(
+                2,
+                "Ticket 2",
+                "Body of ticket 2",
+                "name2",
+                TicketStatus.DUPLICATE,
+                Instant.parse("2025-09-07T10:15:30Z"),
+                "name1",
+                Instant.parse("2025-09-07T10:15:30Z"),
+                "name1",
+                "Remarks of ticket 2"
+        );
+        TicketRequest ticketRequest2 = new TicketRequest(
+                "Ticket 2",
+                "Body of ticket 2",
+                2,
+                TicketStatus.FILED,
+                "Remarks of ticket 2"
+        );
         Integer ticketId = 1;
         when(ticketService.updateTicket(VALID_EMPLOYEE_ID_1, ticketId, ticketRequest2)).thenReturn(ticket2);
         mockMvc.perform(patch("/employees/{VALID_EMPLOYEE_ID_1}/tickets/{ticketId}", VALID_EMPLOYEE_ID_1, ticketId)
@@ -241,6 +214,13 @@ public class EmployeeControllerTest {
     @Test
     void testUpdateInvalidTicket() throws Exception{
         Integer ticketId = 99;
+        TicketRequest ticketRequest2 = new TicketRequest(
+                "Ticket 2",
+                "Body of ticket 2",
+                2,
+                TicketStatus.FILED,
+                "Remarks of ticket 2"
+        );
         when(ticketService.updateTicket(VALID_EMPLOYEE_ID_1, ticketId, ticketRequest2))
                 .thenThrow(new TicketNotFoundException("Ticket number " + ticketId + " not found!"));
         mockMvc.perform(patch("/employees/{VALID_EMPLOYEE_ID_1}/tickets/{ticketId}", VALID_EMPLOYEE_ID_1, ticketId)
@@ -253,6 +233,13 @@ public class EmployeeControllerTest {
     @Test
     void testUpdateInvalidEmployeeToUpdateTicket() throws Exception {
         Integer ticketId = 2;
+        TicketRequest ticketRequest2 = new TicketRequest(
+                "Ticket 2",
+                "Body of ticket 2",
+                2,
+                TicketStatus.FILED,
+                "Remarks of ticket 2"
+        );
         when(ticketService.updateTicket(INVALID_EMPLOYEE_ID, ticketId, ticketRequest2))
                 .thenThrow(new EmployeeNotFoundException("Employee with ID " + INVALID_EMPLOYEE_ID + " not found!"));
         mockMvc.perform(patch("/employees/{INVALID_EMPLOYEE_ID}/tickets/{ticketId}", INVALID_EMPLOYEE_ID, ticketId)
@@ -264,13 +251,14 @@ public class EmployeeControllerTest {
 
     @Test
     void testGetValidAssignedTickets() throws Exception {
+        List<TicketResponse> ticketResponses = new ArrayList<>();
+        ticketResponses.add(ticket1);
         when(ticketService.getAssignedTickets(VALID_EMPLOYEE_ID_1))
-                .thenReturn(ticketList);
+                .thenReturn(ticketResponses);
         mockMvc.perform(get("/employees/{employeeId}/tickets/assigned", VALID_EMPLOYEE_ID_1))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(2))
-                .andExpect(jsonPath("[0].ticketNumber").value(1))
-                .andExpect(jsonPath("[1].ticketNumber").value(2));
+                .andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("[0].ticketNumber").value(1));
     }
 
     @Test

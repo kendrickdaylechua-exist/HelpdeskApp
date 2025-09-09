@@ -1,5 +1,6 @@
 package com.exist.HelpdeskApp;
 
+import com.exist.HelpdeskApp.dto.employee.EmployeeRequest;
 import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
 import com.exist.HelpdeskApp.dto.role.RoleResponse;
 import com.exist.HelpdeskApp.model.Employee;
@@ -25,6 +26,19 @@ public class TestDataFactory {
                 1,
                 "Admin",
                 1
+        );
+    }
+
+    public static EmployeeResponse adminEmployeeRequest() {
+        return new EmployeeResponse(
+                1,
+                "Admin",
+                30,
+                "N/A",
+                "N/A",
+                EmploymentStatus.FULL_TIME,
+                1,
+                "Admin"
         );
     }
 }

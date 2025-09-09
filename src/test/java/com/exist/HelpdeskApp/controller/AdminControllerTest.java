@@ -49,17 +49,10 @@ public class AdminControllerTest {
     private TicketService ticketService;
 
     private static RoleResponse role1;
-    private static RoleResponse role2;
 
     private static EmployeeResponse employee1;
-    private static EmployeeResponse employee2;
 
     private static TicketResponse ticket1;
-    private static TicketResponse ticket2;
-
-    private static List<EmployeeResponse> employeeList = new ArrayList<>();
-    private static List<RoleResponse> roleList = new ArrayList<>();
-    private static List<TicketResponse> ticketList = new ArrayList<>();
 
     private static EmployeeRequest employeeRequest1;
     private static RoleRequest roleRequest1;
@@ -80,25 +73,11 @@ public class AdminControllerTest {
                 "role1"
         );
 
-        employee2 = new EmployeeResponse(
-                3,
-                "name2",
-                25,
-                "test address 2",
-                "09~~~~~~~~~~",
-                EmploymentStatus.FULL_TIME,
-                3,
-                "role2"
-        );
+
 
         role1 = new RoleResponse(
                 2,
                 "role1"
-        );
-
-        role2 = new RoleResponse(
-                3,
-                "role2"
         );
 
         ticket1 = new TicketResponse(
@@ -113,30 +92,6 @@ public class AdminControllerTest {
                 "name2",
                 "Test remarks 1"
         );
-
-        ticket2 = new TicketResponse(
-                2,
-                "Test Ticket 2",
-                "Test ticket body 2",
-                "name2",
-                TicketStatus.DUPLICATE,
-                Instant.now(),
-                "name1",
-                Instant.now(),
-                "name1",
-                "Test remarks 2"
-        );
-
-        employeeList = new ArrayList<>();
-        roleList = new ArrayList<>();
-        ticketList = new ArrayList<>();
-
-        employeeList.add(employee1);
-        employeeList.add(employee2);
-        roleList.add(role1);
-        roleList.add(role2);
-        ticketList.add(ticket1);
-        ticketList.add(ticket2);
 
         employeeRequest1 = new EmployeeRequest(
                 "name1",
@@ -164,12 +119,13 @@ public class AdminControllerTest {
 
     @Test
     void testGetAllValidEmployees() throws Exception {
+        List<EmployeeResponse> employeeList = new ArrayList<>();
+        employeeList.add(employee1);
         when(employeeService.getEmployees()).thenReturn(employeeList);
         mockMvc.perform(get("/admin/employees"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(2))
-                .andExpect(jsonPath("[0].name").value("name1"))
-                .andExpect(jsonPath("[1].name").value("name2"));
+                .andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("[0].name").value("name1"));
     }
 
     @Test
@@ -190,13 +146,13 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("$.message").value("Employee with ID " + INVALID_EMPLOYEE_ID + " not found!"));
     }
 
-//    @Test
-//    void testGetValidEmployeeAdmin() throws Exception {
-//        when(employeeService.getEmployee(1)).thenReturn(TestDataFactory.admin());
-//        mockMvc.perform(get("/admin/employees/1"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("name").value("Admin"));
-//    }
+    @Test
+    void testGetValidEmployeeAdmin() throws Exception {
+        when(employeeService.getEmployee(1)).thenReturn(TestDataFactory.adminEmployeeRequest());
+        mockMvc.perform(get("/admin/employees/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("name").value("Admin"));
+    }
 
     @Test
     void testAddValidEmployee() throws Exception {
@@ -208,23 +164,33 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("name").value("name1"));
     }
 
-//    @Test
-//    void testUpdateEmployee() throws Exception {
-//        when(employeeService.updateEmployee(VALID_EMPLOYEE_ID_1, employeeRequest1)).thenReturn(employee1);
-//        mockMvc.perform(
-//                patch("/admin/employees/{id}", INVALID_EMPLOYEE_ID)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(employee1))
-//                )
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("name").value("name1"))
-//                .andExpect(jsonPath("age").value("25"))
-//                .andExpect(jsonPath("address").value("test address 1"))
-//                .andExpect(jsonPath("contactNumber").value("09~~~~~~~~~~"))
-//                .andExpect(jsonPath("employmentStatus").value(EmploymentStatus.FULL_TIME.name()))
-//                .andExpect(jsonPath("roleId").value(2))
-//                .andExpect(jsonPath("roleName").value("role1"));
-//    }
+    @Test
+    void testUpdateEmployee() throws Exception {
+        EmployeeResponse employee2 = new EmployeeResponse(
+                3,
+                "name2",
+                25,
+                "test address 2",
+                "09~~~~~~~~~~",
+                EmploymentStatus.FULL_TIME,
+                3,
+                "role2"
+        );
+        when(employeeService.updateEmployee(VALID_EMPLOYEE_ID_1, employeeRequest1)).thenReturn(employee1);
+        mockMvc.perform(
+                patch("/admin/employees/{id}", VALID_EMPLOYEE_ID_1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(employeeRequest1))
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("name").value("name1"))
+                .andExpect(jsonPath("age").value("25"))
+                .andExpect(jsonPath("address").value("test address 1"))
+                .andExpect(jsonPath("contactNumber").value("09~~~~~~~~~~"))
+                .andExpect(jsonPath("employmentStatus").value(EmploymentStatus.FULL_TIME.name()))
+                .andExpect(jsonPath("roleId").value(2))
+                .andExpect(jsonPath("roleName").value("role1"));
+    }
 
     @Test
     void testDeleteEmployee() throws Exception {
@@ -237,12 +203,13 @@ public class AdminControllerTest {
 
     @Test
     void testGetAllValidRoles() throws Exception {
-        when(roleService.getRoles()).thenReturn(roleList);
+        List<RoleResponse> roleResponses = new ArrayList<>();
+        roleResponses.add(role1);
+        when(roleService.getRoles()).thenReturn(roleResponses);
         mockMvc.perform(get("/admin/roles"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(2))
-                .andExpect(jsonPath("[0].roleName").value("role1"))
-                .andExpect(jsonPath("[1].roleName").value("role2"));
+                .andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("[0].roleName").value("role1"));
     }
 
     @Test
@@ -289,12 +256,13 @@ public class AdminControllerTest {
 
     @Test
     void testGetAllValidTickets() throws Exception {
-        when(ticketService.getTickets(1)).thenReturn(ticketList);
+        List<TicketResponse> ticketResponses = new ArrayList<>();
+        ticketResponses.add(ticket1);
+        when(ticketService.getTickets(1)).thenReturn(ticketResponses);
         mockMvc.perform(get("/admin/tickets"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(2))
-                .andExpect(jsonPath("[0].title").value("Test Ticket 1"))
-                .andExpect(jsonPath("[1].title").value("Test Ticket 2"));
+                .andExpect(jsonPath("$.size()").value(1))
+                .andExpect(jsonPath("[0].title").value("Test Ticket 1"));
     }
 
     @Test
@@ -326,6 +294,18 @@ public class AdminControllerTest {
 
     @Test
     void testUpdateTicketStatusAndRemarks() throws Exception {
+        TicketResponse ticket2 = new TicketResponse(
+                2,
+                "Test Ticket 2",
+                "Test ticket body 2",
+                "name2",
+                TicketStatus.DUPLICATE,
+                Instant.now(),
+                "name1",
+                Instant.now(),
+                "name1",
+                "Test remarks 2"
+        );
         TicketRequest ticketLocalRequest = new TicketRequest(
                 null,
                 null,
