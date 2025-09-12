@@ -69,18 +69,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, ex.getStatus()); //ResponseEntity<>(bodyObject, HttpStatus.OK)
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponse> handleRunTimeException(RuntimeException ex, HttpServletRequest request) {
-        log.error("Unhandled exception at {}: {}", request.getRequestURI(), ex.getMessage(), ex);
-        ErrorResponse error = new ErrorResponse(
-                Instant.now().toString(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Internal Server Error",
-                ex.getMessage(),
-                request.getRequestURI()
-        );
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(RuntimeException.class)
+//    public ResponseEntity<ErrorResponse> handleRunTimeException(RuntimeException ex, HttpServletRequest request) {
+//        log.error("Unhandled exception at {}: {}", request.getRequestURI(), ex.getMessage(), ex);
+//        ErrorResponse error = new ErrorResponse(
+//                Instant.now().toString(),
+//                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+//                "Internal Server Error",
+//                ex.getMessage(),
+//                request.getRequestURI()
+//        );
+//        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
     @ExceptionHandler(InvalidEmployeeStatusException.class)
     public ResponseEntity<ErrorResponse> handleBadRequestException(InvalidEmployeeStatusException ex, HttpServletRequest request) {
@@ -95,16 +95,16 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex, HttpServletRequest request) {
-        log.error("Unhandled exception at {}: {}", request.getRequestURI(), ex.getMessage(), ex);
-        ErrorResponse error = new ErrorResponse(
-                Instant.now().toString(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Internal Server Error",
-                "Please contact the devs",
-                request.getRequestURI()
-        );
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex, HttpServletRequest request) {
+//        log.error("Unhandled exception at {}: {}", request.getRequestURI(), ex.getMessage(), ex);
+//        ErrorResponse error = new ErrorResponse(
+//                Instant.now().toString(),
+//                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+//                "Internal Server Error",
+//                "Please contact the devs",
+//                request.getRequestURI()
+//        );
+//        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 }

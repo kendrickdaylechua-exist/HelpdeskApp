@@ -1,0 +1,215 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AdminController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.exist.HelpdeskApp.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: AdminController (com.exist.HelpdeskApp.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AdminController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (15/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (18/18)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.controller;
+&nbsp;
+&nbsp;import com.exist.HelpdeskApp.dto.employee.EmployeeRequest;
+&nbsp;import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
+&nbsp;import com.exist.HelpdeskApp.dto.role.RoleRequest;
+&nbsp;import com.exist.HelpdeskApp.dto.role.RoleResponse;
+&nbsp;import com.exist.HelpdeskApp.dto.ticket.TicketRequest;
+&nbsp;import com.exist.HelpdeskApp.dto.ticket.TicketResponse;
+&nbsp;import com.exist.HelpdeskApp.service.EmployeeService;
+&nbsp;import com.exist.HelpdeskApp.service.RoleService;
+&nbsp;import com.exist.HelpdeskApp.service.TicketService;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import javax.validation.Valid;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/admin&quot;)
+&nbsp;public class AdminController {
+&nbsp;
+&nbsp;    EmployeeService employeeService;
+&nbsp;    RoleService roleService;
+&nbsp;    TicketService ticketService;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    public AdminController(EmployeeService employeeService,
+&nbsp;                           RoleService roleService,
+<b class="fc">&nbsp;                           TicketService ticketService) {</b>
+<b class="fc">&nbsp;        this.employeeService = employeeService;</b>
+<b class="fc">&nbsp;        this.roleService = roleService;</b>
+<b class="fc">&nbsp;        this.ticketService = ticketService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @RequestMapping(&quot;&quot;)
+&nbsp;    public String adminHome() {
+<b class="fc">&nbsp;        return &quot;This is the admin page.\n&quot; +</b>
+&nbsp;                &quot;=================================\n&quot; +
+&nbsp;                &quot;APIs:\n&quot; +
+&nbsp;                &quot;/employees&quot;;
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/employees&quot;)
+&nbsp;    public List&lt;EmployeeResponse&gt; getEmployees() {
+<b class="fc">&nbsp;        return employeeService.getEmployees();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/employees/{employeeId}&quot;)
+&nbsp;    public EmployeeResponse getEmployee(@PathVariable Integer employeeId) {
+<b class="fc">&nbsp;        return employeeService.getEmployee(employeeId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/employees&quot;)
+&nbsp;    public EmployeeResponse addEmployee(@RequestBody @Valid EmployeeRequest request) {
+<b class="fc">&nbsp;        return employeeService.addEmployee(request);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PatchMapping(&quot;/employees/{employeeId}&quot;)
+&nbsp;    public EmployeeResponse updateEmployee(@PathVariable Integer employeeId, @RequestBody EmployeeRequest request) {
+<b class="fc">&nbsp;        return employeeService.updateEmployee(employeeId, request);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/employees/{employeeId}&quot;)
+&nbsp;    public void deleteEmployee(@PathVariable Integer employeeId) {
+<b class="fc">&nbsp;        employeeService.deleteEmployee(employeeId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /// ===============================================================================
+&nbsp;    @GetMapping(&quot;/roles&quot;)
+&nbsp;    public List&lt;RoleResponse&gt; getRoles() {
+<b class="fc">&nbsp;        return roleService.getRoles();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/roles/{roleId}&quot;)
+&nbsp;    public RoleResponse getRole(@PathVariable Integer roleId) {
+<b class="fc">&nbsp;        return roleService.getRole(roleId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/roles&quot;)
+&nbsp;    public RoleResponse addRole(@RequestBody RoleRequest request) {
+<b class="fc">&nbsp;        return roleService.addRole(request);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PatchMapping(&quot;/roles/{roleId}&quot;)
+&nbsp;    public RoleResponse updateRole(@PathVariable Integer roleId, @RequestBody RoleRequest request) {
+<b class="fc">&nbsp;        return roleService.updateRole(roleId, request);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/roles/{roleId}&quot;)
+&nbsp;    public void deleteRole(@PathVariable Integer roleId) {
+<b class="fc">&nbsp;        roleService.deleteRole(roleId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /// ===============================================================================
+&nbsp;
+&nbsp;    @GetMapping(&quot;tickets&quot;)
+&nbsp;    public List&lt;TicketResponse&gt; getTickets() {
+<b class="fc">&nbsp;        return ticketService.getTickets(1);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;tickets/{ticketId}&quot;)
+&nbsp;    public TicketResponse getTicket(@PathVariable Integer ticketId) {
+<b class="fc">&nbsp;        return ticketService.getTicket(1, ticketId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PatchMapping(&quot;tickets/{ticketId}&quot;)
+&nbsp;    public TicketResponse updateTicket(@PathVariable Integer ticketId, @RequestBody TicketRequest ticketRequest) {
+<b class="fc">&nbsp;        return ticketService.updateTicket(1, ticketId, ticketRequest);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-09-11 10:18</div>
+</div>
+</body>
+</html>

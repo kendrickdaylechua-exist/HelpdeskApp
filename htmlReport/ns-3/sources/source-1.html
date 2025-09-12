@@ -1,0 +1,237 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > EmployeeMapperImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.exist.HelpdeskApp.dto.employee</a>
+</div>
+
+<h1>Coverage Summary for Class: EmployeeMapperImpl (com.exist.HelpdeskApp.dto.employee)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EmployeeMapperImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    53.1%
+  </span>
+  <span class="absValue">
+    (17/32)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    84.2%
+  </span>
+  <span class="absValue">
+    (48/57)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.dto.employee;
+&nbsp;
+&nbsp;import com.exist.HelpdeskApp.model.Employee;
+&nbsp;import com.exist.HelpdeskApp.model.Role;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;import javax.annotation.processing.Generated;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;
+&nbsp;@Generated(
+&nbsp;    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+&nbsp;    date = &quot;2025-09-11T10:14:37+0800&quot;,
+&nbsp;    comments = &quot;version: 1.5.5.Final, compiler: javac, environment: Java 17.0.15 (Microsoft)&quot;
+&nbsp;)
+&nbsp;@Component
+<b class="fc">&nbsp;public class EmployeeMapperImpl implements EmployeeMapper {</b>
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Employee toEntity(EmployeeRequest request) {
+<b class="pc">&nbsp;        if ( request == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        Employee employee = new Employee();</b>
+&nbsp;
+<b class="fc">&nbsp;        employee.setName( request.getName() );</b>
+<b class="fc">&nbsp;        employee.setAge( request.getAge() );</b>
+<b class="fc">&nbsp;        employee.setAddress( request.getAddress() );</b>
+<b class="fc">&nbsp;        employee.setContactNumber( request.getContactNumber() );</b>
+<b class="fc">&nbsp;        employee.setEmploymentStatus( request.getEmploymentStatus() );</b>
+&nbsp;
+<b class="fc">&nbsp;        return employee;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public EmployeeResponse toResponse(Employee employee) {
+<b class="pc">&nbsp;        if ( employee == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        EmployeeResponse employeeResponse = new EmployeeResponse();</b>
+&nbsp;
+<b class="fc">&nbsp;        employeeResponse.setRoleName( employeeRoleRoleName( employee ) );</b>
+<b class="fc">&nbsp;        employeeResponse.setRoleId( employeeRoleId( employee ) );</b>
+<b class="fc">&nbsp;        employeeResponse.setId( employee.getId() );</b>
+<b class="fc">&nbsp;        employeeResponse.setName( employee.getName() );</b>
+<b class="fc">&nbsp;        employeeResponse.setAge( employee.getAge() );</b>
+<b class="fc">&nbsp;        employeeResponse.setAddress( employee.getAddress() );</b>
+<b class="fc">&nbsp;        employeeResponse.setContactNumber( employee.getContactNumber() );</b>
+<b class="fc">&nbsp;        employeeResponse.setEmploymentStatus( employee.getEmploymentStatus() );</b>
+&nbsp;
+<b class="fc">&nbsp;        return employeeResponse;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void toUpdate(EmployeeRequest request, Employee entity) {
+<b class="pc">&nbsp;        if ( request == null ) {</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if ( request.getName() != null ) {</b>
+<b class="fc">&nbsp;            entity.setName( request.getName() );</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if ( request.getAge() != null ) {</b>
+<b class="fc">&nbsp;            entity.setAge( request.getAge() );</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if ( request.getAddress() != null ) {</b>
+<b class="fc">&nbsp;            entity.setAddress( request.getAddress() );</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if ( request.getContactNumber() != null ) {</b>
+<b class="fc">&nbsp;            entity.setContactNumber( request.getContactNumber() );</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if ( request.getEmploymentStatus() != null ) {</b>
+<b class="fc">&nbsp;            entity.setEmploymentStatus( request.getEmploymentStatus() );</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;EmployeeResponse&gt; toResponseList(List&lt;Employee&gt; employees) {
+<b class="pc">&nbsp;        if ( employees == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        List&lt;EmployeeResponse&gt; list = new ArrayList&lt;EmployeeResponse&gt;( employees.size() );</b>
+<b class="fc">&nbsp;        for ( Employee employee : employees ) {</b>
+<b class="fc">&nbsp;            list.add( toResponse( employee ) );</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return list;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private String employeeRoleRoleName(Employee employee) {
+<b class="pc">&nbsp;        if ( employee == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        Role role = employee.getRole();</b>
+<b class="pc">&nbsp;        if ( role == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        String roleName = role.getRoleName();</b>
+<b class="pc">&nbsp;        if ( roleName == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return roleName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private Integer employeeRoleId(Employee employee) {
+<b class="pc">&nbsp;        if ( employee == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        Role role = employee.getRole();</b>
+<b class="pc">&nbsp;        if ( role == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        Integer id = role.getId();</b>
+<b class="pc">&nbsp;        if ( id == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return id;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-09-11 10:18</div>
+</div>
+</body>
+</html>

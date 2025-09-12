@@ -1,0 +1,164 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > DataInitializer</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.exist.HelpdeskApp</a>
+</div>
+
+<h1>Coverage Summary for Class: DataInitializer (com.exist.HelpdeskApp)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DataInitializer</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (2/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (17/17)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp;
+&nbsp;
+&nbsp;import com.exist.HelpdeskApp.model.Employee;
+&nbsp;import com.exist.HelpdeskApp.model.Role;
+&nbsp;import com.exist.HelpdeskApp.model.EmploymentStatus;
+&nbsp;import com.exist.HelpdeskApp.repository.EmployeeRepository;
+&nbsp;import com.exist.HelpdeskApp.repository.RoleRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.boot.CommandLineRunner;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;
+&nbsp;@Component
+&nbsp;public class DataInitializer implements CommandLineRunner {
+&nbsp;
+&nbsp;    private final RoleRepository roleRepository;
+&nbsp;    private final EmployeeRepository employeeRepository;
+&nbsp;
+&nbsp;    @Autowired
+<b class="fc">&nbsp;    public DataInitializer(RoleRepository roleRepository, EmployeeRepository employeeRepository) {</b>
+<b class="fc">&nbsp;        this.roleRepository = roleRepository;</b>
+<b class="fc">&nbsp;        this.employeeRepository = employeeRepository;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void run(String... args) throws Exception {
+&nbsp;
+&nbsp;        // Initialize roles if none exist
+<b class="pc">&nbsp;        if(roleRepository.count() == 0) {</b>
+<b class="fc">&nbsp;            Role adminRole = new Role();</b>
+<b class="fc">&nbsp;            adminRole.setRoleName(&quot;Admin&quot;);</b>
+<b class="fc">&nbsp;            roleRepository.save(adminRole);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Initialize employees if none exist
+<b class="pc">&nbsp;        if(employeeRepository.count() == 0) {</b>
+<b class="fc">&nbsp;            Employee adminEmployee = new Employee();</b>
+<b class="fc">&nbsp;            adminEmployee.setName(&quot;Admin&quot;);</b>
+<b class="fc">&nbsp;            adminEmployee.setAge(30);</b>
+<b class="fc">&nbsp;            adminEmployee.setAddress(&quot;N/A&quot;);</b>
+<b class="fc">&nbsp;            adminEmployee.setContactNumber(&quot;N/A&quot;);</b>
+<b class="fc">&nbsp;            adminEmployee.setEmploymentStatus(EmploymentStatus.FULL_TIME);</b>
+<b class="fc">&nbsp;            adminEmployee.setRole(roleRepository.findById(1)</b>
+<b class="fc">&nbsp;                    .orElseThrow(() -&gt; new RuntimeException(&quot;Admin role not found!&quot;)));</b>
+<b class="fc">&nbsp;            employeeRepository.save(adminEmployee);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-09-11 10:18</div>
+</div>
+</body>
+</html>

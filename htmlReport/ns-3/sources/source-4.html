@@ -1,0 +1,102 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > EmployeeMapper</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.exist.HelpdeskApp.dto.employee</a>
+</div>
+
+<h1>Coverage Summary for Class: EmployeeMapper (com.exist.HelpdeskApp.dto.employee)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">EmployeeMapper$MockitoMock$6wXpqGYG</td>
+  </tr>
+  <tr>
+    <td class="name">EmployeeMapper$MockitoMock$6wXpqGYG$auxiliary$elexpnAB</td>
+  </tr>
+  <tr>
+    <td class="name">EmployeeMapper$MockitoMock$6wXpqGYG$auxiliary$QPZ0QNsh</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.dto.employee;
+&nbsp;
+&nbsp;import com.exist.HelpdeskApp.model.Employee;
+&nbsp;import org.mapstruct.Mapper;
+&nbsp;import org.mapstruct.Mapping;
+&nbsp;import org.mapstruct.MappingTarget;
+&nbsp;import org.mapstruct.NullValuePropertyMappingStrategy;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Mapper(componentModel = &quot;spring&quot;, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+&nbsp;public interface EmployeeMapper {
+&nbsp;    //Request DTO to Entity
+&nbsp;    @Mapping(target = &quot;role&quot;, ignore = true)
+&nbsp;    Employee toEntity(EmployeeRequest request);
+&nbsp;
+&nbsp;    //Entity to Response DTO
+&nbsp;    @Mapping(source = &quot;role.roleName&quot;, target = &quot;roleName&quot;)
+&nbsp;    @Mapping(source = &quot;role.id&quot;, target = &quot;roleId&quot;)
+&nbsp;    EmployeeResponse toResponse(Employee employee);
+&nbsp;
+&nbsp;    void toUpdate(EmployeeRequest request, @MappingTarget Employee entity);
+&nbsp;
+&nbsp;    List&lt;EmployeeResponse&gt; toResponseList(List&lt;Employee&gt; employees);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-09-11 10:18</div>
+</div>
+</body>
+</html>

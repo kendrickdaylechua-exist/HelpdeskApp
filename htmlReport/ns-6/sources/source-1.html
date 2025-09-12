@@ -1,0 +1,250 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > TicketMapperImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.exist.HelpdeskApp.dto.ticket</a>
+</div>
+
+<h1>Coverage Summary for Class: TicketMapperImpl (com.exist.HelpdeskApp.dto.ticket)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TicketMapperImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    52.8%
+  </span>
+  <span class="absValue">
+    (19/36)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    81.5%
+  </span>
+  <span class="absValue">
+    (53/65)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.dto.ticket;
+&nbsp;
+&nbsp;import com.exist.HelpdeskApp.model.Employee;
+&nbsp;import com.exist.HelpdeskApp.model.Ticket;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;import javax.annotation.processing.Generated;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;
+&nbsp;@Generated(
+&nbsp;    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+&nbsp;    date = &quot;2025-09-11T10:14:37+0800&quot;,
+&nbsp;    comments = &quot;version: 1.5.5.Final, compiler: javac, environment: Java 17.0.15 (Microsoft)&quot;
+&nbsp;)
+&nbsp;@Component
+<b class="fc">&nbsp;public class TicketMapperImpl implements TicketMapper {</b>
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Ticket toEntity(TicketRequest request) {
+<b class="pc">&nbsp;        if ( request == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        Ticket ticket = new Ticket();</b>
+&nbsp;
+<b class="fc">&nbsp;        ticket.setTitle( request.getTitle() );</b>
+<b class="fc">&nbsp;        ticket.setBody( request.getBody() );</b>
+<b class="fc">&nbsp;        ticket.setStatus( request.getStatus() );</b>
+<b class="fc">&nbsp;        ticket.setRemarks( request.getRemarks() );</b>
+&nbsp;
+<b class="fc">&nbsp;        return ticket;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public TicketResponse toResponse(Ticket entity) {
+<b class="pc">&nbsp;        if ( entity == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        TicketResponse ticketResponse = new TicketResponse();</b>
+&nbsp;
+<b class="fc">&nbsp;        ticketResponse.setAssigneeName( entityAssigneeName( entity ) );</b>
+<b class="fc">&nbsp;        ticketResponse.setCreatedByEmployeeName( entityCreatedByName( entity ) );</b>
+<b class="fc">&nbsp;        ticketResponse.setUpdatedByEmployeeName( entityUpdatedByName( entity ) );</b>
+<b class="fc">&nbsp;        ticketResponse.setTicketNumber( entity.getTicketNumber() );</b>
+<b class="fc">&nbsp;        ticketResponse.setTitle( entity.getTitle() );</b>
+<b class="fc">&nbsp;        ticketResponse.setBody( entity.getBody() );</b>
+<b class="fc">&nbsp;        ticketResponse.setStatus( entity.getStatus() );</b>
+<b class="fc">&nbsp;        ticketResponse.setCreateDate( entity.getCreateDate() );</b>
+<b class="fc">&nbsp;        ticketResponse.setUpdatedDate( entity.getUpdatedDate() );</b>
+<b class="fc">&nbsp;        ticketResponse.setRemarks( entity.getRemarks() );</b>
+&nbsp;
+<b class="fc">&nbsp;        return ticketResponse;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;TicketResponse&gt; toResponseList(List&lt;Ticket&gt; tickets) {
+<b class="pc">&nbsp;        if ( tickets == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        List&lt;TicketResponse&gt; list = new ArrayList&lt;TicketResponse&gt;( tickets.size() );</b>
+<b class="fc">&nbsp;        for ( Ticket ticket : tickets ) {</b>
+<b class="fc">&nbsp;            list.add( toResponse( ticket ) );</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return list;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void toUpdate(TicketRequest ticketRequest, Ticket ticket) {
+<b class="pc">&nbsp;        if ( ticketRequest == null ) {</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if ( ticketRequest.getTitle() != null ) {</b>
+<b class="fc">&nbsp;            ticket.setTitle( ticketRequest.getTitle() );</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if ( ticketRequest.getBody() != null ) {</b>
+<b class="fc">&nbsp;            ticket.setBody( ticketRequest.getBody() );</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if ( ticketRequest.getStatus() != null ) {</b>
+<b class="fc">&nbsp;            ticket.setStatus( ticketRequest.getStatus() );</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if ( ticketRequest.getRemarks() != null ) {</b>
+<b class="fc">&nbsp;            ticket.setRemarks( ticketRequest.getRemarks() );</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private String entityAssigneeName(Ticket ticket) {
+<b class="pc">&nbsp;        if ( ticket == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        Employee assignee = ticket.getAssignee();</b>
+<b class="pc">&nbsp;        if ( assignee == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        String name = assignee.getName();</b>
+<b class="pc">&nbsp;        if ( name == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return name;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private String entityCreatedByName(Ticket ticket) {
+<b class="pc">&nbsp;        if ( ticket == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        Employee createdBy = ticket.getCreatedBy();</b>
+<b class="pc">&nbsp;        if ( createdBy == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        String name = createdBy.getName();</b>
+<b class="pc">&nbsp;        if ( name == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return name;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private String entityUpdatedByName(Ticket ticket) {
+<b class="pc">&nbsp;        if ( ticket == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        Employee updatedBy = ticket.getUpdatedBy();</b>
+<b class="pc">&nbsp;        if ( updatedBy == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        String name = updatedBy.getName();</b>
+<b class="pc">&nbsp;        if ( name == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return name;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-09-11 10:18</div>
+</div>
+</body>
+</html>

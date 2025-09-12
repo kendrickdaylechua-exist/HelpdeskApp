@@ -1,0 +1,240 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > EmployeeService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.exist.HelpdeskApp.service</a>
+</div>
+
+<h1>Coverage Summary for Class: EmployeeService (com.exist.HelpdeskApp.service)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EmployeeService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (27/27)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">EmployeeService$$EnhancerBySpringCGLIB$$b47d6568</td>
+  </tr>
+  <tr>
+    <td class="name">EmployeeService$MockitoMock$ZDmd7Y37</td>
+  </tr>
+  <tr>
+    <td class="name">EmployeeService$MockitoMock$ZDmd7Y37$auxiliary$BLupHnu0</td>
+  </tr>
+  <tr>
+    <td class="name">EmployeeService$MockitoMock$ZDmd7Y37$auxiliary$f6EbrL2W</td>
+  </tr>
+  <tr>
+    <td class="name">EmployeeService$MockitoMock$ZDmd7Y37$auxiliary$jiZccz2A</td>
+  </tr>
+  <tr>
+    <td class="name">EmployeeService$MockitoMock$ZDmd7Y37$auxiliary$L2X2ex0u</td>
+  </tr>
+  <tr>
+    <td class="name">EmployeeService$MockitoMock$ZDmd7Y37$auxiliary$nGcbdIfe</td>
+  </tr>
+  <tr>
+    <td class="name">EmployeeService$MockitoMock$ZDmd7Y37$auxiliary$NlBglRdJ</td>
+  </tr>
+  <tr>
+    <td class="name">EmployeeService$MockitoMock$ZDmd7Y37$auxiliary$SMI4Q1ea</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (27/27)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.service;
+&nbsp;
+&nbsp;import com.exist.HelpdeskApp.dto.employee.EmployeeMapper;
+&nbsp;import com.exist.HelpdeskApp.dto.employee.EmployeeRequest;
+&nbsp;import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
+&nbsp;import com.exist.HelpdeskApp.exception.EmployeeNotFoundException;
+&nbsp;import com.exist.HelpdeskApp.exception.RoleNotFoundException;
+&nbsp;import com.exist.HelpdeskApp.model.Employee;
+&nbsp;import com.exist.HelpdeskApp.model.Role;
+&nbsp;import com.exist.HelpdeskApp.repository.EmployeeRepository;
+&nbsp;import com.exist.HelpdeskApp.repository.RoleRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import javax.transaction.Transactional;
+&nbsp;import javax.validation.Valid;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class EmployeeService {
+&nbsp;    private final EmployeeRepository employeeRepository;
+&nbsp;    private final RoleRepository roleRepository;
+&nbsp;    private final EmployeeMapper employeeMapper;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    public EmployeeService(EmployeeRepository employeeRepository,
+&nbsp;                           EmployeeMapper employeeMapper,
+<b class="fc">&nbsp;                           RoleRepository roleRepository) {</b>
+<b class="fc">&nbsp;        this.employeeRepository = employeeRepository;</b>
+<b class="fc">&nbsp;        this.employeeMapper = employeeMapper;</b>
+<b class="fc">&nbsp;        this.roleRepository = roleRepository;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;EmployeeResponse&gt; getEmployees() {
+<b class="fc">&nbsp;        List&lt;Employee&gt; employees = employeeRepository.findAll();</b>
+<b class="fc">&nbsp;        return employeeMapper.toResponseList(employees);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    public EmployeeResponse getEmployee(Integer employeeId) {
+<b class="fc">&nbsp;        Employee employee = employeeRepository.findById(employeeId)</b>
+<b class="fc">&nbsp;                .orElseThrow(() -&gt; new EmployeeNotFoundException(&quot;Employee with ID &quot; + employeeId + &quot; not found!&quot;));</b>
+<b class="fc">&nbsp;        return employeeMapper.toResponse(employee);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    public EmployeeResponse addEmployee(@Valid EmployeeRequest employeeRequest) {
+<b class="fc">&nbsp;        Role role = roleRepository.findById(employeeRequest.getRoleId())</b>
+<b class="fc">&nbsp;                .orElseThrow(() -&gt; new RoleNotFoundException(&quot;Role not found&quot;));</b>
+<b class="fc">&nbsp;        Employee employee = employeeMapper.toEntity(employeeRequest);</b>
+&nbsp;//        Role role = (employeeRequest.getRoleId() != null)
+&nbsp;//                ? roleRepository.findById(employeeRequest.getRoleId())
+&nbsp;//                .orElseGet(() -&gt; roleRepository.findById(1)
+&nbsp;//                        .orElseThrow(() -&gt; new RoleNotFoundException(&quot;Default role not found&quot;)))
+&nbsp;//                : roleRepository.findById(1)
+&nbsp;//                .orElseThrow(() -&gt; new RoleNotFoundException(&quot;Default role not found&quot;));
+<b class="fc">&nbsp;        employee.setRole(role);</b>
+<b class="fc">&nbsp;        Employee updated = employeeRepository.save(employee);</b>
+<b class="fc">&nbsp;        return employeeMapper.toResponse(updated);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    public EmployeeResponse updateEmployee(Integer employeeId, EmployeeRequest request) {
+<b class="fc">&nbsp;        Employee employee = employeeRepository.findById(employeeId)</b>
+<b class="fc">&nbsp;                .orElseThrow(() -&gt; new EmployeeNotFoundException(&quot;Employee with ID &quot; + employeeId + &quot; not found!&quot;));</b>
+<b class="fc">&nbsp;        if (request.getRoleId() != null) {</b>
+<b class="fc">&nbsp;            Role role = roleRepository.findById(request.getRoleId())</b>
+<b class="fc">&nbsp;                    .orElseThrow(() -&gt; new RoleNotFoundException(&quot;Role not found&quot;));</b>
+<b class="fc">&nbsp;            employee.setRole(role);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        employeeMapper.toUpdate(request, employee);</b>
+<b class="fc">&nbsp;        Employee updated = employeeRepository.save(employee);</b>
+<b class="fc">&nbsp;        return employeeMapper.toResponse(updated);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    public void deleteEmployee(Integer employeeId) {
+<b class="fc">&nbsp;        Employee employee = employeeRepository.findById(employeeId)</b>
+<b class="fc">&nbsp;                .orElseThrow(() -&gt; new EmployeeNotFoundException(&quot;Employee with ID &quot; + employeeId + &quot; not found!&quot;));</b>
+<b class="fc">&nbsp;        employeeRepository.delete(employee);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-09-11 10:18</div>
+</div>
+</body>
+</html>
