@@ -18,6 +18,9 @@ public class Role {
     @Column(nullable = false)
     private String roleName;
 
+    @Column(nullable = false)
+    private boolean deleted;
+
     @Version
     private Integer version;
 }

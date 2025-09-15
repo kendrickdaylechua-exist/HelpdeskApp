@@ -6,3 +6,6 @@ spring:
     name: HelpdeskApp
   profiles:
     active: dev
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+debug: false

@@ -1,10 +1,11 @@
 package com.exist.HelpdeskApp.controller;
 
-import com.exist.HelpdeskApp.exception.EmployeeNotFoundException;
-import com.exist.HelpdeskApp.exception.RoleNotFoundException;
-import com.exist.HelpdeskApp.service.EmployeeService;
-import com.exist.HelpdeskApp.service.RoleService;
-import com.exist.HelpdeskApp.service.TicketService;
+import com.exist.HelpdeskApp.exception.businessexceptions.EmployeeNotFoundException;
+import com.exist.HelpdeskApp.exception.GlobalExceptionHandler;
+import com.exist.HelpdeskApp.exception.businessexceptions.RoleNotFoundException;
+import com.exist.HelpdeskApp.service.Implementations.EmployeeServiceImpl;
+import com.exist.HelpdeskApp.service.Implementations.RoleServiceImpl;
+import com.exist.HelpdeskApp.service.Implementations.TicketServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,18 +29,18 @@ public class GlobalExceptionHandlerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private EmployeeService employeeService;
+    private EmployeeServiceImpl employeeServiceImpl;
 
     @MockBean
-    private RoleService roleService;
+    private RoleServiceImpl roleServiceImpl;
 
     @MockBean
-    private TicketService ticketService;
+    private TicketServiceImpl ticketServiceImpl;
 
     @Test
     void testGetInvalidEmployee_ShouldReturnNotFound() throws Exception {
         Integer invalidEmployeeId = 99;
-        when(employeeService.getEmployee(invalidEmployeeId))
+        when(employeeServiceImpl.getEmployee(invalidEmployeeId))
                 .thenThrow(new EmployeeNotFoundException("Employee with ID " + invalidEmployeeId + " not found!"));
 
         mockMvc.perform(get("/employees/{employeeId}", invalidEmployeeId))
@@ -55,7 +56,7 @@ public class GlobalExceptionHandlerTest {
     @Test
     void testGetInvalidRole_ShouldReturnNotFound() throws Exception {
         Integer roleId = 99;
-        when(roleService.getRole(roleId))
+        when(roleServiceImpl.getRole(roleId))
                 .thenThrow(new RoleNotFoundException("Role not found!"));
 
         mockMvc.perform(get("/admin/roles/{roleId}", roleId))
@@ -71,7 +72,7 @@ public class GlobalExceptionHandlerTest {
     void testGetInvalidTicket_ShouldReturnNotFound() throws Exception {
         Integer employeeId = 1;
         Integer ticketId = 99;
-        when(ticketService.getTicket(employeeId, ticketId))
+        when(ticketServiceImpl.getTicket(employeeId, ticketId))
                 .thenThrow(new RoleNotFoundException("Ticket not found!"));
 
         mockMvc.perform(get("/admin/tickets/{ticketId}", ticketId))
@@ -85,7 +86,7 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     void testHandleRuntimeException_ShouldReturnInternalServerError() throws Exception {
-        when(employeeService.getEmployee(1))
+        when(employeeServiceImpl.getEmployee(1))
                 .thenThrow(new RuntimeException("Unexpected failure"));
 
         mockMvc.perform(get("/employees/{id}", 1))

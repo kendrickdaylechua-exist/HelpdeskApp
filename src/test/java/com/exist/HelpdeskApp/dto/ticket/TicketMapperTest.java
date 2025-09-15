@@ -40,9 +40,9 @@ public class TicketMapperTest {
 
     @Test
     void testToResponse() {
-        Role role = new Role (1, "Role Name", 1);
-        Employee employee = new Employee(1, "Employee Name", 25, "Address of the employee", "0912345678", EmploymentStatus.FULL_TIME, role, 1);
-        Ticket entity = new Ticket(1, "Ticket 1", "Body of the ticket", employee, TicketStatus.FILED, Instant.now(), employee, Instant.now(), employee, "Remarks of the ticket", 1);
+        Role role = new Role (1, "Role Name", false, 1);
+        Employee employee = new Employee(1, "Employee Name", 25, "Address of the employee", "0912345678", EmploymentStatus.FULL_TIME, role, false, 1);
+        Ticket entity = new Ticket(1, "Ticket 1", "Body of the ticket", employee, TicketStatus.FILED, Instant.now(), employee, Instant.now(), employee, "Remarks of the ticket", false, 1);
 
         TicketResponse response = mapper.toResponse(entity);
 
@@ -54,9 +54,9 @@ public class TicketMapperTest {
 
     @Test
     void testToResponseList() {
-        Role role = new Role (1, "Role Name", 1);
-        Employee employee = new Employee(1, "Employee Name", 25, "Address of the employee", "0912345678", EmploymentStatus.FULL_TIME, role, 1);
-        Ticket entity = new Ticket(1, "Ticket 1", "Body of the ticket", employee, TicketStatus.FILED, Instant.now(), employee, Instant.now(), employee, "Remarks of the body", 1);
+        Role role = new Role (1, "Role Name", false, 1);
+        Employee employee = new Employee(1, "Employee Name", 25, "Address of the employee", "0912345678", EmploymentStatus.FULL_TIME, role, false, 1);
+        Ticket entity = new Ticket(1, "Ticket 1", "Body of the ticket", employee, TicketStatus.FILED, Instant.now(), employee, Instant.now(), employee, "Remarks of the body", false, 1);
 
 
         List<Ticket> ticketList = new ArrayList<>();
@@ -75,9 +75,9 @@ public class TicketMapperTest {
                 TicketStatus.FILED,
                 "Remarks of the ticket"
         );
-        Role role = new Role (1, "Role Name", 1);
-        Employee employee = new Employee(1, "Employee Name", 25, "Address of the employee", "0912345678", EmploymentStatus.FULL_TIME, role, 1);
-        Ticket entity = new Ticket(1, "Ticket 1", "Body of the ticket", employee, TicketStatus.FILED, Instant.now(), employee, Instant.now(), employee, "Remarks of the ticket", 1);
+        Role role = new Role (1, "Role Name", false, 1);
+        Employee employee = new Employee(1, "Employee Name", 25, "Address of the employee", "0912345678", EmploymentStatus.FULL_TIME, role, false, 1);
+        Ticket entity = new Ticket(1, "Ticket 1", "Body of the ticket", employee, TicketStatus.FILED, Instant.now(), employee, Instant.now(), employee, "Remarks of the ticket", false, 1);
 
         mapper.toUpdate(request, entity);
 

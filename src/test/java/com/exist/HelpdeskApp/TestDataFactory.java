@@ -17,6 +17,7 @@ public class TestDataFactory {
                 "N/A",
                 EmploymentStatus.FULL_TIME,
                 adminRole(),
+                false,
                 1
         );
     }
@@ -25,6 +26,7 @@ public class TestDataFactory {
         return new Role(
                 1,
                 "Admin",
+                false,
                 1
         );
     }

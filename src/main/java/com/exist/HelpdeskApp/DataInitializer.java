@@ -1,8 +1,10 @@
 package com.exist.HelpdeskApp;
 
+import com.exist.HelpdeskApp.exception.businessexceptions.RoleNotFoundException;
 import com.exist.HelpdeskApp.model.Employee;
 import com.exist.HelpdeskApp.model.Role;
 import com.exist.HelpdeskApp.model.EmploymentStatus;
+import com.exist.HelpdeskApp.model.embeddable.Name;
 import com.exist.HelpdeskApp.repository.EmployeeRepository;
 import com.exist.HelpdeskApp.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +36,11 @@ public class DataInitializer implements CommandLineRunner {
         // Initialize employees if none exist
         if(employeeRepository.count() == 0) {
             Employee adminEmployee = new Employee();
-            adminEmployee.setName("Admin");
+            adminEmployee.setName(new Name("Admin", null, null));
             adminEmployee.setAge(30);
-            adminEmployee.setAddress("N/A");
-            adminEmployee.setContactNumber("N/A");
             adminEmployee.setEmploymentStatus(EmploymentStatus.FULL_TIME);
             adminEmployee.setRole(roleRepository.findById(1)
-                    .orElseThrow(() -> new RuntimeException("Admin role not found!")));
+                    .orElseThrow(() -> new RoleNotFoundException("Admin role not found!")));
             employeeRepository.save(adminEmployee);
         }
     }

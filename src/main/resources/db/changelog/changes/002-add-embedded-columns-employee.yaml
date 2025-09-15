@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: migrate-employee-embedded
+      author: Kendrick Chua
+      changes:
+        - addColumn:
+            tableName: employee
+            columns:
+              - column:
+                  name: first_name
+                  type: varchar(255)
+              - column:
+                  name: last_name
+                  type: varchar(255)
+              - column:
+                  name: street
+                  type: varchar(255)
+              - column:
+                  name: city
+                  type: varchar(255)
+              - column:
+                  name: region
+                  type: varchar(255)
+              - column:
+                  name: country
+                  type: varchar(255)
+              - column:
+                  name: phone_number
+                  type: varchar(50)
+              - column:
+                  name: email
+                  type: varchar(50)
+              - column:
+                  name: telephone
+                  type: varchar(50)
+
+        - dropColumn:
+            columnName: name
+            tableName: employee
+        - dropColumn:
+            columnName: address
+            tableName: employee
+        - dropColumn:
+            columnName: contact_number
+            tableName: employee

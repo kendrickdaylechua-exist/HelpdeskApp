@@ -45,6 +45,7 @@ public class EmployeeMapperTest {
         Role role = new Role (
                 1,
                 "role1",
+                false,
                 1
         );
         Employee employee = new Employee(
@@ -55,6 +56,7 @@ public class EmployeeMapperTest {
                 "09~~~~~~~~~~",
                 EmploymentStatus.FULL_TIME,
                 role,
+                false,
                 1
         );
 
@@ -102,6 +104,7 @@ public class EmployeeMapperTest {
         Role role = new Role (
                 1,
                 "role1",
+                false,
                 1
         );
         Employee employee1 = new Employee(
@@ -112,6 +115,7 @@ public class EmployeeMapperTest {
                 "09~~~~~~~~~~",
                 EmploymentStatus.FULL_TIME,
                 role,
+                false,
                 1
         );
         Employee employee2 = new Employee(
@@ -122,6 +126,7 @@ public class EmployeeMapperTest {
                 "09~~~~~~~~~~",
                 EmploymentStatus.INTERN,
                 role,
+                false,
                 1
         );
 

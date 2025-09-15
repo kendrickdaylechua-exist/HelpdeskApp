@@ -1,10 +1,11 @@
-package com.exist.HelpdeskApp.exception;
+package com.exist.HelpdeskApp.exception.businessexceptions;
 
+import com.exist.HelpdeskApp.exception.BusinessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class RoleNotFoundException extends BusinessException{
+public class RoleNotFoundException extends BusinessException {
 
     public RoleNotFoundException(String message) {
         super(message, HttpStatus.NOT_FOUND);

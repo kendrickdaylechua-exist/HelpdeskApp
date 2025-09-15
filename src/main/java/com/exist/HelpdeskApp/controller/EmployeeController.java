@@ -1,11 +1,13 @@
 package com.exist.HelpdeskApp.controller;
 
 import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
+import com.exist.HelpdeskApp.dto.ticket.TicketFilterRequest;
 import com.exist.HelpdeskApp.dto.ticket.TicketRequest;
 import com.exist.HelpdeskApp.dto.ticket.TicketResponse;
-import com.exist.HelpdeskApp.service.EmployeeService;
-import com.exist.HelpdeskApp.service.TicketService;
+import com.exist.HelpdeskApp.service.Implementations.EmployeeServiceImpl;
+import com.exist.HelpdeskApp.service.Implementations.TicketServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -15,14 +17,14 @@ import java.util.List;
 @RequestMapping("/employees")
 public class EmployeeController {
 
-    EmployeeService employeeService;
-    TicketService ticketService;
+    EmployeeServiceImpl employeeServiceImpl;
+    TicketServiceImpl ticketServiceImpl;
 
     @Autowired
-    public EmployeeController(EmployeeService employeeService,
-                              TicketService ticketService) {
-        this.employeeService = employeeService;
-        this.ticketService = ticketService;
+    public EmployeeController(EmployeeServiceImpl employeeServiceImpl,
+                              TicketServiceImpl ticketServiceImpl) {
+        this.employeeServiceImpl = employeeServiceImpl;
+        this.ticketServiceImpl = ticketServiceImpl;
     }
 
     @RequestMapping("")
@@ -32,31 +34,31 @@ public class EmployeeController {
 
     @GetMapping("{employeeId}")
     public EmployeeResponse getOwnProfile(@PathVariable Integer employeeId) {
-        return employeeService.getEmployee(employeeId);
+        return employeeServiceImpl.getEmployee(employeeId);
     }
 
     @PostMapping("{employeeId}/tickets")
     public TicketResponse fileTicket(@PathVariable Integer employeeId, @Valid @RequestBody TicketRequest request) {
-        return ticketService.fileTicket(employeeId, request);
+        return ticketServiceImpl.fileTicket(employeeId, request);
     }
 
     @GetMapping("{employeeId}/tickets")
-    public List<TicketResponse> getTickets(@PathVariable Integer employeeId) {
-        return ticketService.getTickets(employeeId);
+    public Page<TicketResponse> getTickets(@PathVariable Integer employeeId, @ModelAttribute TicketFilterRequest request) {
+        return ticketServiceImpl.getTickets(employeeId, request);
     }
 
     @GetMapping("{employeeId}/tickets/{ticketId}")
     public TicketResponse getTicket(@PathVariable Integer employeeId, @PathVariable Integer ticketId) {
-        return ticketService.getTicket(employeeId, ticketId);
+        return ticketServiceImpl.getTicket(employeeId, ticketId);
     }
 
     @PatchMapping("{employeeId}/tickets/{ticketId}")
     public TicketResponse updateTicket(@PathVariable Integer employeeId, @PathVariable Integer ticketId, @RequestBody TicketRequest ticketRequest) {
-        return ticketService.updateTicket(employeeId, ticketId, ticketRequest);
+        return ticketServiceImpl.updateTicket(employeeId, ticketId, ticketRequest);
     }
 
     @GetMapping("{employeeId}/tickets/assigned")
     public List<TicketResponse> assignedTickets(@PathVariable Integer employeeId) {
-        return ticketService.getAssignedTickets(employeeId);
+        return ticketServiceImpl.getAssignedTickets(employeeId);
     }
 }

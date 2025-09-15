@@ -1,5 +1,6 @@
 package com.exist.HelpdeskApp.exception;
 
+import com.exist.HelpdeskApp.exception.businessexceptions.InvalidEmployeeStatusException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

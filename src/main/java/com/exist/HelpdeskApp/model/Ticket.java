@@ -49,6 +49,8 @@ public class Ticket {
 
     private String remarks;
 
+    private boolean deleted;
+
     @Version
     private Integer version;
 }

@@ -2,14 +2,18 @@ package com.exist.HelpdeskApp.controller;
 
 import com.exist.HelpdeskApp.dto.employee.EmployeeRequest;
 import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
+import com.exist.HelpdeskApp.dto.role.RoleFilterRequest;
 import com.exist.HelpdeskApp.dto.role.RoleRequest;
 import com.exist.HelpdeskApp.dto.role.RoleResponse;
+import com.exist.HelpdeskApp.dto.employee.EmployeeFilterRequest;
+import com.exist.HelpdeskApp.dto.ticket.TicketFilterRequest;
 import com.exist.HelpdeskApp.dto.ticket.TicketRequest;
 import com.exist.HelpdeskApp.dto.ticket.TicketResponse;
-import com.exist.HelpdeskApp.service.EmployeeService;
-import com.exist.HelpdeskApp.service.RoleService;
-import com.exist.HelpdeskApp.service.TicketService;
+import com.exist.HelpdeskApp.service.Implementations.EmployeeServiceImpl;
+import com.exist.HelpdeskApp.service.Implementations.RoleServiceImpl;
+import com.exist.HelpdeskApp.service.Implementations.TicketServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,17 +23,17 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
 
-    EmployeeService employeeService;
-    RoleService roleService;
-    TicketService ticketService;
+    EmployeeServiceImpl employeeServiceImpl;
+    RoleServiceImpl roleServiceImpl;
+    TicketServiceImpl ticketServiceImpl;
 
     @Autowired
-    public AdminController(EmployeeService employeeService,
-                           RoleService roleService,
-                           TicketService ticketService) {
-        this.employeeService = employeeService;
-        this.roleService = roleService;
-        this.ticketService = ticketService;
+    public AdminController(EmployeeServiceImpl employeeServiceImpl,
+                           RoleServiceImpl roleServiceImpl,
+                           TicketServiceImpl ticketServiceImpl) {
+        this.employeeServiceImpl = employeeServiceImpl;
+        this.roleServiceImpl = roleServiceImpl;
+        this.ticketServiceImpl = ticketServiceImpl;
     }
 
     @RequestMapping("")
@@ -41,71 +45,71 @@ public class AdminController {
     }
 
     @GetMapping("/employees")
-    public List<EmployeeResponse> getEmployees() {
-        return employeeService.getEmployees();
+    public Page<EmployeeResponse> getEmployees(@ModelAttribute @Valid EmployeeFilterRequest employeeFilterRequest) {
+        return employeeServiceImpl.getEmployees(employeeFilterRequest);
     }
 
     @GetMapping("/employees/{employeeId}")
     public EmployeeResponse getEmployee(@PathVariable Integer employeeId) {
-        return employeeService.getEmployee(employeeId);
+        return employeeServiceImpl.getEmployee(employeeId);
     }
 
     @PostMapping("/employees")
     public EmployeeResponse addEmployee(@RequestBody @Valid EmployeeRequest request) {
-        return employeeService.addEmployee(request);
+        return employeeServiceImpl.addEmployee(request);
     }
 
     @PatchMapping("/employees/{employeeId}")
     public EmployeeResponse updateEmployee(@PathVariable Integer employeeId, @RequestBody EmployeeRequest request) {
-        return employeeService.updateEmployee(employeeId, request);
+        return employeeServiceImpl.updateEmployee(employeeId, request);
     }
 
     @DeleteMapping("/employees/{employeeId}")
     public void deleteEmployee(@PathVariable Integer employeeId) {
-        employeeService.deleteEmployee(employeeId);
+        employeeServiceImpl.deleteEmployee(employeeId);
     }
 
     /// ===============================================================================
     @GetMapping("/roles")
-    public List<RoleResponse> getRoles() {
-        return roleService.getRoles();
+    public Page<RoleResponse> getRoles(@ModelAttribute @Valid RoleFilterRequest request) {
+        return roleServiceImpl.getRoles(request);
     }
 
     @GetMapping("/roles/{roleId}")
     public RoleResponse getRole(@PathVariable Integer roleId) {
-        return roleService.getRole(roleId);
+        return roleServiceImpl.getRole(roleId);
     }
 
     @PostMapping("/roles")
     public RoleResponse addRole(@RequestBody RoleRequest request) {
-        return roleService.addRole(request);
+        return roleServiceImpl.addRole(request);
     }
 
     @PatchMapping("/roles/{roleId}")
     public RoleResponse updateRole(@PathVariable Integer roleId, @RequestBody RoleRequest request) {
-        return roleService.updateRole(roleId, request);
+        return roleServiceImpl.updateRole(roleId, request);
     }
 
     @DeleteMapping("/roles/{roleId}")
     public void deleteRole(@PathVariable Integer roleId) {
-        roleService.deleteRole(roleId);
+        roleServiceImpl.deleteRole(roleId);
     }
 
     /// ===============================================================================
 
     @GetMapping("tickets")
-    public List<TicketResponse> getTickets() {
-        return ticketService.getTickets(1);
+    public Page<TicketResponse> getTickets(@ModelAttribute TicketFilterRequest request) {
+        return ticketServiceImpl.getTickets(1, request);
     }
 
     @GetMapping("tickets/{ticketId}")
     public TicketResponse getTicket(@PathVariable Integer ticketId) {
-        return ticketService.getTicket(1, ticketId);
+        return ticketServiceImpl.getTicket(1, ticketId);
     }
 
     @PatchMapping("tickets/{ticketId}")
     public TicketResponse updateTicket(@PathVariable Integer ticketId, @RequestBody TicketRequest ticketRequest) {
-        return ticketService.updateTicket(1, ticketId, ticketRequest);
+        return ticketServiceImpl.updateTicket(1, ticketId, ticketRequest);
     }
 
 }

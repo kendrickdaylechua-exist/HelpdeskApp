@@ -80,8 +80,8 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
 &nbsp;import com.exist.HelpdeskApp.dto.ticket.TicketRequest;
 &nbsp;import com.exist.HelpdeskApp.dto.ticket.TicketResponse;
-&nbsp;import com.exist.HelpdeskApp.service.EmployeeService;
-&nbsp;import com.exist.HelpdeskApp.service.TicketService;
+&nbsp;import com.exist.HelpdeskApp.service.Implementations.EmployeeServiceImpl;
+&nbsp;import com.exist.HelpdeskApp.service.Implementations.TicketServiceImpl;
 &nbsp;import org.springframework.beans.factory.annotation.Autowired;
 &nbsp;import org.springframework.web.bind.annotation.*;
 &nbsp;
@@ -92,14 +92,14 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;@RequestMapping(&quot;/employees&quot;)
 &nbsp;public class EmployeeController {
 &nbsp;
-&nbsp;    EmployeeService employeeService;
-&nbsp;    TicketService ticketService;
+&nbsp;    EmployeeService employeeServiceImpl;
+&nbsp;    TicketService ticketServiceImpl;
 &nbsp;
 &nbsp;    @Autowired
-&nbsp;    public EmployeeController(EmployeeService employeeService,
-<b class="fc">&nbsp;                              TicketService ticketService) {</b>
-<b class="fc">&nbsp;        this.employeeService = employeeService;</b>
-<b class="fc">&nbsp;        this.ticketService = ticketService;</b>
+&nbsp;    public EmployeeController(EmployeeService employeeServiceImpl,
+<b class="fc">&nbsp;                              TicketService ticketServiceImpl) {</b>
+<b class="fc">&nbsp;        this.employeeServiceImpl = employeeServiceImpl;</b>
+<b class="fc">&nbsp;        this.ticketServiceImpl = ticketServiceImpl;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @RequestMapping(&quot;&quot;)
@@ -109,32 +109,32 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @GetMapping(&quot;{employeeId}&quot;)
 &nbsp;    public EmployeeResponse getOwnProfile(@PathVariable Integer employeeId) {
-<b class="fc">&nbsp;        return employeeService.getEmployee(employeeId);</b>
+<b class="fc">&nbsp;        return employeeServiceImpl.getEmployee(employeeId);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @PostMapping(&quot;{employeeId}/tickets&quot;)
 &nbsp;    public TicketResponse fileTicket(@PathVariable Integer employeeId, @Valid @RequestBody TicketRequest request) {
-<b class="fc">&nbsp;        return ticketService.fileTicket(employeeId, request);</b>
+<b class="fc">&nbsp;        return ticketServiceImpl.fileTicket(employeeId, request);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @GetMapping(&quot;{employeeId}/tickets&quot;)
 &nbsp;    public List&lt;TicketResponse&gt; getTickets(@PathVariable Integer employeeId) {
-<b class="fc">&nbsp;        return ticketService.getTickets(employeeId);</b>
+<b class="fc">&nbsp;        return ticketServiceImpl.getTickets(employeeId);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @GetMapping(&quot;{employeeId}/tickets/{ticketId}&quot;)
 &nbsp;    public TicketResponse getTicket(@PathVariable Integer employeeId, @PathVariable Integer ticketId) {
-<b class="fc">&nbsp;        return ticketService.getTicket(employeeId, ticketId);</b>
+<b class="fc">&nbsp;        return ticketServiceImpl.getTicket(employeeId, ticketId);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @PatchMapping(&quot;{employeeId}/tickets/{ticketId}&quot;)
 &nbsp;    public TicketResponse updateTicket(@PathVariable Integer employeeId, @PathVariable Integer ticketId, @RequestBody TicketRequest ticketRequest) {
-<b class="fc">&nbsp;        return ticketService.updateTicket(employeeId, ticketId, ticketRequest);</b>
+<b class="fc">&nbsp;        return ticketServiceImpl.updateTicket(employeeId, ticketId, ticketRequest);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @GetMapping(&quot;{employeeId}/tickets/assigned&quot;)
 &nbsp;    public List&lt;TicketResponse&gt; assignedTickets(@PathVariable Integer employeeId) {
-<b class="fc">&nbsp;        return ticketService.getAssignedTickets(employeeId);</b>
+<b class="fc">&nbsp;        return ticketServiceImpl.getAssignedTickets(employeeId);</b>
 &nbsp;    }
 &nbsp;}
 </code>

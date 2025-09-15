@@ -1,5 +1,8 @@
 package com.exist.HelpdeskApp.model;
 
+import com.exist.HelpdeskApp.model.embeddable.Address;
+import com.exist.HelpdeskApp.model.embeddable.Contacts;
+import com.exist.HelpdeskApp.model.embeddable.Name;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,22 +20,24 @@ public class Employee {
     private Integer id;
 
     @Column(nullable = false)
-    private String name;
+    @Embedded
+    private Name name;
 
-    @Column(nullable = false)
     private Integer age;
 
-    @Column(nullable = false)
-    private String address;
+    @Embedded
+    private Address address;
 
-    @Column(nullable = false)
-    private String contactNumber;
+    @Embedded
+    private Contacts contact;
 
     @Enumerated(EnumType.STRING)
     private EmploymentStatus employmentStatus;
 
     @ManyToOne
     private Role role;
+
+    private boolean deleted;
 
     @Version
     private Integer version;

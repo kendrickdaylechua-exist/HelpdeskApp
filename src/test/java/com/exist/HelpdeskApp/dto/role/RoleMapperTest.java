@@ -33,6 +33,7 @@ public class RoleMapperTest {
         Role role = new Role(
                 1,
                 "Test Role",
+                false,
                 1
         );
         RoleResponse response = mapper.toResponse(role);
@@ -48,6 +49,7 @@ public class RoleMapperTest {
         Role entity = new Role(
                 1,
                 "Old Name",
+                false,
                 1
         );
         mapper.toUpdate(request, entity);
@@ -59,11 +61,13 @@ public class RoleMapperTest {
         Role role1 = new Role(
                 1,
                 "Test Role 1",
+                false,
                 1
         );
         Role role2 = new Role(
                 1,
                 "Test Role 2",
+                false,
                 1
         );
         List<Role> roleList = new ArrayList<>();

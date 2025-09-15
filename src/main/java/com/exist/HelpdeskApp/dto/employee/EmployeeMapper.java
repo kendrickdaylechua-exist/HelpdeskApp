@@ -5,6 +5,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
 public interface EmployeeMapper {
     //Request DTO to Entity
     @Mapping(target = "role", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
     Employee toEntity(EmployeeRequest request);
 
     //Entity to Response DTO
