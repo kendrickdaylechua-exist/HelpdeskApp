@@ -4,6 +4,7 @@ import com.exist.HelpdeskApp.dto.employee.EmployeeMapper;
 import com.exist.HelpdeskApp.dto.employee.EmployeeRequest;
 import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
 import com.exist.HelpdeskApp.exception.businessexceptions.EmployeeNotFoundException;
+import com.exist.HelpdeskApp.exception.businessexceptions.EntityInUseException;
 import com.exist.HelpdeskApp.exception.businessexceptions.RoleNotFoundException;
 import com.exist.HelpdeskApp.model.Employee;
 import com.exist.HelpdeskApp.model.EmploymentStatus;
@@ -13,6 +14,7 @@ import com.exist.HelpdeskApp.model.embeddable.Contacts;
 import com.exist.HelpdeskApp.model.embeddable.Name;
 import com.exist.HelpdeskApp.repository.EmployeeRepository;
 import com.exist.HelpdeskApp.repository.RoleRepository;
+import com.exist.HelpdeskApp.repository.TicketRepository;
 import com.exist.HelpdeskApp.service.Implementations.EmployeeServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,14 +28,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class EmployeeServiceImplTest {
 
     @Mock
     private EmployeeRepository employeeRepository;
+
+    @Mock
+    private TicketRepository ticketRepository;
 
     @Mock
     private RoleRepository roleRepository;
@@ -246,79 +250,77 @@ public class EmployeeServiceImplTest {
         assertThrows(EmployeeNotFoundException.class, () -> employeeServiceImpl.updateEmployee(employeeId, request));
     }
 
-//    @Test
-//    void testUpdateEmployeeButRoleNotProvided() {
-//        Integer employeeId = 1;
-//        Name name2 = new Name("First2", "Middle2", "Last2");
-//        Contacts contacts2 = new Contacts("0912345678", "sample@example.com", "021234567");
-//        Address address2 = new Address("321 Test St.", "Los Angeles", "California","USA");
-//        EmployeeRequest newEmployeeRequest = new EmployeeRequest(
-//                name2,
-//                25,
-//                address2,
-//                contacts2,
-//                EmploymentStatus.FULL_TIME,
-//                1
-//        );
-//        Employee newEmployee = new Employee(
-//                1,
-//                name2,
-//                25,
-//                address2,
-//                contacts2,
-//                EmploymentStatus.FULL_TIME,
-//                role,
-//                false,
-//                1
-//        );
-//        EmployeeResponse newResponse = new EmployeeResponse(
-//                1,
-//                name2,
-//                25,
-//                address2,
-//                contacts2,
-//                EmploymentStatus.FULL_TIME,
-//                1,
-//                "Sample Role"
-//        );
-//
-//        Mockito.when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.of(employee));
-//        Mockito.doNothing().when(employeeMapper).toUpdate(newEmployeeRequest, employee);
-//        Mockito.when(employeeRepository.save(employee)).thenReturn(newEmployee);
-//        Mockito.when(employeeMapper.toResponse(newEmployee)).thenReturn(newResponse);
-//
-//        EmployeeResponse result = employeeServiceImpl.updateEmployee(employeeId, newEmployeeRequest);
-//
-//        assertEquals("First1", result.getName().getFirstName());
-//        assertEquals(1, result.getRoleId());
-//    }
+    @Test
+    void testUpdateEmployeeButRoleNotProvided() {
+        Integer employeeId = 1;
+        Name name2 = new Name("First2", "Middle2", "Last2");
+        Contacts contacts2 = new Contacts("0912345678", "sample@example.com", "021234567");
+        Address address2 = new Address("321 Test St.", "Los Angeles", "California","USA");
+        EmployeeRequest newEmployeeRequest = new EmployeeRequest(
+                name2,
+                25,
+                address2,
+                contacts2,
+                EmploymentStatus.FULL_TIME,
+                null
+        );
+        Employee newEmployee = new Employee(
+                1,
+                name2,
+                25,
+                address2,
+                contacts2,
+                EmploymentStatus.FULL_TIME,
+                role,
+                false,
+                1
+        );
+        EmployeeResponse newResponse = new EmployeeResponse(
+                1,
+                name2,
+                25,
+                address2,
+                contacts2,
+                EmploymentStatus.FULL_TIME,
+                1,
+                "Sample Role"
+        );
 
-//    @Test
-//    void testDeleteValidEmployee() {
-//        Integer employeeId = 1;
-//        Role role = new Role (
-//                1, "Sample Role", false, 1
-//        );
-//        Employee employee = new Employee(
-//                1,
-//                "Sample Name",
-//                25,
-//                "Sample Address",
-//                "0912345678",
-//                EmploymentStatus.FULL_TIME,
-//                role,
-//                false,
-//                1
-//        );
-//        Mockito.when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
-//        employeeServiceImpl.deleteEmployee(employeeId);
-//        Mockito.verify(employeeRepository).delete(employee);
-//    }
-//
-//    @Test
-//    void testDeleteEmployeeButEmployeeNotFound() {
-//        Integer employeeId = 99;
-//        Mockito.when(employeeRepository.findById(employeeId)).thenReturn(Optional.empty());
-//        assertThrows(EmployeeNotFoundException.class, () -> employeeServiceImpl.deleteEmployee(employeeId));
-//    }
+        Mockito.when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.of(employee));
+        Mockito.doNothing().when(employeeMapper).toUpdate(newEmployeeRequest, employee);
+        Mockito.when(employeeRepository.save(employee)).thenReturn(newEmployee);
+        Mockito.when(employeeMapper.toResponse(newEmployee)).thenReturn(newResponse);
+
+        EmployeeResponse result = employeeServiceImpl.updateEmployee(employeeId, newEmployeeRequest);
+
+        assertEquals("First2", result.getName().getFirstName());
+        assertEquals(1, result.getRoleId());
+    }
+
+
+    @Test
+    void testDeleteValidEmployee() {
+        Integer employeeId = 1;
+        employee.setDeleted(true);
+        Mockito.when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.of(employee));
+        Mockito.when(ticketRepository.existsByAssignee(employee)).thenReturn(false);
+        employeeServiceImpl.deleteEmployee(employeeId);
+        assertTrue(employee.isDeleted());
+        Mockito.verify(employeeRepository).save(employee);
+    }
+    @Test
+    void testDeleteEmployeeButEmployeeNotFound() {
+        Integer employeeId = 99;
+        Mockito.when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.empty());
+        assertThrows(EmployeeNotFoundException.class, () -> employeeServiceImpl.deleteEmployee(employeeId));
+    }
+
+    @Test
+    void testDeletedEmployeeButEmployeeLinkedToTicket() {
+        Integer employeeId = 1;
+        employee.setDeleted(true);
+        Mockito.when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.of(employee));
+        Mockito.when(ticketRepository.existsByAssignee(employee)).thenReturn(true);
+        assertThrows(EntityInUseException.class, () -> employeeServiceImpl.deleteEmployee(employeeId));
+    }
 }
