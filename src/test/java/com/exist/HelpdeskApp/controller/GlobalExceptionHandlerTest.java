@@ -92,7 +92,7 @@ public class GlobalExceptionHandlerTest {
         mockMvc.perform(get("/employees/{id}", 1))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.status").value(500))
-                .andExpect(jsonPath("$.error").value("Internal Server Error"))
+                .andExpect(jsonPath("$.error").value("Please contact the devs"))
                 .andExpect(jsonPath("$.message").value("Unexpected failure"))
                 .andExpect(jsonPath("$.path").value("/employees/1"))
                 .andExpect(jsonPath("$.timestamp").exists());

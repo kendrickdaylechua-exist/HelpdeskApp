@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
-  <title>Coverage Report > TicketService</title>
+  <title>Coverage Report > TicketServiceImpl</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -19,10 +19,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.exist.HelpdeskApp.service</a>
+    <a href="../index.html">com.exist.HelpdeskApp.service.Implementations</a>
 </div>
 
-<h1>Coverage Summary for Class: TicketService (com.exist.HelpdeskApp.service)</h1>
+<h1>Coverage Summary for Class: TicketServiceImpl (com.exist.HelpdeskApp.service.Implementations)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -45,7 +45,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">TicketService</td>
+  <td class="name">TicketServiceImpl</td>
 <td class="coverageStat">
   <span class="percent">
     0%
@@ -67,7 +67,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     0%
   </span>
   <span class="absValue">
-    (0/10)
+    (0/46)
   </span>
 </td>
 <td class="coverageStat">
@@ -75,7 +75,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     0%
   </span>
   <span class="absValue">
-    (0/42)
+    (0/63)
   </span>
 </td>
 </tr>
@@ -87,8 +87,9 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.service;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.service.Implementations;
 &nbsp;
+&nbsp;import com.exist.HelpdeskApp.dto.ticket.TicketFilterRequest;
 &nbsp;import com.exist.HelpdeskApp.dto.ticket.TicketMapper;
 &nbsp;import com.exist.HelpdeskApp.dto.ticket.TicketRequest;
 &nbsp;import com.exist.HelpdeskApp.dto.ticket.TicketResponse;
@@ -99,50 +100,79 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import com.exist.HelpdeskApp.model.Ticket;
 &nbsp;import com.exist.HelpdeskApp.repository.EmployeeRepository;
 &nbsp;import com.exist.HelpdeskApp.repository.TicketRepository;
+&nbsp;import com.exist.HelpdeskApp.repository.specifications.TicketSpecifications;
+&nbsp;import com.exist.HelpdeskApp.service.TicketService;
 &nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.data.domain.*;
+&nbsp;import org.springframework.data.jpa.domain.Specification;
 &nbsp;import org.springframework.stereotype.Service;
 &nbsp;
 &nbsp;import javax.transaction.Transactional;
 &nbsp;import java.time.Instant;
 &nbsp;import java.util.List;
-&nbsp;import java.util.NoSuchElementException;
 &nbsp;import java.util.Objects;
 &nbsp;
 &nbsp;@Service
-&nbsp;public class TicketService {
+&nbsp;public class TicketServiceImpl implements TicketService {
 &nbsp;    EmployeeRepository employeeRepository;
 &nbsp;    TicketRepository ticketRepository;
 &nbsp;    TicketMapper ticketMapper;
 &nbsp;
 &nbsp;    @Autowired
-&nbsp;    public TicketService(EmployeeRepository employeeRepository,
-&nbsp;                         TicketRepository ticketRepository,
-<b class="nc">&nbsp;                         TicketMapper ticketMapper) {</b>
+&nbsp;    public TicketServiceImpl(EmployeeRepository employeeRepository,
+&nbsp;                             TicketRepository ticketRepository,
+<b class="nc">&nbsp;                             TicketMapper ticketMapper) {</b>
 <b class="nc">&nbsp;        this.employeeRepository = employeeRepository;</b>
 <b class="nc">&nbsp;        this.ticketRepository = ticketRepository;</b>
 <b class="nc">&nbsp;        this.ticketMapper = ticketMapper;</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @Transactional
-&nbsp;    public List&lt;TicketResponse&gt; getTickets(Integer employeeId) {
-<b class="nc">&nbsp;        Employee employee = employeeRepository.findById(employeeId)</b>
+&nbsp;    public Page&lt;TicketResponse&gt; getTickets(Integer employeeId, TicketFilterRequest request) {
+<b class="nc">&nbsp;        Employee employee = employeeRepository.findByIdAndDeletedFalse(employeeId)</b>
 <b class="nc">&nbsp;                .orElseThrow(() -&gt; new EmployeeNotFoundException(&quot;Employee with ID &quot; + employeeId + &quot; not found!&quot;));</b>
-<b class="nc">&nbsp;        return ticketMapper.toResponseList(ticketRepository.findAll());</b>
+&nbsp;
+<b class="nc">&nbsp;        Specification&lt;Ticket&gt; spec = Specification.where(null);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (request.getTitle() != null) spec = spec.and(TicketSpecifications.hasTitle(request.getTitle(), request.getTitleMatchType()));</b>
+<b class="nc">&nbsp;        if (request.getBody() != null) spec = spec.and(TicketSpecifications.hasBody(request.getBody()));</b>
+<b class="nc">&nbsp;        if (request.getAssigneeId() != null) spec = spec.and(TicketSpecifications.hasAssigneeId(request.getAssigneeId()));</b>
+<b class="nc">&nbsp;        if (request.getAssigneeName() != null) spec = spec.and(TicketSpecifications.hasAssigneeName(request.getAssigneeName()));</b>
+&nbsp;
+<b class="nc">&nbsp;        if (request.getCreatedAfter() != null) spec = spec.and(TicketSpecifications.hasCreatedAfter(request.getCreatedAfter()));</b>
+<b class="nc">&nbsp;        if (request.getCreatedBefore() != null) spec = spec.and(TicketSpecifications.hasCreatedBefore(request.getCreatedBefore()));</b>
+<b class="nc">&nbsp;        if (request.getCreatedAfter() != null &amp;&amp; request.getCreatedBefore() != null) spec = spec.and(TicketSpecifications.createdBetween(request.getCreatedAfter(), request.getCreatedBefore()));</b>
+<b class="nc">&nbsp;        if (request.getCreatorId() != null) spec = spec.and(TicketSpecifications.hasCreatedId(request.getCreatorId()));</b>
+<b class="nc">&nbsp;        if (request.getCreatorName() != null) spec = spec.and(TicketSpecifications.hasCreatorName(request.getCreatorName()));</b>
+&nbsp;
+<b class="nc">&nbsp;        if (request.getUpdatedAfter() != null) spec = spec.and(TicketSpecifications.hasUpdatedAfter(request.getUpdatedAfter()));</b>
+<b class="nc">&nbsp;        if (request.getUpdatedBefore() != null) spec = spec.and(TicketSpecifications.hasUpdatedBefore(request.getUpdatedBefore()));</b>
+<b class="nc">&nbsp;        if (request.getUpdatedAfter() != null &amp;&amp; request.getUpdatedBefore() != null) spec = spec.and(TicketSpecifications.updatedBetween(request.getUpdatedAfter(), request.getUpdatedBefore()));</b>
+<b class="nc">&nbsp;        if (request.getUpdaterId() != null) spec = spec.and(TicketSpecifications.hasUpdaterId(request.getUpdaterId()));</b>
+<b class="nc">&nbsp;        if (request.getUpdaterName() != null) spec = spec.and(TicketSpecifications.hasUpdaterName(request.getUpdaterName()));</b>
+&nbsp;
+<b class="nc">&nbsp;        if (request.getRemarks() != null) spec = spec.and(TicketSpecifications.hasRemarks(request.getRemarks()));</b>
+&nbsp;
+<b class="nc">&nbsp;        Sort sort = request.getSortDir().equalsIgnoreCase(&quot;desc&quot;) ? Sort.by(request.getSortBy()).descending() : Sort.by(request.getSortBy()).ascending();</b>
+<b class="nc">&nbsp;        Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sort);</b>
+<b class="nc">&nbsp;        Page&lt;Ticket&gt; ticketPage = ticketRepository.findAll(spec, pageable);</b>
+<b class="nc">&nbsp;        List&lt;TicketResponse&gt; ticketResponses = ticketMapper.toResponseList(ticketPage.getContent());</b>
+<b class="nc">&nbsp;        return new PageImpl&lt;&gt;(ticketResponses, pageable, ticketPage.getTotalElements());</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @Transactional
 &nbsp;    public TicketResponse getTicket(Integer employeeId, Integer ticketId) {
-<b class="nc">&nbsp;        Employee employee = employeeRepository.findById(employeeId)</b>
+<b class="nc">&nbsp;        Employee employee = employeeRepository.findByIdAndDeletedFalse(employeeId)</b>
 <b class="nc">&nbsp;                .orElseThrow(() -&gt; new EmployeeNotFoundException(&quot;Employee with ID &quot; + employeeId + &quot; not found!&quot;));</b>
-<b class="nc">&nbsp;        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(() -&gt; new TicketNotFoundException(&quot;Ticket number &quot; + ticketId + &quot; not found!&quot;));</b>
+<b class="nc">&nbsp;        Ticket ticket = ticketRepository.findByTicketNumberAndDeletedFalse(ticketId).orElseThrow(() -&gt; new TicketNotFoundException(&quot;Ticket number &quot; + ticketId + &quot; not found!&quot;));</b>
 <b class="nc">&nbsp;        return ticketMapper.toResponse(ticket);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @Transactional
 &nbsp;    public TicketResponse fileTicket(Integer employeeId, TicketRequest ticketRequest) {
-<b class="nc">&nbsp;        Employee employee = employeeRepository.findById(employeeId)</b>
+<b class="nc">&nbsp;        Employee employee = employeeRepository.findByIdAndDeletedFalse(employeeId)</b>
 <b class="nc">&nbsp;                .orElseThrow(() -&gt; new EmployeeNotFoundException(&quot;Employee with ID &quot; + employeeId + &quot; not found!&quot;));</b>
-<b class="nc">&nbsp;        Employee assignedEmployee = employeeRepository.findById(ticketRequest.getAssigneeId())</b>
+<b class="nc">&nbsp;        Employee assignedEmployee = employeeRepository.findByIdAndDeletedFalse(ticketRequest.getAssigneeId())</b>
 <b class="nc">&nbsp;                .orElseThrow(() -&gt; new EmployeeNotFoundException(&quot;Assigned employee with ID &quot; + ticketRequest.getAssigneeId() + &quot; not found!&quot;));</b>
 &nbsp;
 <b class="nc">&nbsp;        Ticket ticket = ticketMapper.toEntity(ticketRequest);</b>
@@ -157,9 +187,9 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @Transactional
 &nbsp;    public TicketResponse updateTicket(Integer employeeId, Integer ticketId, TicketRequest ticketRequest) {
-<b class="nc">&nbsp;        Employee updater = employeeRepository.findById(employeeId)</b>
+<b class="nc">&nbsp;        Employee updater = employeeRepository.findByIdAndDeletedFalse(employeeId)</b>
 <b class="nc">&nbsp;                .orElseThrow(() -&gt; new EmployeeNotFoundException(&quot;Updater employee with ID &quot; + employeeId + &quot; not found!&quot;));</b>
-<b class="nc">&nbsp;        Ticket ticket = ticketRepository.findById(ticketId)</b>
+<b class="nc">&nbsp;        Ticket ticket = ticketRepository.findByTicketNumberAndDeletedFalse(ticketId)</b>
 <b class="nc">&nbsp;                .orElseThrow(() -&gt; new TicketNotFoundException(&quot;Ticket number &quot; + ticketId + &quot; not found!&quot;));</b>
 &nbsp;
 <b class="nc">&nbsp;        if (!Objects.equals(employeeId, ticket.getAssignee().getId()) &amp;&amp; employeeId != 1) {</b>
@@ -171,7 +201,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;        }
 &nbsp;
 <b class="nc">&nbsp;        else if (ticketRequest.getAssigneeId() != null) {</b>
-<b class="nc">&nbsp;            Employee assignee = employeeRepository.findById(ticketRequest.getAssigneeId())</b>
+<b class="nc">&nbsp;            Employee assignee = employeeRepository.findByIdAndDeletedFalse(ticketRequest.getAssigneeId())</b>
 <b class="nc">&nbsp;                    .orElseThrow(() -&gt; new EmployeeNotFoundException(&quot;Employee with ID &quot; + employeeId + &quot; not found!&quot;));</b>
 <b class="nc">&nbsp;            ticket.setAssignee(assignee);</b>
 &nbsp;        }
@@ -183,8 +213,9 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    public List&lt;TicketResponse&gt; getAssignedTickets(Integer employeeId) {
-<b class="nc">&nbsp;        employeeRepository.findById(employeeId).orElseThrow(() -&gt; new EmployeeNotFoundException(&quot;Employee with ID &quot; + employeeId + &quot; not found!&quot;));</b>
-<b class="nc">&nbsp;        return ticketMapper.toResponseList(ticketRepository.findByAssigneeId(employeeId));</b>
+<b class="nc">&nbsp;        employeeRepository.findByIdAndDeletedFalse(employeeId)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new EmployeeNotFoundException(&quot;Employee with ID &quot; + employeeId + &quot; not found!&quot;));</b>
+<b class="nc">&nbsp;        return ticketMapper.toResponseList(ticketRepository.findByAssigneeIdAndDeletedFalse(employeeId));</b>
 &nbsp;    }
 &nbsp;}
 </code>
@@ -210,7 +241,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-09-10 14:21</div>
+    <div style="float:right;">generated on 2025-09-17 00:44</div>
 </div>
 </body>
 </html>

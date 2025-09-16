@@ -1,5 +1,6 @@
 package com.exist.HelpdeskApp.service;
 
+import com.exist.HelpdeskApp.dto.employee.EmployeeFilterRequest;
 import com.exist.HelpdeskApp.dto.employee.EmployeeMapper;
 import com.exist.HelpdeskApp.dto.employee.EmployeeRequest;
 import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
@@ -15,6 +16,7 @@ import com.exist.HelpdeskApp.model.embeddable.Name;
 import com.exist.HelpdeskApp.repository.EmployeeRepository;
 import com.exist.HelpdeskApp.repository.RoleRepository;
 import com.exist.HelpdeskApp.repository.TicketRepository;
+import com.exist.HelpdeskApp.repository.specifications.MatchType;
 import com.exist.HelpdeskApp.service.Implementations.EmployeeServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,12 +25,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class EmployeeServiceImplTest {
@@ -91,60 +100,107 @@ public class EmployeeServiceImplTest {
         );
     }
 
-//    @Test
-//    void testGetAllEmployees() {
-//        Name name1 = new Name("First1", "Middle1", "Last1");
-//        Contacts contacts1 = new Contacts("0912345678", "sample@example.com", "021234567");
-//        Address address1 = new Address("123 Test St.", "Manila", "Region 1", "Philippines");
-//        List<Employee> employees = List.of(new Employee(
-//                1,
-//                name1,
-//                25,
-//                address1,
-//                contacts1,
-//                null,
-//                null,
-//                false,
-//                null)
-//        );
-//
-//        List<EmployeeResponse> employeeResponses = List.of(new EmployeeResponse(
-//                1,
-//                name1,
-//                25,
-//                address1,
-//                contacts1,
-//                null,
-//                null,
-//                null)
-//        );
-//
-//        Mockito.when(employeeRepository.findAll()).thenReturn(employees);
-//        Mockito.when(employeeMapper.toResponseList(employees)).thenReturn(employeeResponses);
-//
-//        List<EmployeeResponse> result = employeeServiceImpl.getEmployees();
-//
-//        assertEquals(1, result.size());
-//        assertEquals("Sample Name", result.get(0).getName());
-//    }
+    @Test
+    void testGetAllEmployeesAscending() {
+        EmployeeFilterRequest request = new EmployeeFilterRequest();
+        request.setPage(0);
+        request.setSize(10);
+        request.setSortBy("id");
+        request.setSortDir("asc");
+        request.setFirstName("First1");
+        request.setFirstNameMatchType(MatchType.EXACT);
+        request.setMiddleName("Middle1");
+        request.setMiddleNameMatchType(MatchType.EXACT);
+        request.setLastName("Last1");
+        request.setLastNameMatchType(MatchType.EXACT);
+        request.setNameKeyword("first");
+        request.setStreet("123 Test St.");
+        request.setCity("Manila");
+        request.setRegion("Region 1");
+        request.setCountry("Philippines");
+        request.setAddressKeyword("phil");
+        request.setPhoneNumber("0912345678");
+        request.setEmail("sample@example.com");
+        request.setTelephoneNumber("021234567");
+        request.setContactsKeyword("region");
+        request.setEmploymentStatus("full_time");
+        request.setRoleId(1);
+        request.setRoleName("Sample Role");
+        request.setDeleted(false);
 
-//    @Test
-//    void testGetListOfEmptyEmployees() {
-//        List<Employee> employees = new ArrayList<>();
-//        List<EmployeeResponse> employeeResponses = new ArrayList<>();
-//
-//        Mockito.when(employeeRepository.findAll()).thenReturn(employees);
-//        Mockito.when(employeeMapper.toResponseList(employees)).thenReturn(employeeResponses);
-//
-//        List<EmployeeResponse> result = employeeServiceImpl.getEmployees();
-//
-//        assertEquals(0, result.size());
-//    }
+
+        Page<Employee> employeePage = new PageImpl<>(List.of(employee));
+        when(employeeRepository.findAll(any(Specification.class), any(Pageable.class)))
+                .thenReturn(employeePage);
+        when(employeeMapper.toResponseList(List.of(employee))).thenReturn(List.of(response));
+
+        Page<EmployeeResponse> result = employeeServiceImpl.getEmployees(request);
+
+        assertEquals(1, result.getTotalElements());
+        assertEquals("First1", result.getContent().get(0).getName().getFirstName());
+        verify(employeeRepository).findAll(any(Specification.class), any(Pageable.class));
+        verify(employeeMapper).toResponseList(anyList());
+    }
+
+    @Test
+    void testGetAllEmployeesDescending() {
+        EmployeeFilterRequest request = new EmployeeFilterRequest();
+        request.setPage(0);
+        request.setSize(10);
+        request.setSortBy("id");
+        request.setSortDir("desc");
+
+        Page<Employee> employeePage = new PageImpl<>(List.of(employee));
+        when(employeeRepository.findAll(any(Specification.class), any(Pageable.class)))
+                .thenReturn(employeePage);
+        when(employeeMapper.toResponseList(List.of(employee))).thenReturn(List.of(response));
+
+        Page<EmployeeResponse> result = employeeServiceImpl.getEmployees(request);
+
+        assertEquals(1, result.getTotalElements());
+        assertEquals("First1", result.getContent().get(0).getName().getFirstName());
+        verify(employeeRepository).findAll(any(Specification.class), any(Pageable.class));
+        verify(employeeMapper).toResponseList(anyList());
+    }
+
+    @Test
+    void testNoFilterGetEmployees() {
+        EmployeeFilterRequest request = new EmployeeFilterRequest();
+
+        Page<Employee> employeePage = new PageImpl<>(List.of(employee));
+        when(employeeRepository.findAll(any(Specification.class), any(Pageable.class)))
+                .thenReturn(employeePage);
+        when(employeeMapper.toResponseList(List.of(employee))).thenReturn(List.of(response));
+
+        Page<EmployeeResponse> result = employeeServiceImpl.getEmployees(request);
+
+        assertEquals(1, result.getTotalElements());
+        assertEquals("First1", result.getContent().get(0).getName().getFirstName());
+        verify(employeeRepository).findAll(any(Specification.class), any(Pageable.class));
+        verify(employeeMapper).toResponseList(anyList());
+    }
+
+    @Test
+    void testNoEmployeeFoundInFilter() {
+        EmployeeFilterRequest request = new EmployeeFilterRequest();
+        request.setFirstName("First1");
+        Page<Employee> employeePage = new PageImpl<>(List.of(employee));
+        when(employeeRepository.findAll(any(Specification.class), any(Pageable.class)))
+                .thenReturn(employeePage);
+        when(employeeMapper.toResponseList(List.of(employee))).thenReturn(List.of());
+
+        Page<EmployeeResponse> result = employeeServiceImpl.getEmployees(request);
+
+        assertEquals(1, result.getTotalElements());
+        assertEquals(0, result.getContent().size());
+        verify(employeeRepository).findAll(any(Specification.class), any(Pageable.class));
+        verify(employeeMapper).toResponseList(anyList());
+    }
 
     @Test
     void testGetValidEmployee() {
-        Mockito.when(employeeRepository.findByIdAndDeletedFalse(1)).thenReturn(Optional.of(employee));
-        Mockito.when(employeeMapper.toResponse(employee)).thenReturn(response);
+        when(employeeRepository.findByIdAndDeletedFalse(1)).thenReturn(Optional.of(employee));
+        when(employeeMapper.toResponse(employee)).thenReturn(response);
 
         EmployeeResponse result = employeeServiceImpl.getEmployee(1);
 
@@ -154,17 +210,17 @@ public class EmployeeServiceImplTest {
 
     @Test
     void testGetEmployeeNotFound() {
-        Mockito.when(employeeRepository.findByIdAndDeletedFalse(99)).thenReturn(Optional.empty());
+        when(employeeRepository.findByIdAndDeletedFalse(99)).thenReturn(Optional.empty());
         assertThrows(EmployeeNotFoundException.class, () -> employeeServiceImpl.getEmployee(99));
     }
 
     @Test
     void testAddValidEmployeeWithRole() {
 
-        Mockito.when(roleRepository.findByIdAndDeletedFalse(employee.getRole().getId())).thenReturn(Optional.of(role));
-        Mockito.when(employeeMapper.toEntity(request)).thenReturn(employee);
-        Mockito.when(employeeRepository.save(employee)).thenReturn(employee);
-        Mockito.when(employeeMapper.toResponse(employee)).thenReturn(response);
+        when(roleRepository.findByIdAndDeletedFalse(employee.getRole().getId())).thenReturn(Optional.of(role));
+        when(employeeMapper.toEntity(request)).thenReturn(employee);
+        when(employeeRepository.save(employee)).thenReturn(employee);
+        when(employeeMapper.toResponse(employee)).thenReturn(response);
 
         EmployeeResponse result = employeeServiceImpl.addEmployee(request);
 
@@ -174,7 +230,7 @@ public class EmployeeServiceImplTest {
 
     @Test
     void testGetEmployeeWithNoRoleProvided() {
-        Mockito.when(roleRepository.findByIdAndDeletedFalse(request.getRoleId())).thenReturn(Optional.empty());
+        when(roleRepository.findByIdAndDeletedFalse(request.getRoleId())).thenReturn(Optional.empty());
         assertThrows(RoleNotFoundException.class, () -> employeeServiceImpl.addEmployee(request));
     }
 
@@ -214,11 +270,11 @@ public class EmployeeServiceImplTest {
                 "Sample Role"
         );
 
-        Mockito.when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.of(employee));
-        Mockito.when(roleRepository.findByIdAndDeletedFalse(newEmployeeRequest.getRoleId())).thenReturn(Optional.of(role));
+        when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.of(employee));
+        when(roleRepository.findByIdAndDeletedFalse(newEmployeeRequest.getRoleId())).thenReturn(Optional.of(role));
         Mockito.doNothing().when(employeeMapper).toUpdate(newEmployeeRequest, employee);
-        Mockito.when(employeeRepository.save(employee)).thenReturn(newEmployee);
-        Mockito.when(employeeMapper.toResponse(newEmployee)).thenReturn(newResponse);
+        when(employeeRepository.save(employee)).thenReturn(newEmployee);
+        when(employeeMapper.toResponse(newEmployee)).thenReturn(newResponse);
 
         EmployeeResponse result = employeeServiceImpl.updateEmployee(employeeId, newEmployeeRequest);
 
@@ -238,7 +294,7 @@ public class EmployeeServiceImplTest {
                 EmploymentStatus.FULL_TIME,
                 1
         );
-        Mockito.when(roleRepository.findByIdAndDeletedFalse(newEmployeeRequest.getRoleId())).thenReturn(Optional.empty());
+        when(roleRepository.findByIdAndDeletedFalse(newEmployeeRequest.getRoleId())).thenReturn(Optional.empty());
 
         assertThrows(RoleNotFoundException.class, () -> employeeServiceImpl.addEmployee(newEmployeeRequest));
     }
@@ -246,7 +302,7 @@ public class EmployeeServiceImplTest {
     @Test
     void testUpdateEmployeeButEmployeeNotFound() {
         Integer employeeId = 99;
-        Mockito.when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.empty());
+        when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.empty());
         assertThrows(EmployeeNotFoundException.class, () -> employeeServiceImpl.updateEmployee(employeeId, request));
     }
 
@@ -286,10 +342,10 @@ public class EmployeeServiceImplTest {
                 "Sample Role"
         );
 
-        Mockito.when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.of(employee));
+        when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.of(employee));
         Mockito.doNothing().when(employeeMapper).toUpdate(newEmployeeRequest, employee);
-        Mockito.when(employeeRepository.save(employee)).thenReturn(newEmployee);
-        Mockito.when(employeeMapper.toResponse(newEmployee)).thenReturn(newResponse);
+        when(employeeRepository.save(employee)).thenReturn(newEmployee);
+        when(employeeMapper.toResponse(newEmployee)).thenReturn(newResponse);
 
         EmployeeResponse result = employeeServiceImpl.updateEmployee(employeeId, newEmployeeRequest);
 
@@ -302,16 +358,16 @@ public class EmployeeServiceImplTest {
     void testDeleteValidEmployee() {
         Integer employeeId = 1;
         employee.setDeleted(true);
-        Mockito.when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.of(employee));
-        Mockito.when(ticketRepository.existsByAssignee(employee)).thenReturn(false);
+        when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.of(employee));
+        when(ticketRepository.existsByAssignee(employee)).thenReturn(false);
         employeeServiceImpl.deleteEmployee(employeeId);
         assertTrue(employee.isDeleted());
-        Mockito.verify(employeeRepository).save(employee);
+        verify(employeeRepository).save(employee);
     }
     @Test
     void testDeleteEmployeeButEmployeeNotFound() {
         Integer employeeId = 99;
-        Mockito.when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.empty());
+        when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.empty());
         assertThrows(EmployeeNotFoundException.class, () -> employeeServiceImpl.deleteEmployee(employeeId));
     }
 
@@ -319,8 +375,8 @@ public class EmployeeServiceImplTest {
     void testDeletedEmployeeButEmployeeLinkedToTicket() {
         Integer employeeId = 1;
         employee.setDeleted(true);
-        Mockito.when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.of(employee));
-        Mockito.when(ticketRepository.existsByAssignee(employee)).thenReturn(true);
+        when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.of(employee));
+        when(ticketRepository.existsByAssignee(employee)).thenReturn(true);
         assertThrows(EntityInUseException.class, () -> employeeServiceImpl.deleteEmployee(employeeId));
     }
 }

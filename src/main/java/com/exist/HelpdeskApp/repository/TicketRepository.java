@@ -10,7 +10,6 @@ import java.util.Optional;
 
 public interface TicketRepository extends JpaRepository<Ticket, Integer>, JpaSpecificationExecutor<Ticket> {
     List<Ticket> findByAssigneeIdAndDeletedFalse(Integer employeeId);
-    List<Ticket> findAllByDeletedFalse();
     Optional<Ticket> findByTicketNumberAndDeletedFalse(Integer ticketNumber);
     boolean existsByAssignee(Employee employee);
 }

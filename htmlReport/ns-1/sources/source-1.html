@@ -75,7 +75,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (17/17)
+    (15/15)
   </span>
 </td>
 </tr>
@@ -89,9 +89,11 @@ Current scope:     <a href="../../index.html">all classes</a>
 <pre>
 <code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp;
 &nbsp;
+&nbsp;import com.exist.HelpdeskApp.exception.businessexceptions.RoleNotFoundException;
 &nbsp;import com.exist.HelpdeskApp.model.Employee;
 &nbsp;import com.exist.HelpdeskApp.model.Role;
 &nbsp;import com.exist.HelpdeskApp.model.EmploymentStatus;
+&nbsp;import com.exist.HelpdeskApp.model.embeddable.Name;
 &nbsp;import com.exist.HelpdeskApp.repository.EmployeeRepository;
 &nbsp;import com.exist.HelpdeskApp.repository.RoleRepository;
 &nbsp;import org.springframework.beans.factory.annotation.Autowired;
@@ -123,13 +125,11 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;        // Initialize employees if none exist
 <b class="pc">&nbsp;        if(employeeRepository.count() == 0) {</b>
 <b class="fc">&nbsp;            Employee adminEmployee = new Employee();</b>
-<b class="fc">&nbsp;            adminEmployee.setName(&quot;Admin&quot;);</b>
+<b class="fc">&nbsp;            adminEmployee.setName(new Name(&quot;Admin&quot;, null, null));</b>
 <b class="fc">&nbsp;            adminEmployee.setAge(30);</b>
-<b class="fc">&nbsp;            adminEmployee.setAddress(&quot;N/A&quot;);</b>
-<b class="fc">&nbsp;            adminEmployee.setContactNumber(&quot;N/A&quot;);</b>
 <b class="fc">&nbsp;            adminEmployee.setEmploymentStatus(EmploymentStatus.FULL_TIME);</b>
 <b class="fc">&nbsp;            adminEmployee.setRole(roleRepository.findById(1)</b>
-<b class="fc">&nbsp;                    .orElseThrow(() -&gt; new RuntimeException(&quot;Admin role not found!&quot;)));</b>
+<b class="fc">&nbsp;                    .orElseThrow(() -&gt; new RoleNotFoundException(&quot;Admin role not found!&quot;)));</b>
 <b class="fc">&nbsp;            employeeRepository.save(adminEmployee);</b>
 &nbsp;        }
 &nbsp;    }
@@ -158,7 +158,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-09-11 10:18</div>
+    <div style="float:right;">generated on 2025-09-17 02:10</div>
 </div>
 </body>
 </html>

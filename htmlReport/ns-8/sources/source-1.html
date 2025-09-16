@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
-  <title>Coverage Report > Employee</title>
+  <title>Coverage Report > BusinessException</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -19,22 +19,21 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.exist.HelpdeskApp.model</a>
+    <a href="../index.html">com.exist.HelpdeskApp.exception</a>
 </div>
 
-<h1>Coverage Summary for Class: Employee (com.exist.HelpdeskApp.model)</h1>
+<h1>Coverage Summary for Class: BusinessException (com.exist.HelpdeskApp.exception)</h1>
 
 <table class="coverageStats">
-
 <tr>
   <th class="name">Class</th>
 <th class="coverageStat 
 ">
-  Method, %
+  Class, %
 </th>
 <th class="coverageStat 
 ">
-  Branch, %
+  Method, %
 </th>
 <th class="coverageStat 
 ">
@@ -42,21 +41,13 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">Employee</td>
+  <td class="name">BusinessException</td>
 <td class="coverageStat">
   <span class="percent">
     100%
   </span>
   <span class="absValue">
-    (11/11)
-  </span>
-</td>
-<td class="coverageStat">
-  <span class="percent">
-    0%
-  </span>
-  <span class="absValue">
-    (0/70)
+    (1/1)
   </span>
 </td>
 <td class="coverageStat">
@@ -64,43 +55,19 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (11/11)
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
   </span>
 </td>
 </tr>
-  <tr>
-    <td class="name">Employee$HibernateProxy$ekvvwbYQ</td>
-  </tr>
-  <tr>
-    <td class="name">Employee$HibernateProxy$mcMkQagk</td>
-  </tr>
-<tr>
-  <td class="name"><strong>Total</strong></td>
-<td class="coverageStat">
-  <span class="percent">
-    100%
-  </span>
-  <span class="absValue">
-    (11/11)
-  </span>
-</td>
-<td class="coverageStat">
-  <span class="percent">
-    0%
-  </span>
-  <span class="absValue">
-    (0/70)
-  </span>
-</td>
-<td class="coverageStat">
-  <span class="percent">
-    100%
-  </span>
-  <span class="absValue">
-    (11/11)
-  </span>
-</td>
-</tr>
+
 </table>
 
 <br/>
@@ -108,44 +75,22 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.model;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.exception;
 &nbsp;
-&nbsp;import lombok.AllArgsConstructor;
-&nbsp;import lombok.Data;
-&nbsp;import lombok.NoArgsConstructor;
+&nbsp;import org.springframework.http.HttpStatus;
 &nbsp;
-&nbsp;import javax.persistence.*;
+&nbsp;public class BusinessException extends RuntimeException{
+&nbsp;    private final HttpStatus status;
 &nbsp;
+&nbsp;    public BusinessException(String message, HttpStatus status) {
+<b class="fc">&nbsp;        super(message);</b>
+<b class="fc">&nbsp;        this.status = status;</b>
+&nbsp;    }
 &nbsp;
-<b class="pc">&nbsp;@Data</b>
-<b class="fc">&nbsp;@AllArgsConstructor</b>
-<b class="fc">&nbsp;@NoArgsConstructor</b>
-&nbsp;@Entity
-&nbsp;public class Employee {
-&nbsp;    @Id
-&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
-<b class="fc">&nbsp;    private Integer id;</b>
+&nbsp;    public HttpStatus getStatus() {
+<b class="fc">&nbsp;        return status;</b>
+&nbsp;    }
 &nbsp;
-&nbsp;    @Column(nullable = false)
-<b class="fc">&nbsp;    private String name;</b>
-&nbsp;
-&nbsp;    @Column(nullable = false)
-<b class="fc">&nbsp;    private Integer age;</b>
-&nbsp;
-&nbsp;    @Column(nullable = false)
-<b class="fc">&nbsp;    private String address;</b>
-&nbsp;
-&nbsp;    @Column(nullable = false)
-<b class="fc">&nbsp;    private String contactNumber;</b>
-&nbsp;
-&nbsp;    @Enumerated(EnumType.STRING)
-<b class="fc">&nbsp;    private EmploymentStatus employmentStatus;</b>
-&nbsp;
-&nbsp;    @ManyToOne
-<b class="fc">&nbsp;    private Role role;</b>
-&nbsp;
-&nbsp;    @Version
-<b class="fc">&nbsp;    private Integer version;</b>
 &nbsp;}
 </code>
 </pre>
@@ -170,7 +115,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-09-11 10:18</div>
+    <div style="float:right;">generated on 2025-09-17 02:10</div>
 </div>
 </body>
 </html>

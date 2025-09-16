@@ -79,14 +79,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;import com.exist.HelpdeskApp.dto.employee.EmployeeRequest;
 &nbsp;import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
+&nbsp;import com.exist.HelpdeskApp.dto.role.RoleFilterRequest;
 &nbsp;import com.exist.HelpdeskApp.dto.role.RoleRequest;
 &nbsp;import com.exist.HelpdeskApp.dto.role.RoleResponse;
+&nbsp;import com.exist.HelpdeskApp.dto.employee.EmployeeFilterRequest;
+&nbsp;import com.exist.HelpdeskApp.dto.ticket.TicketFilterRequest;
 &nbsp;import com.exist.HelpdeskApp.dto.ticket.TicketRequest;
 &nbsp;import com.exist.HelpdeskApp.dto.ticket.TicketResponse;
 &nbsp;import com.exist.HelpdeskApp.service.Implementations.EmployeeServiceImpl;
 &nbsp;import com.exist.HelpdeskApp.service.Implementations.RoleServiceImpl;
 &nbsp;import com.exist.HelpdeskApp.service.Implementations.TicketServiceImpl;
 &nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.data.domain.Page;
 &nbsp;import org.springframework.web.bind.annotation.*;
 &nbsp;
 &nbsp;import javax.validation.Valid;
@@ -96,14 +100,14 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;@RequestMapping(&quot;/admin&quot;)
 &nbsp;public class AdminController {
 &nbsp;
-&nbsp;    EmployeeService employeeServiceImpl;
-&nbsp;    RoleService roleServiceImpl;
-&nbsp;    TicketService ticketServiceImpl;
+&nbsp;    EmployeeServiceImpl employeeServiceImpl;
+&nbsp;    RoleServiceImpl roleServiceImpl;
+&nbsp;    TicketServiceImpl ticketServiceImpl;
 &nbsp;
 &nbsp;    @Autowired
-&nbsp;    public AdminController(EmployeeService employeeServiceImpl,
-&nbsp;                           RoleService roleServiceImpl,
-<b class="fc">&nbsp;                           TicketService ticketServiceImpl) {</b>
+&nbsp;    public AdminController(EmployeeServiceImpl employeeServiceImpl,
+&nbsp;                           RoleServiceImpl roleServiceImpl,
+<b class="fc">&nbsp;                           TicketServiceImpl ticketServiceImpl) {</b>
 <b class="fc">&nbsp;        this.employeeServiceImpl = employeeServiceImpl;</b>
 <b class="fc">&nbsp;        this.roleServiceImpl = roleServiceImpl;</b>
 <b class="fc">&nbsp;        this.ticketServiceImpl = ticketServiceImpl;</b>
@@ -118,8 +122,8 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    @GetMapping(&quot;/employees&quot;)
-&nbsp;    public List&lt;EmployeeResponse&gt; getEmployees() {
-<b class="fc">&nbsp;        return employeeServiceImpl.getEmployees();</b>
+&nbsp;    public Page&lt;EmployeeResponse&gt; getEmployees(@ModelAttribute @Valid EmployeeFilterRequest employeeFilterRequest) {
+<b class="fc">&nbsp;        return employeeServiceImpl.getEmployees(employeeFilterRequest);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @GetMapping(&quot;/employees/{employeeId}&quot;)
@@ -144,8 +148,8 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    /// ===============================================================================
 &nbsp;    @GetMapping(&quot;/roles&quot;)
-&nbsp;    public List&lt;RoleResponse&gt; getRoles() {
-<b class="fc">&nbsp;        return roleServiceImpl.getRoles();</b>
+&nbsp;    public Page&lt;RoleResponse&gt; getRoles(@ModelAttribute @Valid RoleFilterRequest request) {
+<b class="fc">&nbsp;        return roleServiceImpl.getRoles(request);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @GetMapping(&quot;/roles/{roleId}&quot;)
@@ -171,8 +175,8 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    /// ===============================================================================
 &nbsp;
 &nbsp;    @GetMapping(&quot;tickets&quot;)
-&nbsp;    public List&lt;TicketResponse&gt; getTickets() {
-<b class="fc">&nbsp;        return ticketServiceImpl.getTickets(1);</b>
+&nbsp;    public Page&lt;TicketResponse&gt; getTickets(@ModelAttribute TicketFilterRequest request) {
+<b class="fc">&nbsp;        return ticketServiceImpl.getTickets(1, request);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @GetMapping(&quot;tickets/{ticketId}&quot;)
@@ -209,7 +213,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-09-11 10:18</div>
+    <div style="float:right;">generated on 2025-09-17 02:10</div>
 </div>
 </body>
 </html>

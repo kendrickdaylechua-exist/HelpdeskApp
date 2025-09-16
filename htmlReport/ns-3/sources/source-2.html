@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
-  <title>Coverage Report > EmployeeRequest</title>
+  <title>Coverage Report > ContactsRequest</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -19,10 +19,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.exist.HelpdeskApp.dto.employee</a>
+    <a href="../index.html">com.exist.HelpdeskApp.dto.embedded</a>
 </div>
 
-<h1>Coverage Summary for Class: EmployeeRequest (com.exist.HelpdeskApp.dto.employee)</h1>
+<h1>Coverage Summary for Class: ContactsRequest (com.exist.HelpdeskApp.dto.embedded)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -45,37 +45,37 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">EmployeeRequest</td>
+  <td class="name">ContactsRequest</td>
 <td class="coverageStat">
   <span class="percent">
-    100%
+    0%
   </span>
   <span class="absValue">
-    (1/1)
+    (0/1)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    100%
+    0%
   </span>
   <span class="absValue">
-    (9/9)
+    (0/6)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    27.8%
+    0%
   </span>
   <span class="absValue">
-    (15/54)
+    (0/30)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    100%
+    0%
   </span>
   <span class="absValue">
-    (9/9)
+    (0/6)
   </span>
 </td>
 </tr>
@@ -87,41 +87,28 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.dto.employee;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.dto.embedded;
 &nbsp;
-&nbsp;import com.exist.HelpdeskApp.model.EmploymentStatus;
 &nbsp;import lombok.AllArgsConstructor;
 &nbsp;import lombok.Data;
 &nbsp;import lombok.NoArgsConstructor;
 &nbsp;
-&nbsp;import javax.validation.constraints.Max;
-&nbsp;import javax.validation.constraints.Min;
+&nbsp;import javax.validation.constraints.Email;
 &nbsp;import javax.validation.constraints.NotBlank;
-&nbsp;import javax.validation.constraints.NotNull;
 &nbsp;
-<b class="pc">&nbsp;@Data</b>
-<b class="fc">&nbsp;@NoArgsConstructor</b>
-<b class="fc">&nbsp;@AllArgsConstructor</b>
-&nbsp;public class EmployeeRequest {
-&nbsp;    @NotBlank(message = &quot;Name must not be blank&quot;)
-<b class="fc">&nbsp;    private String name;</b>
+<b class="nc">&nbsp;@Data</b>
+<b class="nc">&nbsp;@AllArgsConstructor</b>
+<b class="nc">&nbsp;@NoArgsConstructor</b>
+&nbsp;public class ContactsRequest {
 &nbsp;
-&nbsp;    @NotNull(message = &quot;Age is required&quot;)
-&nbsp;    @Min(value = 16, message = &quot;Age must be at least 16 to be able to work&quot;)
-&nbsp;    @Max(value = 130, message = &quot;A person cannot be that old! That&#39;s impossible!&quot;)
-<b class="fc">&nbsp;    private Integer age;</b>
+&nbsp;    @NotBlank(message = &quot;Phone number cannot be empty&quot;)
+<b class="nc">&nbsp;    private String phoneNumber;</b>
 &nbsp;
-&nbsp;    @NotBlank(message = &quot;Address is required&quot;)
-<b class="fc">&nbsp;    private String address;</b>
+&nbsp;    @NotBlank(message = &quot;Email cannot be empty&quot;)
+&nbsp;    @Email(message = &quot;Invalid email format&quot;)
+<b class="nc">&nbsp;    private String email;</b>
 &nbsp;
-&nbsp;    @NotBlank(message = &quot;Contact number is required&quot;)
-<b class="fc">&nbsp;    private String contactNumber;</b>
-&nbsp;
-&nbsp;    @NotNull(message = &quot;Employment status is required&quot;)
-<b class="fc">&nbsp;    private EmploymentStatus employmentStatus;</b>
-&nbsp;
-&nbsp;    @NotNull(message = &quot;Employee must have a role&quot;)
-<b class="fc">&nbsp;    private Integer roleId;</b>
+<b class="nc">&nbsp;    private String telephoneNumber;</b>
 &nbsp;}
 </code>
 </pre>
@@ -146,7 +133,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-09-11 10:18</div>
+    <div style="float:right;">generated on 2025-09-17 02:10</div>
 </div>
 </body>
 </html>

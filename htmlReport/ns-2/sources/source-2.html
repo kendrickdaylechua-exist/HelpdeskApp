@@ -78,11 +78,13 @@ Current scope:     <a href="../../index.html">all classes</a>
 <code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.controller;
 &nbsp;
 &nbsp;import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
+&nbsp;import com.exist.HelpdeskApp.dto.ticket.TicketFilterRequest;
 &nbsp;import com.exist.HelpdeskApp.dto.ticket.TicketRequest;
 &nbsp;import com.exist.HelpdeskApp.dto.ticket.TicketResponse;
 &nbsp;import com.exist.HelpdeskApp.service.Implementations.EmployeeServiceImpl;
 &nbsp;import com.exist.HelpdeskApp.service.Implementations.TicketServiceImpl;
 &nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.data.domain.Page;
 &nbsp;import org.springframework.web.bind.annotation.*;
 &nbsp;
 &nbsp;import javax.validation.Valid;
@@ -92,12 +94,12 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;@RequestMapping(&quot;/employees&quot;)
 &nbsp;public class EmployeeController {
 &nbsp;
-&nbsp;    EmployeeService employeeServiceImpl;
-&nbsp;    TicketService ticketServiceImpl;
+&nbsp;    EmployeeServiceImpl employeeServiceImpl;
+&nbsp;    TicketServiceImpl ticketServiceImpl;
 &nbsp;
 &nbsp;    @Autowired
-&nbsp;    public EmployeeController(EmployeeService employeeServiceImpl,
-<b class="fc">&nbsp;                              TicketService ticketServiceImpl) {</b>
+&nbsp;    public EmployeeController(EmployeeServiceImpl employeeServiceImpl,
+<b class="fc">&nbsp;                              TicketServiceImpl ticketServiceImpl) {</b>
 <b class="fc">&nbsp;        this.employeeServiceImpl = employeeServiceImpl;</b>
 <b class="fc">&nbsp;        this.ticketServiceImpl = ticketServiceImpl;</b>
 &nbsp;    }
@@ -118,8 +120,8 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;    }
 &nbsp;
 &nbsp;    @GetMapping(&quot;{employeeId}/tickets&quot;)
-&nbsp;    public List&lt;TicketResponse&gt; getTickets(@PathVariable Integer employeeId) {
-<b class="fc">&nbsp;        return ticketServiceImpl.getTickets(employeeId);</b>
+&nbsp;    public Page&lt;TicketResponse&gt; getTickets(@PathVariable Integer employeeId, @ModelAttribute TicketFilterRequest request) {
+<b class="fc">&nbsp;        return ticketServiceImpl.getTickets(employeeId, request);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @GetMapping(&quot;{employeeId}/tickets/{ticketId}&quot;)
@@ -160,7 +162,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-09-11 10:18</div>
+    <div style="float:right;">generated on 2025-09-17 02:10</div>
 </div>
 </body>
 </html>

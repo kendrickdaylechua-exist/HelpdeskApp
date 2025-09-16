@@ -33,7 +33,7 @@ public class EmployeeSpecifications {
     }
 
     public static Specification<Employee> hasLastName(String value, MatchType matchType) {
-        return (root, query, cb) -> buildStringPredicate(cb, root.get("name").get("middleName"), value, matchType);
+        return (root, query, cb) -> buildStringPredicate(cb, root.get("name").get("lastName"), value, matchType);
     }
 
     public static Specification<Employee> nameContains(String value) {

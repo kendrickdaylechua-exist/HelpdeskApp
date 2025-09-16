@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
-  <title>Coverage Report > TicketMapperImpl</title>
+  <title>Coverage Report > RoleFilterRequest</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -19,10 +19,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.exist.HelpdeskApp.dto.ticket</a>
+    <a href="../index.html">com.exist.HelpdeskApp.dto.role</a>
 </div>
 
-<h1>Coverage Summary for Class: TicketMapperImpl (com.exist.HelpdeskApp.dto.ticket)</h1>
+<h1>Coverage Summary for Class: RoleFilterRequest (com.exist.HelpdeskApp.dto.role)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -45,7 +45,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">TicketMapperImpl</td>
+  <td class="name">RoleFilterRequest</td>
 <td class="coverageStat">
   <span class="percent">
     100%
@@ -59,23 +59,23 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (8/8)
+    (9/9)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    52.8%
+    0%
   </span>
   <span class="absValue">
-    (19/36)
+    (0/38)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    81.5%
+    91.7%
   </span>
   <span class="absValue">
-    (53/65)
+    (11/12)
   </span>
 </td>
 </tr>
@@ -87,139 +87,32 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.dto.ticket;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.dto.role;
 &nbsp;
-&nbsp;import com.exist.HelpdeskApp.model.Employee;
-&nbsp;import com.exist.HelpdeskApp.model.Ticket;
-&nbsp;import java.util.ArrayList;
-&nbsp;import java.util.List;
-&nbsp;import javax.annotation.processing.Generated;
-&nbsp;import org.springframework.stereotype.Component;
+&nbsp;import lombok.AllArgsConstructor;
+&nbsp;import lombok.Data;
+&nbsp;import lombok.NoArgsConstructor;
 &nbsp;
-&nbsp;@Generated(
-&nbsp;    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
-&nbsp;    date = &quot;2025-09-11T10:14:37+0800&quot;,
-&nbsp;    comments = &quot;version: 1.5.5.Final, compiler: javac, environment: Java 17.0.15 (Microsoft)&quot;
-&nbsp;)
-&nbsp;@Component
-<b class="fc">&nbsp;public class TicketMapperImpl implements TicketMapper {</b>
+&nbsp;import javax.validation.constraints.Min;
+&nbsp;import javax.validation.constraints.Pattern;
 &nbsp;
-&nbsp;    @Override
-&nbsp;    public Ticket toEntity(TicketRequest request) {
-<b class="pc">&nbsp;        if ( request == null ) {</b>
-<b class="nc">&nbsp;            return null;</b>
-&nbsp;        }
+<b class="pc">&nbsp;@Data</b>
+<b class="nc">&nbsp;@AllArgsConstructor</b>
+<b class="fc">&nbsp;@NoArgsConstructor</b>
+&nbsp;public class RoleFilterRequest {
+<b class="fc">&nbsp;    @Min(0)</b>
+<b class="fc">&nbsp;    private int page = 0;</b>
 &nbsp;
-<b class="fc">&nbsp;        Ticket ticket = new Ticket();</b>
+<b class="fc">&nbsp;    @Min(1)</b>
+<b class="fc">&nbsp;    private int size = 5;</b>
+<b class="fc">&nbsp;    private String sortBy = &quot;id&quot;;</b>
 &nbsp;
-<b class="fc">&nbsp;        ticket.setTitle( request.getTitle() );</b>
-<b class="fc">&nbsp;        ticket.setBody( request.getBody() );</b>
-<b class="fc">&nbsp;        ticket.setStatus( request.getStatus() );</b>
-<b class="fc">&nbsp;        ticket.setRemarks( request.getRemarks() );</b>
+<b class="fc">&nbsp;    @Pattern(regexp = &quot;asc|desc&quot;, message = &quot;sortDir must be &#39;asc&#39; or &#39;desc&#39;&quot;)</b>
+<b class="fc">&nbsp;    private String sortDir = &quot;asc&quot;;</b>
 &nbsp;
-<b class="fc">&nbsp;        return ticket;</b>
-&nbsp;    }
+<b class="fc">&nbsp;    private String roleName;</b>
 &nbsp;
-&nbsp;    @Override
-&nbsp;    public TicketResponse toResponse(Ticket entity) {
-<b class="pc">&nbsp;        if ( entity == null ) {</b>
-<b class="nc">&nbsp;            return null;</b>
-&nbsp;        }
-&nbsp;
-<b class="fc">&nbsp;        TicketResponse ticketResponse = new TicketResponse();</b>
-&nbsp;
-<b class="fc">&nbsp;        ticketResponse.setAssigneeName( entityAssigneeName( entity ) );</b>
-<b class="fc">&nbsp;        ticketResponse.setCreatedByEmployeeName( entityCreatedByName( entity ) );</b>
-<b class="fc">&nbsp;        ticketResponse.setUpdatedByEmployeeName( entityUpdatedByName( entity ) );</b>
-<b class="fc">&nbsp;        ticketResponse.setTicketNumber( entity.getTicketNumber() );</b>
-<b class="fc">&nbsp;        ticketResponse.setTitle( entity.getTitle() );</b>
-<b class="fc">&nbsp;        ticketResponse.setBody( entity.getBody() );</b>
-<b class="fc">&nbsp;        ticketResponse.setStatus( entity.getStatus() );</b>
-<b class="fc">&nbsp;        ticketResponse.setCreateDate( entity.getCreateDate() );</b>
-<b class="fc">&nbsp;        ticketResponse.setUpdatedDate( entity.getUpdatedDate() );</b>
-<b class="fc">&nbsp;        ticketResponse.setRemarks( entity.getRemarks() );</b>
-&nbsp;
-<b class="fc">&nbsp;        return ticketResponse;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    @Override
-&nbsp;    public List&lt;TicketResponse&gt; toResponseList(List&lt;Ticket&gt; tickets) {
-<b class="pc">&nbsp;        if ( tickets == null ) {</b>
-<b class="nc">&nbsp;            return null;</b>
-&nbsp;        }
-&nbsp;
-<b class="fc">&nbsp;        List&lt;TicketResponse&gt; list = new ArrayList&lt;TicketResponse&gt;( tickets.size() );</b>
-<b class="fc">&nbsp;        for ( Ticket ticket : tickets ) {</b>
-<b class="fc">&nbsp;            list.add( toResponse( ticket ) );</b>
-&nbsp;        }
-&nbsp;
-<b class="fc">&nbsp;        return list;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    @Override
-&nbsp;    public void toUpdate(TicketRequest ticketRequest, Ticket ticket) {
-<b class="pc">&nbsp;        if ( ticketRequest == null ) {</b>
-&nbsp;            return;
-&nbsp;        }
-&nbsp;
-<b class="pc">&nbsp;        if ( ticketRequest.getTitle() != null ) {</b>
-<b class="fc">&nbsp;            ticket.setTitle( ticketRequest.getTitle() );</b>
-&nbsp;        }
-<b class="pc">&nbsp;        if ( ticketRequest.getBody() != null ) {</b>
-<b class="fc">&nbsp;            ticket.setBody( ticketRequest.getBody() );</b>
-&nbsp;        }
-<b class="pc">&nbsp;        if ( ticketRequest.getStatus() != null ) {</b>
-<b class="fc">&nbsp;            ticket.setStatus( ticketRequest.getStatus() );</b>
-&nbsp;        }
-<b class="pc">&nbsp;        if ( ticketRequest.getRemarks() != null ) {</b>
-<b class="fc">&nbsp;            ticket.setRemarks( ticketRequest.getRemarks() );</b>
-&nbsp;        }
-&nbsp;    }
-&nbsp;
-&nbsp;    private String entityAssigneeName(Ticket ticket) {
-<b class="pc">&nbsp;        if ( ticket == null ) {</b>
-<b class="nc">&nbsp;            return null;</b>
-&nbsp;        }
-<b class="fc">&nbsp;        Employee assignee = ticket.getAssignee();</b>
-<b class="pc">&nbsp;        if ( assignee == null ) {</b>
-<b class="nc">&nbsp;            return null;</b>
-&nbsp;        }
-<b class="fc">&nbsp;        String name = assignee.getName();</b>
-<b class="pc">&nbsp;        if ( name == null ) {</b>
-<b class="nc">&nbsp;            return null;</b>
-&nbsp;        }
-<b class="fc">&nbsp;        return name;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    private String entityCreatedByName(Ticket ticket) {
-<b class="pc">&nbsp;        if ( ticket == null ) {</b>
-<b class="nc">&nbsp;            return null;</b>
-&nbsp;        }
-<b class="fc">&nbsp;        Employee createdBy = ticket.getCreatedBy();</b>
-<b class="pc">&nbsp;        if ( createdBy == null ) {</b>
-<b class="nc">&nbsp;            return null;</b>
-&nbsp;        }
-<b class="fc">&nbsp;        String name = createdBy.getName();</b>
-<b class="pc">&nbsp;        if ( name == null ) {</b>
-<b class="nc">&nbsp;            return null;</b>
-&nbsp;        }
-<b class="fc">&nbsp;        return name;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    private String entityUpdatedByName(Ticket ticket) {
-<b class="pc">&nbsp;        if ( ticket == null ) {</b>
-<b class="nc">&nbsp;            return null;</b>
-&nbsp;        }
-<b class="fc">&nbsp;        Employee updatedBy = ticket.getUpdatedBy();</b>
-<b class="pc">&nbsp;        if ( updatedBy == null ) {</b>
-<b class="nc">&nbsp;            return null;</b>
-&nbsp;        }
-<b class="fc">&nbsp;        String name = updatedBy.getName();</b>
-<b class="pc">&nbsp;        if ( name == null ) {</b>
-<b class="nc">&nbsp;            return null;</b>
-&nbsp;        }
-<b class="fc">&nbsp;        return name;</b>
-&nbsp;    }
+<b class="fc">&nbsp;    private boolean deleted;</b>
 &nbsp;}
 </code>
 </pre>
@@ -244,7 +137,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-09-11 10:18</div>
+    <div style="float:right;">generated on 2025-09-17 02:10</div>
 </div>
 </body>
 </html>

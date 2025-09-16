@@ -29,7 +29,7 @@ public class Employee {
     private Address address;
 
     @Embedded
-    private Contacts contact;
+    private Contacts contacts;
 
     @Enumerated(EnumType.STRING)
     private EmploymentStatus employmentStatus;

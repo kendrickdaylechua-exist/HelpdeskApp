@@ -5,14 +5,17 @@ import com.exist.HelpdeskApp.model.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
+@TestPropertySource(properties = {
+        "spring.liquibase.enabled=false"
+})
 public class RoleRepositoryTest {
     @Autowired
     RoleRepository roleRepository;
@@ -30,13 +33,18 @@ public class RoleRepositoryTest {
     }
 
     @Test
-    void testDelete() {
+    void testFindByIdAndDeletedFalse() {
         Role role = new Role();
         role.setRoleName("Sample Role");
+        role.setDeleted(false);
         role = roleRepository.save(role);
 
-        roleRepository.delete(role);
+        Optional<Role> result = roleRepository.findByIdAndDeletedFalse(role.getId());
 
-        assertTrue(roleRepository.findById(role.getId()).isEmpty());
+        assertTrue(result.isPresent());
+        assertEquals("Sample Role", result.get().getRoleName());
+        assertFalse(result.get().isDeleted());
     }
+
+
 }

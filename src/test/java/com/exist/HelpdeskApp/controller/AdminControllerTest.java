@@ -177,19 +177,6 @@ public class AdminControllerTest {
 
     @Test
     void testUpdateEmployee() throws Exception {
-//        Name name2 = new Name("First2", "Middle2", "Last2");
-//        Contacts contacts2 = new Contacts("0912345678", "sample@example.com", "021234567");
-//        Address address2 = new Address("321 Test St.", "Los Angeles", "California","USA");
-//        EmployeeResponse employee2 = new EmployeeResponse(
-//                3,
-//                name2,
-//                25,
-//                address2,
-//                contacts2,
-//                EmploymentStatus.FULL_TIME,
-//                3,
-//                "role2"
-//        );
         when(employeeServiceImpl.updateEmployee(VALID_EMPLOYEE_ID_1, employeeRequest1)).thenReturn(employee1);
         mockMvc.perform(
                 patch("/admin/employees/{id}", VALID_EMPLOYEE_ID_1)

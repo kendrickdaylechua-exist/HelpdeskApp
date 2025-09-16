@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
-  <title>Coverage Report > EmployeeNotFoundException</title>
+  <title>Coverage Report > TicketMapper</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -19,21 +19,22 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.exist.HelpdeskApp.exception</a>
+    <a href="../index.html">com.exist.HelpdeskApp.dto.ticket</a>
 </div>
 
-<h1>Coverage Summary for Class: EmployeeNotFoundException (com.exist.HelpdeskApp.exception)</h1>
+<h1>Coverage Summary for Class: TicketMapper (com.exist.HelpdeskApp.dto.ticket)</h1>
 
 <table class="coverageStats">
+
 <tr>
   <th class="name">Class</th>
 <th class="coverageStat 
 ">
-  Class, %
+  Method, %
 </th>
 <th class="coverageStat 
 ">
-  Method, %
+  Branch, %
 </th>
 <th class="coverageStat 
 ">
@@ -41,7 +42,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">EmployeeNotFoundException</td>
+  <td class="name">TicketMapper</td>
 <td class="coverageStat">
   <span class="percent">
     100%
@@ -52,22 +53,60 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    100%
+    10%
   </span>
   <span class="absValue">
-    (1/1)
+    (1/10)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    100%
+    14.3%
   </span>
   <span class="absValue">
-    (1/1)
+    (1/7)
   </span>
 </td>
 </tr>
-
+  <tr>
+    <td class="name">TicketMapper$MockitoMock$IpjfUBQ9</td>
+  </tr>
+  <tr>
+    <td class="name">TicketMapper$MockitoMock$IpjfUBQ9$auxiliary$4uNwOIAl</td>
+  </tr>
+  <tr>
+    <td class="name">TicketMapper$MockitoMock$IpjfUBQ9$auxiliary$CGncqNaX</td>
+  </tr>
+  <tr>
+    <td class="name">TicketMapper$MockitoMock$IpjfUBQ9$auxiliary$hHcqyDAp</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    10%
+  </span>
+  <span class="absValue">
+    (1/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    14.3%
+  </span>
+  <span class="absValue">
+    (1/7)
+  </span>
+</td>
+</tr>
 </table>
 
 <br/>
@@ -75,15 +114,41 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.exception;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.dto.ticket;
 &nbsp;
-&nbsp;import org.springframework.http.HttpStatus;
-&nbsp;import org.springframework.web.bind.annotation.ResponseStatus;
+&nbsp;import com.exist.HelpdeskApp.model.Ticket;
+&nbsp;import com.exist.HelpdeskApp.model.embeddable.Name;
+&nbsp;import org.mapstruct.Mapper;
+&nbsp;import org.mapstruct.Mapping;
+&nbsp;import org.mapstruct.MappingTarget;
+&nbsp;import org.mapstruct.NullValuePropertyMappingStrategy;
 &nbsp;
-&nbsp;@ResponseStatus(HttpStatus.NOT_FOUND)
-&nbsp;public class EmployeeNotFoundException extends BusinessException{
-&nbsp;    public EmployeeNotFoundException(String message) {
-<b class="fc">&nbsp;        super(message, HttpStatus.NOT_FOUND);</b>
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Mapper(componentModel = &quot;spring&quot;, nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+&nbsp;public interface TicketMapper {
+&nbsp;    @Mapping(target = &quot;assignee&quot;, ignore = true)
+&nbsp;    @Mapping(target = &quot;createdBy&quot;, ignore = true)
+&nbsp;    @Mapping(target = &quot;updatedBy&quot;, ignore = true)
+&nbsp;    Ticket toEntity(TicketRequest request);
+&nbsp;
+&nbsp;    @Mapping(target = &quot;assigneeName&quot;, expression = &quot;java(concatName(entity.getAssignee().getName()))&quot;)
+&nbsp;    @Mapping(target = &quot;createdByEmployeeName&quot;, expression = &quot;java(concatName(entity.getCreatedBy().getName()))&quot;)
+&nbsp;    @Mapping(target = &quot;updatedByEmployeeName&quot;, expression = &quot;java(concatName(entity.getUpdatedBy().getName()))&quot;)
+&nbsp;    TicketResponse toResponse(Ticket entity);
+&nbsp;
+&nbsp;    List&lt;TicketResponse&gt; toResponseList(List&lt;Ticket&gt; tickets);
+&nbsp;
+&nbsp;    void toUpdate(TicketRequest ticketRequest, @MappingTarget Ticket ticket);
+&nbsp;
+&nbsp;    default String concatName(Name name) {
+<b class="pc">&nbsp;        if (name == null) return null;</b>
+<b class="nc">&nbsp;        StringBuilder fullName = new StringBuilder();</b>
+<b class="nc">&nbsp;        if (name.getFirstName() != null) fullName.append(name.getFirstName());</b>
+<b class="nc">&nbsp;        if (name.getMiddleName() != null &amp;&amp; !name.getMiddleName().isBlank())</b>
+<b class="nc">&nbsp;            fullName.append(&quot; &quot;).append(name.getMiddleName());</b>
+<b class="nc">&nbsp;        if (name.getLastName() != null) fullName.append(&quot; &quot;).append(name.getLastName());</b>
+<b class="nc">&nbsp;        return fullName.toString().trim();</b>
 &nbsp;    }
 &nbsp;}
 </code>
@@ -109,7 +174,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-09-11 10:18</div>
+    <div style="float:right;">generated on 2025-09-17 02:10</div>
 </div>
 </body>
 </html>

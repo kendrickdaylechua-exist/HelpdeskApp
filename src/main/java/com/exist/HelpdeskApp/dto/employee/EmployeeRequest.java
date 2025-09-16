@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class EmployeeRequest {
     @Valid
-    @NotNull
+    @NotNull(message = "Name must not be null")
     private Name name;
 
     @NotNull(message = "Age is required")
@@ -27,11 +27,11 @@ public class EmployeeRequest {
     private Integer age;
 
     @Valid
-    @NotNull
+    @NotNull(message = "Address is required")
     private Address address;
 
     @Valid
-    @NotNull
+    @NotNull(message = "Contacts is required")
     private Contacts contacts;
 
     @NotNull(message = "Employment status is required")

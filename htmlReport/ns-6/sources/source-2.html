@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
-  <title>Coverage Report > TicketRequest</title>
+  <title>Coverage Report > RoleMapperImpl</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -19,10 +19,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.exist.HelpdeskApp.dto.ticket</a>
+    <a href="../index.html">com.exist.HelpdeskApp.dto.role</a>
 </div>
 
-<h1>Coverage Summary for Class: TicketRequest (com.exist.HelpdeskApp.dto.ticket)</h1>
+<h1>Coverage Summary for Class: RoleMapperImpl (com.exist.HelpdeskApp.dto.role)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -45,7 +45,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">TicketRequest</td>
+  <td class="name">RoleMapperImpl</td>
 <td class="coverageStat">
   <span class="percent">
     100%
@@ -59,23 +59,23 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (8/8)
+    (5/5)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    50%
+    58.3%
   </span>
   <span class="absValue">
-    (23/46)
+    (7/12)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    100%
+    85.7%
   </span>
   <span class="absValue">
-    (8/8)
+    (18/21)
   </span>
 </td>
 </tr>
@@ -87,33 +87,73 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.dto.ticket;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.dto.role;
 &nbsp;
-&nbsp;import com.exist.HelpdeskApp.model.TicketStatus;
-&nbsp;import lombok.AllArgsConstructor;
-&nbsp;import lombok.Data;
-&nbsp;import lombok.NoArgsConstructor;
+&nbsp;import com.exist.HelpdeskApp.model.Role;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;import javax.annotation.processing.Generated;
+&nbsp;import org.springframework.stereotype.Component;
 &nbsp;
-&nbsp;import javax.validation.constraints.NotBlank;
-&nbsp;import javax.validation.constraints.NotNull;
+&nbsp;@Generated(
+&nbsp;    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+&nbsp;    date = &quot;2025-09-17T01:18:15+0800&quot;,
+&nbsp;    comments = &quot;version: 1.5.5.Final, compiler: javac, environment: Java 17.0.16 (Microsoft)&quot;
+&nbsp;)
+&nbsp;@Component
+<b class="fc">&nbsp;public class RoleMapperImpl implements RoleMapper {</b>
 &nbsp;
-<b class="pc">&nbsp;@Data</b>
-<b class="fc">&nbsp;@AllArgsConstructor</b>
-<b class="fc">&nbsp;@NoArgsConstructor</b>
-&nbsp;public class TicketRequest {
-&nbsp;    @NotBlank(message = &quot;A ticket must have a title&quot;)
-<b class="fc">&nbsp;    private String title;</b>
+&nbsp;    @Override
+&nbsp;    public Role toEntity(RoleRequest request) {
+<b class="pc">&nbsp;        if ( request == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
 &nbsp;
-&nbsp;    @NotBlank(message = &quot;A ticket must have a body&quot;)
-<b class="fc">&nbsp;    private String body;</b>
+<b class="fc">&nbsp;        Role role = new Role();</b>
 &nbsp;
-&nbsp;    @NotNull(message = &quot;A ticket must be assigned to an employee.&quot;)
-<b class="fc">&nbsp;    private Integer assigneeId;</b>
+<b class="fc">&nbsp;        role.setRoleName( request.getRoleName() );</b>
 &nbsp;
-&nbsp;    @NotNull(message = &quot;A ticket must have a valid status.&quot;)
-<b class="fc">&nbsp;    private TicketStatus status;</b>
+<b class="fc">&nbsp;        return role;</b>
+&nbsp;    }
 &nbsp;
-<b class="fc">&nbsp;    private String remarks;</b>
+&nbsp;    @Override
+&nbsp;    public RoleResponse toResponse(Role entity) {
+<b class="pc">&nbsp;        if ( entity == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        RoleResponse roleResponse = new RoleResponse();</b>
+&nbsp;
+<b class="fc">&nbsp;        roleResponse.setId( entity.getId() );</b>
+<b class="fc">&nbsp;        roleResponse.setRoleName( entity.getRoleName() );</b>
+&nbsp;
+<b class="fc">&nbsp;        return roleResponse;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void toUpdate(RoleRequest request, Role entity) {
+<b class="pc">&nbsp;        if ( request == null ) {</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if ( request.getRoleName() != null ) {</b>
+<b class="fc">&nbsp;            entity.setRoleName( request.getRoleName() );</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;RoleResponse&gt; toResponseList(List&lt;Role&gt; roles) {
+<b class="pc">&nbsp;        if ( roles == null ) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        List&lt;RoleResponse&gt; list = new ArrayList&lt;RoleResponse&gt;( roles.size() );</b>
+<b class="fc">&nbsp;        for ( Role role : roles ) {</b>
+<b class="fc">&nbsp;            list.add( toResponse( role ) );</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return list;</b>
+&nbsp;    }
 &nbsp;}
 </code>
 </pre>
@@ -138,7 +178,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-09-11 10:18</div>
+    <div style="float:right;">generated on 2025-09-17 02:10</div>
 </div>
 </body>
 </html>

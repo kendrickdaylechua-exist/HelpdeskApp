@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
-  <title>Coverage Report > EmployeeRepository</title>
+  <title>Coverage Report > Role</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -19,30 +19,87 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">com.exist.HelpdeskApp.repository</a>
+    <a href="../index.html">com.exist.HelpdeskApp.model</a>
 </div>
 
-<h1>Coverage Summary for Class: EmployeeRepository (com.exist.HelpdeskApp.repository)</h1>
+<h1>Coverage Summary for Class: Role (com.exist.HelpdeskApp.model)</h1>
 
 <table class="coverageStats">
 
 <tr>
   <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Role</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/34)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
 </tr>
   <tr>
-    <td class="name">EmployeeRepository$MockitoMock$rBb111fl</td>
+    <td class="name">Role$HibernateProxy$bD9J0dou</td>
   </tr>
   <tr>
-    <td class="name">EmployeeRepository$MockitoMock$rBb111fl$auxiliary$5lnsvGtn</td>
-  </tr>
-  <tr>
-    <td class="name">EmployeeRepository$MockitoMock$rBb111fl$auxiliary$abkv1K2n</td>
-  </tr>
-  <tr>
-    <td class="name">EmployeeRepository$MockitoMock$rBb111fl$auxiliary$ddTV9SPR</td>
+    <td class="name">Role$HibernateProxy$IAWtE2SO</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/34)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
 </tr>
 </table>
 
@@ -51,12 +108,31 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.repository;
+<code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.model;
 &nbsp;
-&nbsp;import com.exist.HelpdeskApp.model.Employee;
-&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;import lombok.AllArgsConstructor;
+&nbsp;import lombok.Data;
+&nbsp;import lombok.NoArgsConstructor;
 &nbsp;
-&nbsp;public interface EmployeeRepository extends JpaRepository&lt;Employee,Integer&gt; {
+&nbsp;import javax.persistence.*;
+&nbsp;
+<b class="pc">&nbsp;@Data</b>
+<b class="fc">&nbsp;@AllArgsConstructor</b>
+<b class="fc">&nbsp;@NoArgsConstructor</b>
+&nbsp;@Entity
+&nbsp;public class Role {
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+<b class="fc">&nbsp;    private Integer id;</b>
+&nbsp;
+&nbsp;    @Column(nullable = false)
+<b class="fc">&nbsp;    private String roleName;</b>
+&nbsp;
+&nbsp;    @Column(nullable = false)
+<b class="fc">&nbsp;    private boolean deleted;</b>
+&nbsp;
+&nbsp;    @Version
+<b class="fc">&nbsp;    private Integer version;</b>
 &nbsp;}
 </code>
 </pre>
@@ -81,7 +157,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-09-11 10:18</div>
+    <div style="float:right;">generated on 2025-09-17 02:10</div>
 </div>
 </body>
 </html>
