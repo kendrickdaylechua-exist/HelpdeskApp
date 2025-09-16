@@ -6,15 +6,19 @@ import com.exist.HelpdeskApp.dto.role.RoleResponse;
 import com.exist.HelpdeskApp.model.Employee;
 import com.exist.HelpdeskApp.model.EmploymentStatus;
 import com.exist.HelpdeskApp.model.Role;
+import com.exist.HelpdeskApp.model.embeddable.Address;
+import com.exist.HelpdeskApp.model.embeddable.Contacts;
+import com.exist.HelpdeskApp.model.embeddable.Name;
 
 public class TestDataFactory {
     public static Employee admin() {
+        Name name = new Name("Admin", null, null);
         return new Employee(
                 1,
-                "Admin",
+                name,
                 30,
-                "N/A",
-                "N/A",
+                new Address(),
+                new Contacts(),
                 EmploymentStatus.FULL_TIME,
                 adminRole(),
                 false,
@@ -32,12 +36,13 @@ public class TestDataFactory {
     }
 
     public static EmployeeResponse adminEmployeeRequest() {
+        Name name = new Name("Admin", null, null);
         return new EmployeeResponse(
                 1,
-                "Admin",
+                name,
                 30,
-                "N/A",
-                "N/A",
+                new Address(),
+               new Contacts(),
                 EmploymentStatus.FULL_TIME,
                 1,
                 "Admin"
