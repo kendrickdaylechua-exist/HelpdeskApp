@@ -1,12 +1,22 @@
 package com.exist.HelpdeskApp.dto.employee;
 
-import com.exist.HelpdeskApp.repository.specifications.MatchType;
+//import com.exist.HelpdeskApp.repository.specifications.MatchType;
+import com.exist.HelpdeskApp.model.Employee;
+import com.exist.HelpdeskApp.model.EmploymentStatus;
+import com.exist.HelpdeskApp.util.StringConverters;
+import liquibase.util.StringUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 
+import javax.persistence.criteria.Predicate;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 @Data
 @AllArgsConstructor
@@ -22,29 +32,73 @@ public class EmployeeFilterRequest {
     @Pattern(regexp = "asc|desc", message = "sortDir must be 'asc' or 'desc'")
     private String sortDir = "asc";
 
-    private String firstName;
-    private MatchType firstNameMatchType = MatchType.CONTAINS;
-    private String middleName;
-    private MatchType middleNameMatchType = MatchType.CONTAINS;
-    private String lastName;
-    private MatchType lastNameMatchType = MatchType.CONTAINS;
-    private String nameKeyword;
+    private String name;
 
-    private String street;
-    private String city;
-    private String region;
-    private String country;
-    private String addressKeyword;
+    private String address;
 
-    private String phoneNumber;
-    private String email;
-    private String telephoneNumber;
-    private String contactsKeyword;
+    private String contacts;
 
-    private String employmentStatus;
+    private String status;
 
     private Integer roleId;
     private String roleName;
 
     private boolean deleted = false;
+
+    public Specification<Employee> toSpec() {
+        return (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(cb.equal(root.get("deleted"), this.deleted));
+            if (StringUtil.isNotEmpty(this.name)) {
+                String pattern = StringConverters.likePattern(this.name);
+                 predicates.add(cb.or(
+                        cb.like(cb.lower(root.get("name").get("firstName")), pattern),
+                        cb.like(cb.lower(root.get("name").get("middleName")), pattern),
+                        cb.like(cb.lower(root.get("name").get("lastName")), pattern)
+                ));
+            }
+
+            if (StringUtil.isNotEmpty(this.address)) {
+                String pattern = StringConverters.likePattern(this.address);
+                predicates.add(cb.or(
+                        cb.like(cb.lower(root.get("address").get("street")), pattern),
+                        cb.like(cb.lower(root.get("address").get("city")), pattern),
+                        cb.like(cb.lower(root.get("address").get("region")), pattern),
+                        cb.like(cb.lower(root.get("address").get("country")), pattern)
+                ));
+            }
+
+            if (StringUtil.isNotEmpty(this.contacts)) {
+                String pattern = StringConverters.likePattern(this.contacts);
+                predicates.add(cb.or(
+                        cb.like(cb.lower(root.get("contacts").get("phoneNumber")), pattern),
+                        cb.like(cb.lower(root.get("contacts").get("email")), pattern),
+                        cb.like(cb.lower(root.get("contacts").get("telephoneNumber")), pattern)
+                ));
+            }
+
+            if (StringUtil.isNotEmpty(this.status)) {
+                String keyword = this.status.trim().toUpperCase();
+
+                Optional<EmploymentStatus> matchedStatus = Arrays.stream(EmploymentStatus.values())
+                        .filter(s -> s.name().contains(keyword))
+                        .findFirst();
+
+                matchedStatus.ifPresent(status ->
+                        predicates.add(cb.equal(root.get("employmentStatus"), status))
+                );
+            }
+
+            if (this.roleId != null) {
+                predicates.add(cb.equal(root.get("role").get("id"), this.roleId));
+            }
+
+            if (StringUtil.isNotEmpty(this.roleName)) {
+                String pattern = StringConverters.likePattern(this.roleName);
+                predicates.add(cb.like(cb.lower(root.get("role").get("roleName")), pattern));
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+    }
 }

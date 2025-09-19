@@ -43,24 +43,7 @@ public class TicketServiceImpl implements TicketService {
         Employee employee = employeeRepository.findByIdAndDeletedFalse(employeeId)
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + employeeId + " not found!"));
 
-        Specification<Ticket> spec = Specification.where(null);
-
-        if (request.getTitle() != null) spec = spec.and(TicketSpecifications.hasTitle(request.getTitle(), request.getTitleMatchType()));
-        if (request.getBody() != null) spec = spec.and(TicketSpecifications.hasBody(request.getBody()));
-        if (request.getAssigneeId() != null) spec = spec.and(TicketSpecifications.hasAssigneeId(request.getAssigneeId()));
-        if (request.getAssigneeName() != null) spec = spec.and(TicketSpecifications.hasAssigneeName(request.getAssigneeName()));
-
-        if (request.getCreatedAfter() != null) spec = spec.and(TicketSpecifications.hasCreatedAfter(request.getCreatedAfter()));
-        if (request.getCreatedBefore() != null) spec = spec.and(TicketSpecifications.hasCreatedBefore(request.getCreatedBefore()));
-        if (request.getCreatedAfter() != null && request.getCreatedBefore() != null) spec = spec.and(TicketSpecifications.createdBetween(request.getCreatedAfter(), request.getCreatedBefore()));
-        if (request.getCreatorId() != null) spec = spec.and(TicketSpecifications.hasCreatedId(request.getCreatorId()));
-        if (request.getCreatorName() != null) spec = spec.and(TicketSpecifications.hasCreatorName(request.getCreatorName()));
-
-        if (request.getUpdatedAfter() != null) spec = spec.and(TicketSpecifications.hasUpdatedAfter(request.getUpdatedAfter()));
-        if (request.getUpdatedBefore() != null) spec = spec.and(TicketSpecifications.hasUpdatedBefore(request.getUpdatedBefore()));
-        if (request.getUpdatedAfter() != null && request.getUpdatedBefore() != null) spec = spec.and(TicketSpecifications.updatedBetween(request.getUpdatedAfter(), request.getUpdatedBefore()));
-        if (request.getUpdaterId() != null) spec = spec.and(TicketSpecifications.hasUpdaterId(request.getUpdaterId()));
-        if (request.getUpdaterName() != null) spec = spec.and(TicketSpecifications.hasUpdaterName(request.getUpdaterName()));
+        Specification<Ticket> spec = request.toSpec();
 
         if (request.getRemarks() != null) spec = spec.and(TicketSpecifications.hasRemarks(request.getRemarks()));
 

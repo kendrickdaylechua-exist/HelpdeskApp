@@ -16,7 +16,7 @@ import com.exist.HelpdeskApp.model.embeddable.Contacts;
 import com.exist.HelpdeskApp.model.embeddable.Name;
 import com.exist.HelpdeskApp.repository.EmployeeRepository;
 import com.exist.HelpdeskApp.repository.TicketRepository;
-import com.exist.HelpdeskApp.repository.specifications.MatchType;
+//import com.exist.HelpdeskApp.repository.specifications.MatchType;
 import com.exist.HelpdeskApp.service.Implementations.TicketServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -123,7 +123,7 @@ public class TicketServiceImplTest {
         request.setSortDir("asc");
         request.setTitle("Sample Ticket");
         request.setBody("Sample Body");
-        request.setTitleMatchType(MatchType.CONTAINS);
+//        request.setTitleMatchType(MatchType.CONTAINS);
         request.setStatus("filed");
         request.setAssigneeId(2);
         request.setAssigneeName("First1");

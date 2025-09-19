@@ -1,5 +1,5 @@
-package com.exist.HelpdeskApp.repository.specifications;
-
-public enum MatchType {
-    CONTAINS, EXACT
-}
+//package com.exist.HelpdeskApp.repository.specifications;
+//
+//public enum MatchType {
+//    CONTAINS, EXACT
+//}

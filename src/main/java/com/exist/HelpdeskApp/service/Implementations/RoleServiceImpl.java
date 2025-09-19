@@ -41,11 +41,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Transactional
     public Page<RoleResponse> getRoles(RoleFilterRequest request) {
-        Specification<Role> spec = Specification.where(null);
-
-        spec = spec.and(RoleSpecifications.hasDeleted(request.isDeleted()));
-        if(request.getRoleName() != null) spec = spec.and(RoleSpecifications.hasRoleName(request.getRoleName()));
-
+        Specification<Role> spec = request.toSpec();
         Sort sort = request.getSortDir().equalsIgnoreCase("desc") ? Sort.by(request.getSortBy()).descending() : Sort.by(request.getSortBy()).ascending();
         Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sort);
         Page<Role> rolePage = roleRepository.findAll(spec, pageable);

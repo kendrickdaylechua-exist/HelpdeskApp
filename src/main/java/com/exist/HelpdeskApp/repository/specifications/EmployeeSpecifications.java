@@ -11,29 +11,29 @@ import javax.persistence.criteria.Predicate;
 
 public class EmployeeSpecifications {
 
-    private static Predicate buildStringPredicate(CriteriaBuilder cb, Path<String> path, String value, MatchType type) {
-        if (value == null || type == null) return null;
+//    private static Predicate buildStringPredicate(CriteriaBuilder cb, Path<String> path, String value, MatchType type) {
+//        if (value == null || type == null) return null;
+//
+//        switch(type) {
+//            case EXACT:
+//                return cb.equal(cb.lower(path), value.toLowerCase());
+//            case CONTAINS:
+//                return cb.like(cb.lower(path), StringConverters.likePattern(value));
+//            default:
+//                return null;
+//        }
+//    }
 
-        switch(type) {
-            case EXACT:
-                return cb.equal(cb.lower(path), value.toLowerCase());
-            case CONTAINS:
-                return cb.like(cb.lower(path), StringConverters.likePattern(value));
-            default:
-                return null;
-        }
+    public static Specification<Employee> hasFirstName(String value) {
+        return (root, query, cb) -> cb.like(root.get("name").get("firstName"), value);
     }
 
-    public static Specification<Employee> hasFirstName(String value, MatchType matchType) {
-        return (root, query, cb) -> buildStringPredicate(cb, root.get("name").get("firstName"), value, matchType);
+    public static Specification<Employee> hasMiddleName(String value) {
+        return (root, query, cb) -> cb.like(root.get("name").get("middleName"), value);
     }
 
-    public static Specification<Employee> hasMiddleName(String value, MatchType matchType) {
-        return (root, query, cb) -> buildStringPredicate(cb, root.get("name").get("middleName"), value, matchType);
-    }
-
-    public static Specification<Employee> hasLastName(String value, MatchType matchType) {
-        return (root, query, cb) -> buildStringPredicate(cb, root.get("name").get("lastName"), value, matchType);
+    public static Specification<Employee> hasLastName(String value) {
+        return (root, query, cb) -> cb.like(root.get("name").get("lastName"), value);
     }
 
     public static Specification<Employee> nameContains(String value) {

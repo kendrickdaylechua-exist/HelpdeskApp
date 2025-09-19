@@ -14,7 +14,6 @@ public interface EmployeeMapper {
     //Request DTO to Entity
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "deleted", ignore = true)
-//    @Mapping(source = "contacts", target = "contact")
     Employee toEntity(EmployeeRequest request);
 
     //Entity to Response DTO

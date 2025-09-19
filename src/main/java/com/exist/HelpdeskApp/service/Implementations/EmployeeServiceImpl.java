@@ -12,7 +12,6 @@ import com.exist.HelpdeskApp.model.Role;
 import com.exist.HelpdeskApp.repository.EmployeeRepository;
 import com.exist.HelpdeskApp.repository.RoleRepository;
 import com.exist.HelpdeskApp.repository.TicketRepository;
-import com.exist.HelpdeskApp.repository.specifications.EmployeeSpecifications;
 import com.exist.HelpdeskApp.service.EmployeeService;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -58,28 +57,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Transactional
     public Page<EmployeeResponse> getEmployees(EmployeeFilterRequest request) {
-        Specification<Employee> spec = Specification.where(null);
-
-        spec = spec.and(EmployeeSpecifications.hasDeleted(request.isDeleted()));
-
-        if (request.getFirstName() != null) spec = spec.and(EmployeeSpecifications.hasFirstName(request.getFirstName(), request.getFirstNameMatchType()));
-        if (request.getMiddleName() != null) spec = spec.and(EmployeeSpecifications.hasMiddleName(request.getMiddleName(), request.getMiddleNameMatchType()));
-        if (request.getLastName() != null) spec = spec.and(EmployeeSpecifications.hasLastName(request.getLastName(), request.getLastNameMatchType()));
-        if (request.getNameKeyword() != null) spec = spec.and(EmployeeSpecifications.nameContains(request.getNameKeyword()));
-
-        if (request.getStreet() != null) spec = spec.and(EmployeeSpecifications.hasStreet(request.getStreet()));
-        if (request.getCity() != null) spec = spec.and(EmployeeSpecifications.hasCity(request.getCity()));
-        if (request.getRegion() != null) spec = spec.and(EmployeeSpecifications.hasRegion(request.getRegion()));
-        if (request.getCountry() != null) spec = spec.and(EmployeeSpecifications.hasCountry(request.getCountry()));
-        if (request.getAddressKeyword() != null) spec = spec.and(EmployeeSpecifications.addressContains(request.getAddressKeyword()));
-
-        if (request.getPhoneNumber() != null) spec = spec.and(EmployeeSpecifications.hasPhoneNumber(request.getPhoneNumber()));
-        if (request.getEmail() != null) spec = spec.and(EmployeeSpecifications.hasEmail(request.getEmail()));
-        if (request.getTelephoneNumber() != null) spec = spec.and(EmployeeSpecifications.hasTelephoneNumber(request.getTelephoneNumber()));
-        if (request.getEmploymentStatus() != null) spec = spec.and(EmployeeSpecifications.hasEmploymentStatus(request.getEmploymentStatus()));
-        if (request.getRoleId() != null) spec = spec.and(EmployeeSpecifications.hasRoleId(request.getRoleId()));
-        if (request.getRoleName() != null) spec = spec.and(EmployeeSpecifications.hasRoleName(request.getRoleName()));
-
+        Specification<Employee> spec = request.toSpec();
         Sort sort = request.getSortDir().equalsIgnoreCase("desc") ? Sort.by(request.getSortBy()).descending() : Sort.by(request.getSortBy()).ascending();
         Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sort);
         Page<Employee> employeePage = employeeRepository.findAll(spec, pageable);

@@ -10,21 +10,21 @@ import javax.persistence.criteria.Predicate;
 import java.time.Instant;
 
 public class TicketSpecifications {
-    private static Predicate buildStringPredicate(CriteriaBuilder cb, Path<String> path, String value, MatchType type) {
-        if (value == null || type == null) return null;
+//    private static Predicate buildStringPredicate(CriteriaBuilder cb, Path<String> path, String value, MatchType type) {
+//        if (value == null || type == null) return null;
+//
+//        switch (type) {
+//            case EXACT:
+//                return cb.equal(cb.lower(path), value.toLowerCase());
+//            case CONTAINS:
+//                return cb.like(cb.lower(path), StringConverters.likePattern(value.toLowerCase()));
+//            default:
+//                return null;
+//        }
+//    }
 
-        switch (type) {
-            case EXACT:
-                return cb.equal(cb.lower(path), value.toLowerCase());
-            case CONTAINS:
-                return cb.like(cb.lower(path), StringConverters.likePattern(value.toLowerCase()));
-            default:
-                return null;
-        }
-    }
-
-    public static Specification<Ticket> hasTitle(String value, MatchType matchType) {
-        return (root, query, cb) -> buildStringPredicate(cb, root.get("title"), value, matchType);
+    public static Specification<Ticket> hasTitle(String value) {
+        return (root, query, cb) -> cb.like(cb.lower(root.get("title")), value);
     }
 
     public static Specification<Ticket> hasBody(String value) {
