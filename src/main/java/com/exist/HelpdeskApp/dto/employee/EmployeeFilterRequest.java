@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Predicate;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class EmployeeFilterRequest {
     private int page = 0;
 
     @Min(1)
+    @Max(10)
     private int size = 5;
     private String sortBy = "id";
 

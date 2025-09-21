@@ -52,18 +52,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    66.7%
+    100%
   </span>
   <span class="absValue">
-    (4/6)
+    (6/6)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    56.7%
+    100%
   </span>
   <span class="absValue">
-    (17/30)
+    (30/30)
   </span>
 </td>
 </tr>
@@ -127,110 +127,30 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
 &nbsp;    public ResponseEntity&lt;ErrorResponse&gt; handleTypeMismatchException(MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
-<b class="nc">&nbsp;        log.error(&quot;Unhandled exception at {}: {}&quot;, request.getRequestURI(), ex.getMessage(), ex);</b>
-<b class="nc">&nbsp;        ErrorResponse error = new ErrorResponse(</b>
-<b class="nc">&nbsp;                Instant.now().toString(),</b>
-<b class="nc">&nbsp;                HttpStatus.BAD_REQUEST.value(),</b>
+<b class="fc">&nbsp;        log.error(&quot;Unhandled exception at {}: {}&quot;, request.getRequestURI(), ex.getMessage(), ex);</b>
+<b class="fc">&nbsp;        ErrorResponse error = new ErrorResponse(</b>
+<b class="fc">&nbsp;                Instant.now().toString(),</b>
+<b class="fc">&nbsp;                HttpStatus.BAD_REQUEST.value(),</b>
 &nbsp;                &quot;Type Mismatch&quot;,
-<b class="nc">&nbsp;                &quot;Invalid Value: &quot; + ex.getValue(),</b>
-<b class="nc">&nbsp;                request.getRequestURI()</b>
+<b class="fc">&nbsp;                &quot;Invalid Value: &quot; + ex.getValue(),</b>
+<b class="fc">&nbsp;                request.getRequestURI()</b>
 &nbsp;        );
-<b class="nc">&nbsp;        return new ResponseEntity&lt;&gt;(error, HttpStatus.BAD_REQUEST);</b>
+<b class="fc">&nbsp;        return new ResponseEntity&lt;&gt;(error, HttpStatus.BAD_REQUEST);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    @ExceptionHandler(HttpMessageNotReadableException.class)
 &nbsp;    public ResponseEntity&lt;ErrorResponse&gt; handleEnumMismatch(HttpServletRequest request) {
 &nbsp;
-<b class="nc">&nbsp;        ErrorResponse errorResponse = new ErrorResponse(</b>
-<b class="nc">&nbsp;                Instant.now().toString(),</b>
-<b class="nc">&nbsp;                HttpStatus.BAD_REQUEST.value(),</b>
-<b class="nc">&nbsp;                HttpStatus.BAD_REQUEST.getReasonPhrase(),</b>
+<b class="fc">&nbsp;        ErrorResponse errorResponse = new ErrorResponse(</b>
+<b class="fc">&nbsp;                Instant.now().toString(),</b>
+<b class="fc">&nbsp;                HttpStatus.BAD_REQUEST.value(),</b>
+<b class="fc">&nbsp;                HttpStatus.BAD_REQUEST.getReasonPhrase(),</b>
 &nbsp;                &quot;Invalid status!&quot;,
-<b class="nc">&nbsp;                request.getRequestURI()</b>
+<b class="fc">&nbsp;                request.getRequestURI()</b>
 &nbsp;        );
 &nbsp;
-<b class="nc">&nbsp;        return ResponseEntity.badRequest().body(errorResponse);</b>
+<b class="fc">&nbsp;        return ResponseEntity.badRequest().body(errorResponse);</b>
 &nbsp;    }
-&nbsp;
-&nbsp;//    @ExceptionHandler(EmployeeNotFoundException.class)
-&nbsp;//    public ResponseEntity&lt;ErrorResponse&gt; handleEmployeeNotFound(EmployeeNotFoundException ex, HttpServletRequest request) {
-&nbsp;//        log.error(&quot;Unhandled exception at {}: {}&quot;, request.getRequestURI(), ex.getMessage(), ex);
-&nbsp;//        ErrorResponse error = new ErrorResponse(
-&nbsp;//                Instant.now().toString(),
-&nbsp;//                HttpStatus.NOT_FOUND.value(),
-&nbsp;//                &quot;Not Found&quot;,
-&nbsp;//                ex.getMessage(),
-&nbsp;//                request.getRequestURI()
-&nbsp;//        );
-&nbsp;//        return new ResponseEntity&lt;&gt;(error, HttpStatus.NOT_FOUND);
-&nbsp;//    }
-&nbsp;//
-&nbsp;//    @ExceptionHandler(RoleNotFoundException.class)
-&nbsp;//    public ResponseEntity&lt;ErrorResponse&gt; handleRoleNotFound(RoleNotFoundException ex, HttpServletRequest request) {
-&nbsp;//        log.error(&quot;Unhandled exception at {}: {}&quot;, request.getRequestURI(), ex.getMessage(), ex);
-&nbsp;//        ErrorResponse error = new ErrorResponse(
-&nbsp;//                Instant.now().toString(),
-&nbsp;//                HttpStatus.NOT_FOUND.value(),
-&nbsp;//                &quot;Not Found&quot;,
-&nbsp;//                ex.getMessage(),
-&nbsp;//                request.getRequestURI()
-&nbsp;//        );
-&nbsp;//        return new ResponseEntity&lt;&gt;(error, HttpStatus.NOT_FOUND);
-&nbsp;//    }
-&nbsp;//
-&nbsp;//    @ExceptionHandler(TicketNotFoundException.class)
-&nbsp;//    public ResponseEntity&lt;ErrorResponse&gt; handleTicketNotFound(TicketNotFoundException ex, HttpServletRequest request) {
-&nbsp;//        log.error(&quot;Unhandled exception at {}: {}&quot;, request.getRequestURI(), ex.getMessage(), ex);
-&nbsp;//        ErrorResponse error = new ErrorResponse(
-&nbsp;//                Instant.now().toString(),
-&nbsp;//                HttpStatus.NOT_FOUND.value(),
-&nbsp;//                &quot;Not Found&quot;,
-&nbsp;//                ex.getMessage(),
-&nbsp;//                request.getRequestURI()
-&nbsp;//        );
-&nbsp;//        return new ResponseEntity&lt;&gt;(error, HttpStatus.NOT_FOUND);
-&nbsp;//    }
-&nbsp;
-&nbsp;//    @ExceptionHandler(UnauthorizedActionException.class)
-&nbsp;//    public ResponseEntity&lt;ErrorResponse&gt; handleUnauthorizedAction(UnauthorizedActionException ex, HttpServletRequest request) {
-&nbsp;//        log.error(&quot;Unhandled exception at {}: {}&quot;, request.getRequestURI(), ex.getMessage(), ex);
-&nbsp;//        ErrorResponse error = new ErrorResponse(
-&nbsp;//                Instant.now().toString(),
-&nbsp;//                ex.getStatus().value(),
-&nbsp;//                ex.getStatus().getReasonPhrase(),
-&nbsp;//                ex.getMessage(),
-&nbsp;//                request.getRequestURI()
-&nbsp;//        );
-&nbsp;//        return new ResponseEntity&lt;&gt;(error, ex.getStatus()); //ResponseEntity&lt;&gt;(bodyObject, HttpStatus.OK)
-&nbsp;//    }
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;//    @ExceptionHandler(InvalidEmployeeStatusException.class)
-&nbsp;//    public ResponseEntity&lt;ErrorResponse&gt; handleBadRequestException(InvalidEmployeeStatusException ex, HttpServletRequest request) {
-&nbsp;//        log.error(&quot;Unhandled exception at {}: {}&quot;, request.getRequestURI(), ex.getMessage(), ex);
-&nbsp;//        ErrorResponse error = new ErrorResponse(
-&nbsp;//                Instant.now().toString(),
-&nbsp;//                HttpStatus.BAD_REQUEST.value(),
-&nbsp;//                &quot;Bad Request&quot;,
-&nbsp;//                ex.getMessage(),
-&nbsp;//                request.getRequestURI()
-&nbsp;//        );
-&nbsp;//        return new ResponseEntity&lt;&gt;(error, HttpStatus.BAD_REQUEST);
-&nbsp;//    }
-&nbsp;
-&nbsp;//    @ExceptionHandler(Exception.class)
-&nbsp;//    public ResponseEntity&lt;ErrorResponse&gt; handleGenericException(Exception ex, HttpServletRequest request) {
-&nbsp;//        log.error(&quot;Unhandled exception at {}: {}&quot;, request.getRequestURI(), ex.getMessage(), ex);
-&nbsp;//        ErrorResponse error = new ErrorResponse(
-&nbsp;//                Instant.now().toString(),
-&nbsp;//                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-&nbsp;//                &quot;Internal Server Error&quot;,
-&nbsp;//                &quot;Please contact the devs&quot;,
-&nbsp;//                request.getRequestURI()
-&nbsp;//        );
-&nbsp;//        return new ResponseEntity&lt;&gt;(error, HttpStatus.INTERNAL_SERVER_ERROR);
-&nbsp;//    }
 &nbsp;}
 </code>
 </pre>
@@ -255,7 +175,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-09-17 02:10</div>
+    <div style="float:right;">generated on 2025-09-21 21:46</div>
 </div>
 </body>
 </html>

@@ -48,18 +48,18 @@ Current scope:     <a href="../../index.html">all classes</a>
   <td class="name">AddressRequest</td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    100%
   </span>
   <span class="absValue">
-    (0/1)
+    (1/1)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    85.7%
   </span>
   <span class="absValue">
-    (0/7)
+    (6/7)
   </span>
 </td>
 <td class="coverageStat">
@@ -72,10 +72,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    0%
+    85.7%
   </span>
   <span class="absValue">
-    (0/7)
+    (6/7)
   </span>
 </td>
 </tr>
@@ -94,22 +94,27 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;import lombok.NoArgsConstructor;
 &nbsp;
 &nbsp;import javax.validation.constraints.NotBlank;
+&nbsp;import javax.validation.constraints.Size;
 &nbsp;
-<b class="nc">&nbsp;@Data</b>
+<b class="pc">&nbsp;@Data</b>
 <b class="nc">&nbsp;@AllArgsConstructor</b>
-<b class="nc">&nbsp;@NoArgsConstructor</b>
+<b class="fc">&nbsp;@NoArgsConstructor</b>
 &nbsp;public class AddressRequest {
 &nbsp;    @NotBlank(message = &quot;Street cannot be blank&quot;)
-<b class="nc">&nbsp;    private String street;</b>
+&nbsp;    @Size(max = 100, message = &quot;Street cannot exceed 100 characters&quot;)
+<b class="fc">&nbsp;    private String street;</b>
 &nbsp;
 &nbsp;    @NotBlank(message = &quot;City cannot be blank&quot;)
-<b class="nc">&nbsp;    private String city;</b>
+&nbsp;    @Size(max = 50, message = &quot;City cannot exceed 50 characters&quot;)
+<b class="fc">&nbsp;    private String city;</b>
 &nbsp;
 &nbsp;    @NotBlank(message = &quot;Region cannot be blank&quot;)
-<b class="nc">&nbsp;    private String region;</b>
+&nbsp;    @Size(max = 50, message = &quot;Region cannot exceed 50 characters&quot;)
+<b class="fc">&nbsp;    private String region;</b>
 &nbsp;
 &nbsp;    @NotBlank(message = &quot;Country cannot be blank&quot;)
-<b class="nc">&nbsp;    private String country;</b>
+&nbsp;    @Size(max = 50, message = &quot;Country cannot exceed 50 characters&quot;)
+<b class="fc">&nbsp;    private String country;</b>
 &nbsp;}
 </code>
 </pre>
@@ -134,7 +139,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-09-17 02:10</div>
+    <div style="float:right;">generated on 2025-09-21 21:47</div>
 </div>
 </body>
 </html>

@@ -26,6 +26,8 @@ public class NameRequestTest {
         Set<ConstraintViolation<NameRequest>> violations = validator.validate(request);
         assertTrue(violations.isEmpty());
         assertEquals("First1", request.getFirstName());
+        assertEquals("Middle1", request.getMiddleName());
+        assertEquals("Last1", request.getLastName());
     }
 
     @ParameterizedTest

@@ -9,7 +9,6 @@ import com.exist.HelpdeskApp.exception.businessexceptions.RoleNotFoundException;
 import com.exist.HelpdeskApp.model.Role;
 import com.exist.HelpdeskApp.repository.EmployeeRepository;
 import com.exist.HelpdeskApp.repository.RoleRepository;
-import com.exist.HelpdeskApp.repository.specifications.RoleSpecifications;
 import com.exist.HelpdeskApp.service.RoleService;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;

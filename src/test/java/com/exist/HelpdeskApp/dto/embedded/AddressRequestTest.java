@@ -25,7 +25,10 @@ public class AddressRequestTest {
 
         Set<ConstraintViolation<AddressRequest>> violations = validator.validate(request);
         assertTrue(violations.isEmpty());
+        assertEquals("123 Street St.", request.getStreet());
         assertEquals("Manila", request.getCity());
+        assertEquals("Region 1", request.getRegion());
+        assertEquals("Philippines", request.getCountry());
     }
 
     @ParameterizedTest

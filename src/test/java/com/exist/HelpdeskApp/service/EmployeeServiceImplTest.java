@@ -16,7 +16,6 @@ import com.exist.HelpdeskApp.model.embeddable.Name;
 import com.exist.HelpdeskApp.repository.EmployeeRepository;
 import com.exist.HelpdeskApp.repository.RoleRepository;
 import com.exist.HelpdeskApp.repository.TicketRepository;
-//import com.exist.HelpdeskApp.repository.specifications.MatchType;
 import com.exist.HelpdeskApp.service.Implementations.EmployeeServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -107,21 +106,8 @@ public class EmployeeServiceImplTest {
         request.setSize(10);
         request.setSortBy("id");
         request.setSortDir("asc");
-        request.setFirstName("First1");
-//        request.setFirstNameMatchType(MatchType.EXACT);
-        request.setMiddleName("Middle1");
-//        request.setMiddleNameMatchType(MatchType.EXACT);
-        request.setLastName("Last1");
-//        request.setLastNameMatchType(MatchType.EXACT);
         request.setName("first");
-        request.setStreet("123 Test St.");
-        request.setCity("Manila");
-        request.setRegion("Region 1");
-        request.setCountry("Philippines");
         request.setAddress("phil");
-        request.setPhoneNumber("0912345678");
-        request.setEmail("sample@example.com");
-        request.setTelephoneNumber("021234567");
         request.setContacts("region");
         request.setStatus("full_time");
         request.setRoleId(1);
@@ -183,7 +169,7 @@ public class EmployeeServiceImplTest {
     @Test
     void testNoEmployeeFoundInFilter() {
         EmployeeFilterRequest request = new EmployeeFilterRequest();
-        request.setFirstName("First1");
+        request.setName("First1");
         Page<Employee> employeePage = new PageImpl<>(List.of(employee));
         when(employeeRepository.findAll(any(Specification.class), any(Pageable.class)))
                 .thenReturn(employeePage);

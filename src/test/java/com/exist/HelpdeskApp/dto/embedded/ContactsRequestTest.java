@@ -26,6 +26,8 @@ public class ContactsRequestTest {
         Set<ConstraintViolation<ContactsRequest>> violations = validator.validate(request);
         assertTrue(violations.isEmpty());
         assertEquals("0912345678", request.getPhoneNumber());
+        assertEquals("sample@example.com", request.getEmail());
+        assertEquals("021234567", request.getTelephoneNumber());
     }
 
     @ParameterizedTest

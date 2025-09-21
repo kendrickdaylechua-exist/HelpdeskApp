@@ -26,9 +26,9 @@ public class TicketResponseTest {
                 "Body of the ticket",
                 "Assignee Name",
                 TicketStatus.FILED,
-                Instant.now(),
+                Instant.parse("2025-09-19T04:39:18.617856200Z"),
                 "Assignee Name",
-                Instant.now(),
+                Instant.parse("2025-09-19T04:39:18.617856200Z"),
                 "Assignee Name",
                 "Remarks of the ticket"
                 );
@@ -37,9 +37,9 @@ public class TicketResponseTest {
         assertEquals("Ticket 1", response.getTitle());
         assertEquals("Body of the ticket", response.getBody());
         assertEquals("Assignee Name", response.getAssigneeName());
-        assertEquals(Instant.now(), response.getCreateDate());
+        assertEquals(Instant.parse("2025-09-19T04:39:18.617856200Z"), response.getCreateDate());
         assertEquals("Assignee Name", response.getCreatedByEmployeeName());
-        assertEquals(Instant.now(), response.getUpdatedDate());
+        assertEquals(Instant.parse("2025-09-19T04:39:18.617856200Z"), response.getUpdatedDate());
         assertEquals("Assignee Name", response.getUpdatedByEmployeeName());
         assertEquals("Remarks of the ticket", response.getRemarks());
     }

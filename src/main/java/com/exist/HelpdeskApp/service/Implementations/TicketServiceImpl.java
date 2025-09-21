@@ -11,7 +11,6 @@ import com.exist.HelpdeskApp.model.Employee;
 import com.exist.HelpdeskApp.model.Ticket;
 import com.exist.HelpdeskApp.repository.EmployeeRepository;
 import com.exist.HelpdeskApp.repository.TicketRepository;
-import com.exist.HelpdeskApp.repository.specifications.TicketSpecifications;
 import com.exist.HelpdeskApp.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -44,8 +43,6 @@ public class TicketServiceImpl implements TicketService {
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + employeeId + " not found!"));
 
         Specification<Ticket> spec = request.toSpec();
-
-        if (request.getRemarks() != null) spec = spec.and(TicketSpecifications.hasRemarks(request.getRemarks()));
 
         Sort sort = request.getSortDir().equalsIgnoreCase("desc") ? Sort.by(request.getSortBy()).descending() : Sort.by(request.getSortBy()).ascending();
         Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sort);

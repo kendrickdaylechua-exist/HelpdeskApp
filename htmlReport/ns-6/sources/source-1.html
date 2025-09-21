@@ -56,10 +56,10 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    100%
+    72.7%
   </span>
   <span class="absValue">
-    (9/9)
+    (8/11)
   </span>
 </td>
 <td class="coverageStat">
@@ -67,15 +67,15 @@ Current scope:     <a href="../../index.html">all classes</a>
     0%
   </span>
   <span class="absValue">
-    (0/38)
+    (0/40)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    91.7%
+    61.1%
   </span>
   <span class="absValue">
-    (11/12)
+    (11/18)
   </span>
 </td>
 </tr>
@@ -89,12 +89,19 @@ Current scope:     <a href="../../index.html">all classes</a>
 <pre>
 <code class="sourceCode" id="sourceCode">&nbsp;package com.exist.HelpdeskApp.dto.role;
 &nbsp;
+&nbsp;import com.exist.HelpdeskApp.model.Role;
+&nbsp;import com.exist.HelpdeskApp.util.StringConverters;
+&nbsp;import liquibase.util.StringUtil;
 &nbsp;import lombok.AllArgsConstructor;
 &nbsp;import lombok.Data;
 &nbsp;import lombok.NoArgsConstructor;
+&nbsp;import org.springframework.data.jpa.domain.Specification;
 &nbsp;
+&nbsp;import javax.persistence.criteria.Predicate;
 &nbsp;import javax.validation.constraints.Min;
 &nbsp;import javax.validation.constraints.Pattern;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
 &nbsp;
 <b class="pc">&nbsp;@Data</b>
 <b class="nc">&nbsp;@AllArgsConstructor</b>
@@ -110,9 +117,20 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="fc">&nbsp;    @Pattern(regexp = &quot;asc|desc&quot;, message = &quot;sortDir must be &#39;asc&#39; or &#39;desc&#39;&quot;)</b>
 <b class="fc">&nbsp;    private String sortDir = &quot;asc&quot;;</b>
 &nbsp;
-<b class="fc">&nbsp;    private String roleName;</b>
+<b class="nc">&nbsp;    private String roleName;</b>
 &nbsp;
-<b class="fc">&nbsp;    private boolean deleted;</b>
+<b class="nc">&nbsp;    private boolean deleted;</b>
+&nbsp;
+&nbsp;    public Specification&lt;Role&gt; toSpec() {
+<b class="fc">&nbsp;        List&lt;Predicate&gt; predicates = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        return (root, query, cb) -&gt; {</b>
+<b class="nc">&nbsp;            predicates.add(cb.equal(root.get(&quot;deleted&quot;), this.deleted));</b>
+<b class="nc">&nbsp;            if (StringUtil.isNotEmpty(this.roleName)) {</b>
+<b class="nc">&nbsp;                predicates.add(cb.like(cb.lower(root.get(&quot;roleName&quot;)), StringConverters.likePattern(this.roleName)));</b>
+&nbsp;            }
+<b class="nc">&nbsp;            return cb.and(predicates.toArray(new Predicate[0]));</b>
+&nbsp;        };
+&nbsp;    }
 &nbsp;}
 </code>
 </pre>
@@ -137,7 +155,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-09-17 02:10</div>
+    <div style="float:right;">generated on 2025-09-21 21:47</div>
 </div>
 </body>
 </html>
