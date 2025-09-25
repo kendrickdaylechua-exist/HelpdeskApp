@@ -1,8 +1,6 @@
 package com.exist.HelpdeskApp;
 
-import com.exist.HelpdeskApp.dto.employee.EmployeeRequest;
 import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
-import com.exist.HelpdeskApp.dto.role.RoleResponse;
 import com.exist.HelpdeskApp.model.Employee;
 import com.exist.HelpdeskApp.model.EmploymentStatus;
 import com.exist.HelpdeskApp.model.Role;

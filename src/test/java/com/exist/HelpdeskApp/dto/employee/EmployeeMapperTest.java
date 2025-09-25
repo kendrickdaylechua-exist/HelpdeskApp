@@ -1,5 +1,5 @@
 package com.exist.HelpdeskApp.dto.employee;
-import com.exist.HelpdeskApp.model.EmployeeProfile;
+import com.exist.HelpdeskApp.model.Employee;
 import com.exist.HelpdeskApp.model.EmploymentStatus;
 import com.exist.HelpdeskApp.model.Role;
 import com.exist.HelpdeskApp.model.embeddable.Address;
@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class EmployeeProfileMapperTest {
+public class EmployeeMapperTest {
 
     private EmployeeMapper mapper;
 
@@ -37,7 +37,7 @@ public class EmployeeProfileMapperTest {
                 EmploymentStatus.FULL_TIME,
                 1
         );
-        EmployeeProfile entity = mapper.toEntity(request);
+        Employee entity = mapper.toEntity(request);
         assertEquals("First1", entity.getName().getFirstName());
         assertEquals(25, entity.getAge());
         assertEquals("Philippines", entity.getAddress().getCountry());
@@ -57,7 +57,7 @@ public class EmployeeProfileMapperTest {
                 false,
                 1
         );
-        EmployeeProfile employeeProfile = new EmployeeProfile(
+        Employee employee = new Employee(
                 2,
                 name1,
                 25,
@@ -69,7 +69,7 @@ public class EmployeeProfileMapperTest {
                 1
         );
 
-        EmployeeResponse response = mapper.toResponse(employeeProfile);
+        EmployeeResponse response = mapper.toResponse(employee);
 
         assertEquals(2, response.getId());
         assertEquals("First1", response.getName().getFirstName());
@@ -94,21 +94,21 @@ public class EmployeeProfileMapperTest {
                 EmploymentStatus.FULL_TIME,
                 1
         );
-        EmployeeProfile employeeProfile = new EmployeeProfile();
-        employeeProfile.setName(name1);
-        employeeProfile.setAge(40);
-        employeeProfile.setAddress(address1);
-        employeeProfile.setContacts(contacts1);
-        employeeProfile.setEmploymentStatus(EmploymentStatus.INTERN);
+        Employee employee = new Employee();
+        employee.setName(name1);
+        employee.setAge(40);
+        employee.setAddress(address1);
+        employee.setContacts(contacts1);
+        employee.setEmploymentStatus(EmploymentStatus.INTERN);
 
-        mapper.toUpdate(request, employeeProfile);
+        mapper.toUpdate(request, employee);
 
-        assertEquals("First1", employeeProfile.getName().getFirstName());
-        assertEquals(25, employeeProfile.getAge());
-        assertEquals("Philippines", employeeProfile.getAddress().getCountry());
-        assertEquals("0912345678", employeeProfile.getContacts().getPhoneNumber());
-        assertEquals(EmploymentStatus.FULL_TIME, employeeProfile.getEmploymentStatus());
-        assertNull(employeeProfile.getRole());
+        assertEquals("First1", employee.getName().getFirstName());
+        assertEquals(25, employee.getAge());
+        assertEquals("Philippines", employee.getAddress().getCountry());
+        assertEquals("0912345678", employee.getContacts().getPhoneNumber());
+        assertEquals(EmploymentStatus.FULL_TIME, employee.getEmploymentStatus());
+        assertNull(employee.getRole());
     }
 
     @Test
@@ -127,7 +127,7 @@ public class EmployeeProfileMapperTest {
                 false,
                 1
         );
-        EmployeeProfile employeeProfile1 = new EmployeeProfile(
+        Employee employee1 = new Employee(
                 2,
                 name1,
                 25,
@@ -138,7 +138,7 @@ public class EmployeeProfileMapperTest {
                 false,
                 1
         );
-        EmployeeProfile employeeProfile2 = new EmployeeProfile(
+        Employee employee2 = new Employee(
                 3,
                 name2,
                 30,
@@ -150,11 +150,11 @@ public class EmployeeProfileMapperTest {
                 1
         );
 
-        List<EmployeeProfile> employeeProfiles = new ArrayList<>();
-        employeeProfiles.add(employeeProfile1);
-        employeeProfiles.add(employeeProfile2);
+        List<Employee> employees = new ArrayList<>();
+        employees.add(employee1);
+        employees.add(employee2);
 
-        List<EmployeeResponse> responses = mapper.toResponseList(employeeProfiles);
+        List<EmployeeResponse> responses = mapper.toResponseList(employees);
 
         assertEquals(2, responses.size());
         assertEquals("First1", responses.get(0).getName().getFirstName());

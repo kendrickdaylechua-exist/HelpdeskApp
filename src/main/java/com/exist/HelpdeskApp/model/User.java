@@ -21,4 +21,6 @@ public class User {
 
     @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Employee employee;
+
+    private boolean enabled;
 }

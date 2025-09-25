@@ -7,7 +7,7 @@ import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
 import com.exist.HelpdeskApp.exception.businessexceptions.EmployeeNotFoundException;
 import com.exist.HelpdeskApp.exception.businessexceptions.EntityInUseException;
 import com.exist.HelpdeskApp.exception.businessexceptions.RoleNotFoundException;
-import com.exist.HelpdeskApp.model.EmployeeProfile;
+import com.exist.HelpdeskApp.model.Employee;
 import com.exist.HelpdeskApp.model.EmploymentStatus;
 import com.exist.HelpdeskApp.model.Role;
 import com.exist.HelpdeskApp.model.embeddable.Address;
@@ -39,7 +39,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class EmployeeProfileServiceImplTest {
+public class EmployeeServiceImplTest {
 
     @Mock
     private EmployeeRepository employeeRepository;
@@ -56,7 +56,7 @@ public class EmployeeProfileServiceImplTest {
     @InjectMocks
     private EmployeeServiceImpl employeeServiceImpl;
 
-    private EmployeeProfile employeeProfile;
+    private Employee employee;
     private EmployeeResponse response;
     private EmployeeRequest request;
     private Role role;
@@ -67,7 +67,7 @@ public class EmployeeProfileServiceImplTest {
         Contacts contacts1 = new Contacts("0912345678", "sample@example.com", "021234567");
         Address address1 = new Address("123 Test St.", "Manila", "Region 1", "Philippines");
         role = new Role (1, "Sample Role", false, 1);
-        employeeProfile = new EmployeeProfile(
+        employee = new Employee(
                 1,
                 name1,
                 25,
@@ -115,10 +115,10 @@ public class EmployeeProfileServiceImplTest {
         request.setDeleted(false);
 
 
-        Page<EmployeeProfile> employeePage = new PageImpl<>(List.of(employeeProfile));
+        Page<Employee> employeePage = new PageImpl<>(List.of(employee));
         when(employeeRepository.findAll(any(Specification.class), any(Pageable.class)))
                 .thenReturn(employeePage);
-        when(employeeMapper.toResponseList(List.of(employeeProfile))).thenReturn(List.of(response));
+        when(employeeMapper.toResponseList(List.of(employee))).thenReturn(List.of(response));
 
         Page<EmployeeResponse> result = employeeServiceImpl.getEmployees(request);
 
@@ -136,10 +136,10 @@ public class EmployeeProfileServiceImplTest {
         request.setSortBy("id");
         request.setSortDir("desc");
 
-        Page<EmployeeProfile> employeePage = new PageImpl<>(List.of(employeeProfile));
+        Page<Employee> employeePage = new PageImpl<>(List.of(employee));
         when(employeeRepository.findAll(any(Specification.class), any(Pageable.class)))
                 .thenReturn(employeePage);
-        when(employeeMapper.toResponseList(List.of(employeeProfile))).thenReturn(List.of(response));
+        when(employeeMapper.toResponseList(List.of(employee))).thenReturn(List.of(response));
 
         Page<EmployeeResponse> result = employeeServiceImpl.getEmployees(request);
 
@@ -153,10 +153,10 @@ public class EmployeeProfileServiceImplTest {
     void testNoFilterGetEmployees() {
         EmployeeFilterRequest request = new EmployeeFilterRequest();
 
-        Page<EmployeeProfile> employeePage = new PageImpl<>(List.of(employeeProfile));
+        Page<Employee> employeePage = new PageImpl<>(List.of(employee));
         when(employeeRepository.findAll(any(Specification.class), any(Pageable.class)))
                 .thenReturn(employeePage);
-        when(employeeMapper.toResponseList(List.of(employeeProfile))).thenReturn(List.of(response));
+        when(employeeMapper.toResponseList(List.of(employee))).thenReturn(List.of(response));
 
         Page<EmployeeResponse> result = employeeServiceImpl.getEmployees(request);
 
@@ -170,10 +170,10 @@ public class EmployeeProfileServiceImplTest {
     void testNoEmployeeFoundInFilter() {
         EmployeeFilterRequest request = new EmployeeFilterRequest();
         request.setName("First1");
-        Page<EmployeeProfile> employeePage = new PageImpl<>(List.of(employeeProfile));
+        Page<Employee> employeePage = new PageImpl<>(List.of(employee));
         when(employeeRepository.findAll(any(Specification.class), any(Pageable.class)))
                 .thenReturn(employeePage);
-        when(employeeMapper.toResponseList(List.of(employeeProfile))).thenReturn(List.of());
+        when(employeeMapper.toResponseList(List.of(employee))).thenReturn(List.of());
 
         Page<EmployeeResponse> result = employeeServiceImpl.getEmployees(request);
 
@@ -185,8 +185,8 @@ public class EmployeeProfileServiceImplTest {
 
     @Test
     void testGetValidEmployee() {
-        when(employeeRepository.findByIdAndDeletedFalse(1)).thenReturn(Optional.of(employeeProfile));
-        when(employeeMapper.toResponse(employeeProfile)).thenReturn(response);
+        when(employeeRepository.findByIdAndDeletedFalse(1)).thenReturn(Optional.of(employee));
+        when(employeeMapper.toResponse(employee)).thenReturn(response);
 
         EmployeeResponse result = employeeServiceImpl.getEmployee(1);
 
@@ -203,10 +203,10 @@ public class EmployeeProfileServiceImplTest {
     @Test
     void testAddValidEmployeeWithRole() {
 
-        when(roleRepository.findByIdAndDeletedFalse(employeeProfile.getRole().getId())).thenReturn(Optional.of(role));
-        when(employeeMapper.toEntity(request)).thenReturn(employeeProfile);
-        when(employeeRepository.save(employeeProfile)).thenReturn(employeeProfile);
-        when(employeeMapper.toResponse(employeeProfile)).thenReturn(response);
+        when(roleRepository.findByIdAndDeletedFalse(employee.getRole().getId())).thenReturn(Optional.of(role));
+        when(employeeMapper.toEntity(request)).thenReturn(employee);
+        when(employeeRepository.save(employee)).thenReturn(employee);
+        when(employeeMapper.toResponse(employee)).thenReturn(response);
 
         EmployeeResponse result = employeeServiceImpl.addEmployee(request);
 
@@ -234,7 +234,7 @@ public class EmployeeProfileServiceImplTest {
                 EmploymentStatus.FULL_TIME,
                 1
         );
-        EmployeeProfile newEmployeeProfile = new EmployeeProfile(
+        Employee newEmployee = new Employee(
                 1,
                 name2,
                 25,
@@ -256,11 +256,11 @@ public class EmployeeProfileServiceImplTest {
                 "Sample Role"
         );
 
-        when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.of(employeeProfile));
+        when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.of(employee));
         when(roleRepository.findByIdAndDeletedFalse(newEmployeeRequest.getRoleId())).thenReturn(Optional.of(role));
-        Mockito.doNothing().when(employeeMapper).toUpdate(newEmployeeRequest, employeeProfile);
-        when(employeeRepository.save(employeeProfile)).thenReturn(newEmployeeProfile);
-        when(employeeMapper.toResponse(newEmployeeProfile)).thenReturn(newResponse);
+        Mockito.doNothing().when(employeeMapper).toUpdate(newEmployeeRequest, employee);
+        when(employeeRepository.save(employee)).thenReturn(newEmployee);
+        when(employeeMapper.toResponse(newEmployee)).thenReturn(newResponse);
 
         EmployeeResponse result = employeeServiceImpl.updateEmployee(employeeId, newEmployeeRequest);
 
@@ -306,7 +306,7 @@ public class EmployeeProfileServiceImplTest {
                 EmploymentStatus.FULL_TIME,
                 null
         );
-        EmployeeProfile newEmployeeProfile = new EmployeeProfile(
+        Employee newEmployee = new Employee(
                 1,
                 name2,
                 25,
@@ -328,10 +328,10 @@ public class EmployeeProfileServiceImplTest {
                 "Sample Role"
         );
 
-        when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.of(employeeProfile));
-        Mockito.doNothing().when(employeeMapper).toUpdate(newEmployeeRequest, employeeProfile);
-        when(employeeRepository.save(employeeProfile)).thenReturn(newEmployeeProfile);
-        when(employeeMapper.toResponse(newEmployeeProfile)).thenReturn(newResponse);
+        when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.of(employee));
+        Mockito.doNothing().when(employeeMapper).toUpdate(newEmployeeRequest, employee);
+        when(employeeRepository.save(employee)).thenReturn(newEmployee);
+        when(employeeMapper.toResponse(newEmployee)).thenReturn(newResponse);
 
         EmployeeResponse result = employeeServiceImpl.updateEmployee(employeeId, newEmployeeRequest);
 
@@ -343,12 +343,12 @@ public class EmployeeProfileServiceImplTest {
     @Test
     void testDeleteValidEmployee() {
         Integer employeeId = 1;
-        employeeProfile.setDeleted(true);
-        when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.of(employeeProfile));
-        when(ticketRepository.existsByAssignee(employeeProfile)).thenReturn(false);
+        employee.setDeleted(true);
+        when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.of(employee));
+        when(ticketRepository.existsByAssignee(employee)).thenReturn(false);
         employeeServiceImpl.deleteEmployee(employeeId);
-        assertTrue(employeeProfile.isDeleted());
-        verify(employeeRepository).save(employeeProfile);
+        assertTrue(employee.isDeleted());
+        verify(employeeRepository).save(employee);
     }
     @Test
     void testDeleteEmployeeButEmployeeNotFound() {
@@ -360,9 +360,9 @@ public class EmployeeProfileServiceImplTest {
     @Test
     void testDeletedEmployeeButEmployeeLinkedToTicket() {
         Integer employeeId = 1;
-        employeeProfile.setDeleted(true);
-        when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.of(employeeProfile));
-        when(ticketRepository.existsByAssignee(employeeProfile)).thenReturn(true);
+        employee.setDeleted(true);
+        when(employeeRepository.findByIdAndDeletedFalse(employeeId)).thenReturn(Optional.of(employee));
+        when(ticketRepository.existsByAssignee(employee)).thenReturn(true);
         assertThrows(EntityInUseException.class, () -> employeeServiceImpl.deleteEmployee(employeeId));
     }
 }

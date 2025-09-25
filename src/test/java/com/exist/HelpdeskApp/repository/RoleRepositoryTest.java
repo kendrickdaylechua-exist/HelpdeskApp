@@ -1,6 +1,5 @@
 package com.exist.HelpdeskApp.repository;
 
-import com.exist.HelpdeskApp.model.Employee;
 import com.exist.HelpdeskApp.model.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @TestPropertySource(properties = {
         "spring.liquibase.enabled=false"
 })
-class EmployeeProfileTest {
+class EmployeeTest {
 
     @Autowired
     private TestEntityManager entityManager;
@@ -35,17 +35,17 @@ class EmployeeProfileTest {
         role.setRoleName("Test Role");
         Role savedRole = entityManager.persistAndFlush(role);
 
-        EmployeeProfile employeeProfile = new EmployeeProfile();
-        employeeProfile.setName(name1);
-        employeeProfile.setAge(30);
-        employeeProfile.setAddress(address1);
-        employeeProfile.setContacts(contacts1);
-        employeeProfile.setEmploymentStatus(EmploymentStatus.FULL_TIME);
-        employeeProfile.setRole(savedRole);
+        Employee employee = new Employee();
+        employee.setName(name1);
+        employee.setAge(30);
+        employee.setAddress(address1);
+        employee.setContacts(contacts1);
+        employee.setEmploymentStatus(EmploymentStatus.FULL_TIME);
+        employee.setRole(savedRole);
 
-        EmployeeProfile savedEmployeeProfile = employeeRepository.saveAndFlush(employeeProfile);
+        Employee savedEmployee = employeeRepository.saveAndFlush(employee);
 
-        EmployeeProfile retrieved = employeeRepository.findById(savedEmployeeProfile.getId()).orElseThrow();
+        Employee retrieved = employeeRepository.findById(savedEmployee.getId()).orElseThrow();
 
         assertEquals("First1", retrieved.getName().getFirstName());
         assertEquals(30, retrieved.getAge());

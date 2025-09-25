@@ -1,6 +1,6 @@
 package com.exist.HelpdeskApp.dto.employee;
 
-import com.exist.HelpdeskApp.model.EmployeeProfile;
+import com.exist.HelpdeskApp.model.Employee;
 import com.exist.HelpdeskApp.model.EmploymentStatus;
 import com.exist.HelpdeskApp.model.Role;
 import com.exist.HelpdeskApp.model.embeddable.Address;
@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestPropertySource(properties = {
         "spring.liquibase.enabled=false"
 })
-public class EmployeeProfileFilterRequestTest {
+public class EmployeeFilterRequestTest {
 
     @Autowired
     private EmployeeRepository employeeRepository;
@@ -50,7 +50,7 @@ public class EmployeeProfileFilterRequestTest {
         role.setRoleName("ADMIN");
         role = roleRepository.save(role);
 
-        EmployeeProfile e1 = new EmployeeProfile();
+        Employee e1 = new Employee();
         e1.setDeleted(false);
         e1.setName(name1);
         e1.setAddress(address1);
@@ -107,8 +107,8 @@ public class EmployeeProfileFilterRequestTest {
         filter.setDeleted(false);
         filter.setName("first");
 
-        Specification<EmployeeProfile> spec = filter.toSpec();
-        List<EmployeeProfile> result = employeeRepository.findAll(spec);
+        Specification<Employee> spec = filter.toSpec();
+        List<Employee> result = employeeRepository.findAll(spec);
 
         assertEquals(1, result.size());
         assertEquals("First1", result.get(0).getName().getFirstName());
@@ -119,8 +119,8 @@ public class EmployeeProfileFilterRequestTest {
         filter.setDeleted(false);
         filter.setStatus("full");
 
-        Specification<EmployeeProfile> spec = filter.toSpec();
-        List<EmployeeProfile> result = employeeRepository.findAll(spec);
+        Specification<Employee> spec = filter.toSpec();
+        List<Employee> result = employeeRepository.findAll(spec);
 
         assertEquals(1, result.size());
         assertEquals(EmploymentStatus.FULL_TIME, result.get(0).getEmploymentStatus());
@@ -132,8 +132,8 @@ public class EmployeeProfileFilterRequestTest {
         filter.setDeleted(false);
         filter.setAddress("manila");
 
-        Specification<EmployeeProfile> spec = filter.toSpec();
-        List<EmployeeProfile> result = employeeRepository.findAll(spec);
+        Specification<Employee> spec = filter.toSpec();
+        List<Employee> result = employeeRepository.findAll(spec);
 
         assertEquals(1, result.size());
         assertEquals(EmploymentStatus.FULL_TIME, result.get(0).getEmploymentStatus());
@@ -145,8 +145,8 @@ public class EmployeeProfileFilterRequestTest {
         filter.setDeleted(false);
         filter.setContacts("sample");
 
-        Specification<EmployeeProfile> spec = filter.toSpec();
-        List<EmployeeProfile> result = employeeRepository.findAll(spec);
+        Specification<Employee> spec = filter.toSpec();
+        List<Employee> result = employeeRepository.findAll(spec);
 
         assertEquals(1, result.size());
         assertEquals(EmploymentStatus.FULL_TIME, result.get(0).getEmploymentStatus());

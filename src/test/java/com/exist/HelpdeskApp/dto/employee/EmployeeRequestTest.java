@@ -16,7 +16,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class EmployeeProfileRequestTest {
+public class EmployeeRequestTest {
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
