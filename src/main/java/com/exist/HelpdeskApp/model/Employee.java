@@ -39,6 +39,11 @@ public class Employee {
 
     private boolean deleted;
 
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "id")
+    private User user;
+
     @Version
     private Integer version;
 }
