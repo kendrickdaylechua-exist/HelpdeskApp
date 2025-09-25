@@ -1,7 +1,6 @@
 package com.exist.HelpdeskApp.repository;
 
-import com.exist.HelpdeskApp.model.Employee;
-import com.exist.HelpdeskApp.model.EmploymentStatus;
+import com.exist.HelpdeskApp.model.EmployeeProfile;
 import com.exist.HelpdeskApp.model.Role;
 import com.exist.HelpdeskApp.model.embeddable.Address;
 import com.exist.HelpdeskApp.model.embeddable.Contacts;
@@ -21,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestPropertySource(properties = {
         "spring.liquibase.enabled=false"
 })
-public class EmployeeRepositoryTest {
+public class EmployeeProfileRepositoryTest {
 
     @Autowired
     EmployeeRepository employeeRepository;
@@ -29,7 +28,7 @@ public class EmployeeRepositoryTest {
     @Autowired
     RoleRepository roleRepository;
 
-    private Employee employee;
+    private EmployeeProfile employeeProfile;
     private Role role;
 
     @BeforeEach
@@ -42,19 +41,19 @@ public class EmployeeRepositoryTest {
         Contacts contacts1 = new Contacts("0912345678", "sample@example.com", "021234567");
         Address address1 = new Address("123 Test St.", "Manila", "Region 1", "Philippines");
 
-        employee = new Employee();
-        employee.setName(name1);
-        employee.setAge(30);
-        employee.setAddress(address1);
-        employee.setContacts(contacts1);
-        employee.setRole(role);
+        employeeProfile = new EmployeeProfile();
+        employeeProfile.setName(name1);
+        employeeProfile.setAge(30);
+        employeeProfile.setAddress(address1);
+        employeeProfile.setContacts(contacts1);
+        employeeProfile.setRole(role);
     }
 
     @Test
     void testSaveAndFindId() {
-        employee = employeeRepository.saveAndFlush(employee);
+        employeeProfile = employeeRepository.saveAndFlush(employeeProfile);
 
-        Optional<Employee> found = employeeRepository.findById(employee.getId());
+        Optional<EmployeeProfile> found = employeeRepository.findById(employeeProfile.getId());
 
         assertTrue(found.isPresent());
         assertEquals("First1", found.get().getName().getFirstName());
@@ -62,8 +61,8 @@ public class EmployeeRepositoryTest {
 
     @Test
     void testFindByIdAndDeletedFalse() {
-        employee = employeeRepository.saveAndFlush(employee);
-        Optional<Employee> found = employeeRepository.findByIdAndDeletedFalse(employee.getId());
+        employeeProfile = employeeRepository.saveAndFlush(employeeProfile);
+        Optional<EmployeeProfile> found = employeeRepository.findByIdAndDeletedFalse(employeeProfile.getId());
 
         assertTrue(found.isPresent());
         assertEquals("First1", found.get().getName().getFirstName());
@@ -71,7 +70,7 @@ public class EmployeeRepositoryTest {
 
     @Test
     void testExistsByRole() {
-        employeeRepository.saveAndFlush(employee);
+        employeeRepository.saveAndFlush(employeeProfile);
 
         boolean exists = employeeRepository.existsByRole(role);
 
