@@ -31,10 +31,18 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
+        Permission readAllAccounts = permissionRepository.findByName("READ_ALL_ACCOUNTS")
+                        .orElseGet(() -> {
+                            Permission permission = new Permission();
+                            permission.setName("READ_ALL_ACCOUNTS");
+                            return permissionRepository.save(permission);
+                        });
+
         SecurityRole adminRole = securityRoleRepository.findByName("ROLE_ADMIN")
                 .orElseGet(() -> {
                     SecurityRole role = new SecurityRole();
                     role.setName("ROLE_ADMIN");
+                    role.setPermissions(Set.of(readAllAccounts));
                     return securityRoleRepository.save(role);
                 });
 

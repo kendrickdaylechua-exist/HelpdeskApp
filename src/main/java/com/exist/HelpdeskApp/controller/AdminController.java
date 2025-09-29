@@ -1,6 +1,7 @@
 package com.exist.HelpdeskApp.controller;
 
 import com.exist.HelpdeskApp.dto.account.AccountListRequest;
+import com.exist.HelpdeskApp.dto.account.AccountRequest;
 import com.exist.HelpdeskApp.dto.account.AccountResponse;
 import com.exist.HelpdeskApp.dto.employee.EmployeeRequest;
 import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
@@ -17,10 +18,12 @@ import com.exist.HelpdeskApp.service.Implementations.RoleServiceImpl;
 import com.exist.HelpdeskApp.service.Implementations.TicketServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
@@ -124,4 +127,24 @@ public class AdminController {
         return accountServiceImpl.getAccounts(request);
     }
 
+    /// ===============================================================================
+
+    @PostMapping("accounts")
+    public AccountResponse createAccount(@ModelAttribute @Valid AccountRequest request) {
+        return accountServiceImpl.createAccount(request);
+    }
+
+    @PatchMapping("accounts/{username}")
+    public AccountResponse updateAccount(@PathVariable String username, @ModelAttribute AccountRequest request) {
+        return accountServiceImpl.updateAccount(username, request);
+    }
+
+    @PatchMapping("accounts/{username}/status")
+    public ResponseEntity<AccountResponse> updateStatus(
+            @PathVariable String username,
+            @RequestBody Map<String, Boolean> body
+    ) {
+        boolean enabled = body.get("enabled");
+        return ResponseEntity.ok(accountServiceImpl.updateStatus(username, enabled));
+    }
 }
