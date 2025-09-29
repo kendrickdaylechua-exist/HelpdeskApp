@@ -1,47 +1,57 @@
 package com.exist.HelpdeskApp;
 
-import com.exist.HelpdeskApp.exception.businessexceptions.RoleNotFoundException;
-import com.exist.HelpdeskApp.model.Employee;
-import com.exist.HelpdeskApp.model.Role;
-import com.exist.HelpdeskApp.model.EmploymentStatus;
-import com.exist.HelpdeskApp.model.embeddable.Name;
-import com.exist.HelpdeskApp.repository.EmployeeRepository;
-import com.exist.HelpdeskApp.repository.RoleRepository;
+import com.exist.HelpdeskApp.model.*;
+import com.exist.HelpdeskApp.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
 
-    private final RoleRepository roleRepository;
-    private final EmployeeRepository employeeRepository;
+    private final PermissionRepository permissionRepository;
+    private final SecurityRoleRepository securityRoleRepository;
+    private final AccountRepository accountRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public DataInitializer(RoleRepository roleRepository, EmployeeRepository employeeRepository) {
-        this.roleRepository = roleRepository;
-        this.employeeRepository = employeeRepository;
+    public DataInitializer(PermissionRepository permissionRepo,
+                           SecurityRoleRepository roleRepo,
+                           AccountRepository userRepo,
+                           PasswordEncoder passwordEncoder) {
+        this.permissionRepository = permissionRepo;
+        this.securityRoleRepository = roleRepo;
+        this.accountRepository = userRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public void run(String... args) throws Exception {
 
-        // Initialize roles if none exist
-        if(roleRepository.count() == 0) {
-            Role adminRole = new Role();
-            adminRole.setRoleName("Admin");
-            roleRepository.save(adminRole);
-        }
+        SecurityRole adminRole = securityRoleRepository.findByName("ROLE_ADMIN")
+                .orElseGet(() -> {
+                    SecurityRole role = new SecurityRole();
+                    role.setName("ROLE_ADMIN");
+                    return securityRoleRepository.save(role);
+                });
 
-        // Initialize employees if none exist
-        if(employeeRepository.count() == 0) {
-            Employee adminEmployee = new Employee();
-            adminEmployee.setName(new Name("Admin", null, null));
-            adminEmployee.setAge(30);
-            adminEmployee.setEmploymentStatus(EmploymentStatus.FULL_TIME);
-            adminEmployee.setRole(roleRepository.findById(1)
-                    .orElseThrow(() -> new RoleNotFoundException("Admin role not found!")));
-            employeeRepository.save(adminEmployee);
+        securityRoleRepository.findByName("ROLE_USER")
+                .orElseGet(() -> {
+                    SecurityRole role = new SecurityRole();
+                    role.setName("ROLE_USER");
+                    return securityRoleRepository.save(role);
+                });
+
+        if (accountRepository.findByUsername("admin").isEmpty()) {
+            Account admin = new Account();
+            admin.setUsername("admin");
+            admin.setPassword(passwordEncoder.encode("admin123")); // encode the password
+            admin.setEnabled(true);
+            admin.setSecurityRoles(Set.of(adminRole));
+            accountRepository.save(admin);
         }
     }
 }

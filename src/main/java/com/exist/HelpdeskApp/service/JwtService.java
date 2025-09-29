@@ -1,11 +1,10 @@
-package com.exist.HelpdeskApp.service.Implementations;
+package com.exist.HelpdeskApp.service;
 
-import java.security.Key;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public interface JwtService {
-    public void init();
     public String generateToken(String Username);
     public String extractUsername(String token);
-    public boolean isTokenValid(String token);
+    public boolean validateToken(String token, UserDetails userDetails);
     public boolean isTokenExpired(String token);
 }

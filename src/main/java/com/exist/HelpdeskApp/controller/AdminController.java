@@ -1,5 +1,7 @@
 package com.exist.HelpdeskApp.controller;
 
+import com.exist.HelpdeskApp.dto.account.AccountListRequest;
+import com.exist.HelpdeskApp.dto.account.AccountResponse;
 import com.exist.HelpdeskApp.dto.employee.EmployeeRequest;
 import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
 import com.exist.HelpdeskApp.dto.role.RoleFilterRequest;
@@ -9,6 +11,7 @@ import com.exist.HelpdeskApp.dto.employee.EmployeeFilterRequest;
 import com.exist.HelpdeskApp.dto.ticket.TicketFilterRequest;
 import com.exist.HelpdeskApp.dto.ticket.TicketRequest;
 import com.exist.HelpdeskApp.dto.ticket.TicketResponse;
+import com.exist.HelpdeskApp.service.Implementations.AccountServiceImpl;
 import com.exist.HelpdeskApp.service.Implementations.EmployeeServiceImpl;
 import com.exist.HelpdeskApp.service.Implementations.RoleServiceImpl;
 import com.exist.HelpdeskApp.service.Implementations.TicketServiceImpl;
@@ -26,14 +29,17 @@ public class AdminController {
     EmployeeServiceImpl employeeServiceImpl;
     RoleServiceImpl roleServiceImpl;
     TicketServiceImpl ticketServiceImpl;
+    AccountServiceImpl accountServiceImpl;
 
     @Autowired
     public AdminController(EmployeeServiceImpl employeeServiceImpl,
                            RoleServiceImpl roleServiceImpl,
-                           TicketServiceImpl ticketServiceImpl) {
+                           TicketServiceImpl ticketServiceImpl,
+                           AccountServiceImpl accountServiceImpl) {
         this.employeeServiceImpl = employeeServiceImpl;
         this.roleServiceImpl = roleServiceImpl;
         this.ticketServiceImpl = ticketServiceImpl;
+        this.accountServiceImpl = accountServiceImpl;
     }
 
     @RequestMapping("")
@@ -41,7 +47,8 @@ public class AdminController {
         return "This is the admin page.\n" +
                 "=================================\n" +
                 "APIs:\n" +
-                "/employees";
+                "/employees\n" +
+                "/roles";
     }
 
     @GetMapping("/employees")
@@ -110,6 +117,11 @@ public class AdminController {
     @PatchMapping("tickets/{ticketId}")
     public TicketResponse updateTicket(@PathVariable Integer ticketId, @RequestBody TicketRequest ticketRequest) {
         return ticketServiceImpl.updateTicket(1, ticketId, ticketRequest);
+    }
+
+    @GetMapping("accounts")
+    public Page<AccountResponse> getAccounts(@ModelAttribute AccountListRequest request) {
+        return accountServiceImpl.getAccounts(request);
     }
 
 }

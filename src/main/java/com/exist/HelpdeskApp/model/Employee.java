@@ -16,7 +16,6 @@ import javax.persistence.*;
 @Entity
 public class Employee {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false)
@@ -39,10 +38,8 @@ public class Employee {
 
     private boolean deleted;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "id")
-    private User user;
+    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
+    private Account account;
 
     @Version
     private Integer version;

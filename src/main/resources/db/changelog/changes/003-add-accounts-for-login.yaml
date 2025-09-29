@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: migrate-employee-embedded
+      author: Kendrick Chua
+      changes:
+        - addColumn:
+            tableName: employee

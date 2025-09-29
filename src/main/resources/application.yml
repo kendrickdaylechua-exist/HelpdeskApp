@@ -20,6 +20,9 @@ spring:
       redis:
         host: localhost
         port: 6379
+
+jwt:
+  secret: q9XoxXZz3lMP0x6Hf5t2jQ3O4tyZXGzN9qXfW2wM8+o= #from OpenSSL
 #  jpa:
 #    properties:
 #      hibernate:
