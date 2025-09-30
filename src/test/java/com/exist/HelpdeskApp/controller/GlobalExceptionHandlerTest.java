@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = {EmployeeController.class, AdminController.class})
+@WebMvcTest(controllers = {EmployeeController.class, TicketController.class, RoleController.class})
 @Import(GlobalExceptionHandler.class)
 public class GlobalExceptionHandlerTest {
 
