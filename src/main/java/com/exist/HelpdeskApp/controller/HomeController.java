@@ -11,7 +11,7 @@ public class HomeController {
         return "This is an ECC Spring Boot project made by Kendrick Chua";
     }
 
-    @RequestMapping("/")
+    @RequestMapping
     public String home() {
         return "Welcome to the Helpdesk Application!";
     }

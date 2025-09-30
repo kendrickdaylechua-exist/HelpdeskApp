@@ -43,12 +43,12 @@ public class GlobalExceptionHandlerTest {
         when(employeeServiceImpl.getEmployee(invalidEmployeeId))
                 .thenThrow(new EmployeeNotFoundException("Employee with ID " + invalidEmployeeId + " not found!"));
 
-        mockMvc.perform(get("/employees/{employeeId}", invalidEmployeeId))
+        mockMvc.perform(get("/employee/{employeeId}", invalidEmployeeId))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.error").value("Not Found"))
                 .andExpect(jsonPath("$.message").value("Employee with ID " + invalidEmployeeId + " not found!"))
-                .andExpect(jsonPath("$.path").value("/employees/" + invalidEmployeeId))
+                .andExpect(jsonPath("$.path").value("/employee/" + invalidEmployeeId))
                 .andExpect(jsonPath("$.timestamp").exists());
     }
 
@@ -89,12 +89,12 @@ public class GlobalExceptionHandlerTest {
         when(employeeServiceImpl.getEmployee(1))
                 .thenThrow(new RuntimeException("Unexpected failure"));
 
-        mockMvc.perform(get("/employees/{id}", 1))
+        mockMvc.perform(get("/employee/{id}", 1))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.status").value(500))
                 .andExpect(jsonPath("$.error").value("Please contact the devs"))
                 .andExpect(jsonPath("$.message").value("Unexpected failure"))
-                .andExpect(jsonPath("$.path").value("/employees/1"))
+                .andExpect(jsonPath("$.path").value("/employee/1"))
                 .andExpect(jsonPath("$.timestamp").exists());
     }
 
