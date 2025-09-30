@@ -1,5 +1,8 @@
 package com.exist.HelpdeskApp.controller;
 
+import com.exist.HelpdeskApp.TestDataFactory;
+import com.exist.HelpdeskApp.dto.employee.EmployeeFilterRequest;
+import com.exist.HelpdeskApp.dto.employee.EmployeeRequest;
 import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
 import com.exist.HelpdeskApp.dto.ticket.TicketFilterRequest;
 import com.exist.HelpdeskApp.dto.ticket.TicketRequest;
@@ -30,7 +33,8 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -49,9 +53,8 @@ public class EmployeeControllerTest {
     @MockBean
     private TicketServiceImpl ticketServiceImpl;
 
+    private static EmployeeRequest employeeRequest1;
     private static EmployeeResponse employee1;
-    private static TicketResponse ticket1;
-    private static TicketRequest ticketRequest1;
 
     private static final Integer VALID_EMPLOYEE_ID_1 = 2;
     private static final Integer INVALID_EMPLOYEE_ID = 99;
@@ -72,40 +75,21 @@ public class EmployeeControllerTest {
                 "role1"
         );
 
-        ticket1 = new TicketResponse(
-                1,
-                "Ticket 1",
-                "Body of ticket 1",
-                "name1",
-                TicketStatus.FILED,
-                Instant.parse("2025-09-07T10:15:30Z"),
-                "name2",
-                Instant.parse("2025-09-07T10:15:30Z"),
-                "name2",
-                "Remarks of ticket 1"
+        employeeRequest1 = new EmployeeRequest(
+                name1,
+                25,
+                address1,
+                contacts1,
+                EmploymentStatus.FULL_TIME,
+                1
         );
 
-        ticketRequest1 = new TicketRequest(
-                "Ticket 1",
-                "Body of ticket 1",
-                2,
-                TicketStatus.FILED,
-                "Remarks of ticket 1"
-        );
-
-    }
-
-    @Test
-    void testEmployeeHome() throws Exception {
-        mockMvc.perform(get("/employees")) // since @RequestMapping("")
-                .andExpect(status().isOk())
-                .andExpect(content().string("This is the employee's page. Please enter your ID number..."));
     }
 
     @Test
     void testGetValidEmployee() throws Exception {
         when(employeeServiceImpl.getEmployee(VALID_EMPLOYEE_ID_1)).thenReturn(employee1);
-        mockMvc.perform(get("/employees/{employeeId}", VALID_EMPLOYEE_ID_1))
+        mockMvc.perform(get("/employee/{employeeId}", VALID_EMPLOYEE_ID_1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name.firstName").value("First1"));
     }
@@ -114,168 +98,69 @@ public class EmployeeControllerTest {
     void testGetNonExistentEmployee() throws Exception {
         when(employeeServiceImpl.getEmployee(INVALID_EMPLOYEE_ID))
                 .thenThrow(new EmployeeNotFoundException("Employee with ID " + INVALID_EMPLOYEE_ID + " not found!"));
-        mockMvc.perform(get("/employees/{INVALID_EMPLOYEE_ID}", INVALID_EMPLOYEE_ID))
+        mockMvc.perform(get("/employee/{INVALID_EMPLOYEE_ID}", INVALID_EMPLOYEE_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Employee with ID " + INVALID_EMPLOYEE_ID + " not found!"));
     }
 
     @Test
-    void testGetAllValidTickets() throws Exception {
-        Page<TicketResponse> page = new PageImpl<>(List.of(ticket1));
-        when(ticketServiceImpl.getTickets(eq(VALID_EMPLOYEE_ID_1), any(TicketFilterRequest.class))).thenReturn(page);
-        mockMvc.perform(get("/employees/{VALID_EMPLOYEE_ID_1}/tickets", VALID_EMPLOYEE_ID_1))
+    void testGetAllValidEmployees() throws Exception {
+        Page<EmployeeResponse> page = new PageImpl<>(List.of(employee1));
+
+        when(employeeServiceImpl.getEmployees(any(EmployeeFilterRequest.class))).thenReturn(page);
+        mockMvc.perform(get("/employee")
+                        .param("page", "0")
+                        .param("size", "5")
+                        .param("sortBy", "id")
+                        .param("sortDir", "asc"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath(".content[0].ticketNumber").value(1));
+                .andExpect(jsonPath("$.content[0].id").value(2));
     }
 
     @Test
-    void testInvalidEmployeeIdToGetTicket() throws Exception {
-        when(ticketServiceImpl.getTickets(eq(INVALID_EMPLOYEE_ID), any(TicketFilterRequest.class)))
-                .thenThrow(new EmployeeNotFoundException("Employee with ID " + INVALID_EMPLOYEE_ID + " not found!"));
-        mockMvc.perform(get("/employees/{INVALID_EMPLOYEE_ID}/tickets", INVALID_EMPLOYEE_ID))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Employee with ID " + INVALID_EMPLOYEE_ID + " not found!"));
-    }
-
-    @Test
-    void testFileValidTickets() throws Exception {
-        when(ticketServiceImpl.fileTicket(VALID_EMPLOYEE_ID_1, ticketRequest1))
-                .thenReturn(ticket1);
-        mockMvc.perform(post("/employees/{VALID_EMPLOYEE_ID}/tickets", VALID_EMPLOYEE_ID_1)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(ticketRequest1)))
+    void testGetValidEmployeeAdmin() throws Exception {
+        when(employeeServiceImpl.getEmployee(1)).thenReturn(TestDataFactory.adminEmployeeRequest());
+        mockMvc.perform(get("/employee/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("title").value("Ticket 1"));
+                .andExpect(jsonPath("name.firstName").value("Admin"));
     }
 
     @Test
-    void testInvalidEmployeeIdToFileTicket() throws Exception{
-        when(ticketServiceImpl.fileTicket(INVALID_EMPLOYEE_ID, ticketRequest1))
-                .thenThrow(new EmployeeNotFoundException("Employee with ID " + INVALID_EMPLOYEE_ID + " not found!"));
-        mockMvc.perform(post("/employees/{INVALID_EMPLOYEE_ID}/tickets", INVALID_EMPLOYEE_ID)
+    void testAddValidEmployee() throws Exception {
+        when(employeeServiceImpl.addEmployee(employeeRequest1)).thenReturn(employee1);
+        mockMvc.perform(post("/employee")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(ticketRequest1)))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Employee with ID " + INVALID_EMPLOYEE_ID + " not found!"));
-    }
-
-    @Test
-    void testGetValidTicket() throws Exception {
-        Integer ticketId = 1;
-        when(ticketServiceImpl.getTicket(VALID_EMPLOYEE_ID_1, ticketId))
-                .thenReturn(ticket1);
-        mockMvc.perform(get("/employees/{VALID_EMPLOYEE_ID_1}/tickets/{ticketId}", VALID_EMPLOYEE_ID_1, ticketId))
+                        .content(objectMapper.writeValueAsString(employeeRequest1)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("title").value("Ticket 1"));
+                .andExpect(jsonPath("name.firstName").value("First1"));
     }
 
     @Test
-    void testGetInvalidTicket() throws Exception {
-        Integer ticketId = 99;
-        when(ticketServiceImpl.getTicket(VALID_EMPLOYEE_ID_1, ticketId))
-                .thenThrow(new TicketNotFoundException("Ticket number " + ticketId + " not found!"));
-        mockMvc.perform(get("/employees/{VALID_EMPLOYEE_ID_1}/tickets/{ticketId}", VALID_EMPLOYEE_ID_1, ticketId))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Ticket number " + ticketId + " not found!"));;
-    }
-
-    @Test
-    void testGetInvalidEmployeeToGetTicket() throws Exception{
-        Integer ticketId = 1;
-        when(ticketServiceImpl.getTicket(INVALID_EMPLOYEE_ID, ticketId))
-                .thenThrow(new EmployeeNotFoundException("Employee with ID " + INVALID_EMPLOYEE_ID + " not found!"));
-        mockMvc.perform(get("/employees/{INVALID_EMPLOYEE_ID}/tickets/{ticketId}", INVALID_EMPLOYEE_ID, ticketId))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Employee with ID " + INVALID_EMPLOYEE_ID + " not found!"));
-    }
-
-    @Test
-    void testUpdateValidTicket() throws Exception{
-        TicketResponse ticket2 = new TicketResponse(
-                2,
-                "Ticket 2",
-                "Body of ticket 2",
-                "name2",
-                TicketStatus.DUPLICATE,
-                Instant.parse("2025-09-07T10:15:30Z"),
-                "name1",
-                Instant.parse("2025-09-07T10:15:30Z"),
-                "name1",
-                "Remarks of ticket 2"
-        );
-        TicketRequest ticketRequest2 = new TicketRequest(
-                "Ticket 2",
-                "Body of ticket 2",
-                2,
-                TicketStatus.FILED,
-                "Remarks of ticket 2"
-        );
-        Integer ticketId = 1;
-        when(ticketServiceImpl.updateTicket(VALID_EMPLOYEE_ID_1, ticketId, ticketRequest2)).thenReturn(ticket2);
-        mockMvc.perform(patch("/employees/{VALID_EMPLOYEE_ID_1}/tickets/{ticketId}", VALID_EMPLOYEE_ID_1, ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(ticketRequest2)))
+    void testUpdateEmployee() throws Exception {
+        when(employeeServiceImpl.updateEmployee(VALID_EMPLOYEE_ID_1, employeeRequest1)).thenReturn(employee1);
+        mockMvc.perform(
+                        patch("/employee/{id}", VALID_EMPLOYEE_ID_1)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(employeeRequest1))
+                )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(TicketStatus.DUPLICATE.name()))
-                .andExpect(jsonPath("remarks").value("Remarks of ticket 2"));
+                .andExpect(jsonPath("name.firstName").value("First1"))
+                .andExpect(jsonPath("age").value("25"))
+                .andExpect(jsonPath("address.country").value("Philippines"))
+                .andExpect(jsonPath("contacts.phoneNumber").value("0912345678"))
+                .andExpect(jsonPath("employmentStatus").value(EmploymentStatus.FULL_TIME.name()))
+                .andExpect(jsonPath("roleId").value(2))
+                .andExpect(jsonPath("roleName").value("role1"));
     }
 
     @Test
-    void testUpdateInvalidTicket() throws Exception{
-        Integer ticketId = 99;
-        TicketRequest ticketRequest2 = new TicketRequest(
-                "Ticket 2",
-                "Body of ticket 2",
-                2,
-                TicketStatus.FILED,
-                "Remarks of ticket 2"
-        );
-        when(ticketServiceImpl.updateTicket(VALID_EMPLOYEE_ID_1, ticketId, ticketRequest2))
-                .thenThrow(new TicketNotFoundException("Ticket number " + ticketId + " not found!"));
-        mockMvc.perform(patch("/employees/{VALID_EMPLOYEE_ID_1}/tickets/{ticketId}", VALID_EMPLOYEE_ID_1, ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(ticketRequest2)))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Ticket number " + ticketId + " not found!"));
+    void testDeleteEmployee() throws Exception {
+        doNothing().when(employeeServiceImpl).deleteEmployee(INVALID_EMPLOYEE_ID);
+        mockMvc.perform(
+                        delete("/employee/{id}", INVALID_EMPLOYEE_ID))
+                .andExpect(status().isOk());
+        verify(employeeServiceImpl, times(1)).deleteEmployee(INVALID_EMPLOYEE_ID);
     }
 
-    @Test
-    void testUpdateInvalidEmployeeToUpdateTicket() throws Exception {
-        Integer ticketId = 2;
-        TicketRequest ticketRequest2 = new TicketRequest(
-                "Ticket 2",
-                "Body of ticket 2",
-                2,
-                TicketStatus.FILED,
-                "Remarks of ticket 2"
-        );
-        when(ticketServiceImpl.updateTicket(INVALID_EMPLOYEE_ID, ticketId, ticketRequest2))
-                .thenThrow(new EmployeeNotFoundException("Employee with ID " + INVALID_EMPLOYEE_ID + " not found!"));
-        mockMvc.perform(patch("/employees/{INVALID_EMPLOYEE_ID}/tickets/{ticketId}", INVALID_EMPLOYEE_ID, ticketId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(ticketRequest2)))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Employee with ID " + INVALID_EMPLOYEE_ID + " not found!"));
-    }
 
-    @Test
-    void testGetValidAssignedTickets() throws Exception {
-        List<TicketResponse> ticketResponses = new ArrayList<>();
-        ticketResponses.add(ticket1);
-        when(ticketServiceImpl.getAssignedTickets(VALID_EMPLOYEE_ID_1))
-                .thenReturn(ticketResponses);
-        mockMvc.perform(get("/employees/{employeeId}/tickets/assigned", VALID_EMPLOYEE_ID_1))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(1))
-                .andExpect(jsonPath("[0].ticketNumber").value(1));
-    }
-
-    @Test
-    void testGetInvalidEmployeeToGetAssignedTickets() throws Exception {
-        when(ticketServiceImpl.getAssignedTickets(INVALID_EMPLOYEE_ID))
-                .thenThrow(new EmployeeNotFoundException("Employee with ID " + INVALID_EMPLOYEE_ID + " not found!"));
-        mockMvc.perform(get("/employees/{INVALID_EMPLOYEE_ID}/tickets/assigned", INVALID_EMPLOYEE_ID))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Employee with ID " + INVALID_EMPLOYEE_ID + " not found!"));
-    }
 }

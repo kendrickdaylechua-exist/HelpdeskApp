@@ -1,5 +1,7 @@
 package com.exist.HelpdeskApp.controller;
 
+import com.exist.HelpdeskApp.dto.employee.EmployeeFilterRequest;
+import com.exist.HelpdeskApp.dto.employee.EmployeeRequest;
 import com.exist.HelpdeskApp.dto.employee.EmployeeResponse;
 import com.exist.HelpdeskApp.dto.ticket.TicketFilterRequest;
 import com.exist.HelpdeskApp.dto.ticket.TicketRequest;
@@ -14,7 +16,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/employees")
+@RequestMapping("/employee")
 public class EmployeeController {
 
     EmployeeServiceImpl employeeServiceImpl;
@@ -27,38 +29,28 @@ public class EmployeeController {
         this.ticketServiceImpl = ticketServiceImpl;
     }
 
-    @RequestMapping("")
-    public String employeeHome() {
-        return "This is the employee's page. Please enter your ID number...";
+    @GetMapping
+    public Page<EmployeeResponse> getEmployees(@ModelAttribute @Valid EmployeeFilterRequest employeeFilterRequest) {
+        return employeeServiceImpl.getEmployees(employeeFilterRequest);
     }
 
     @GetMapping("{employeeId}")
-    public EmployeeResponse getOwnProfile(@PathVariable Integer employeeId) {
+    public EmployeeResponse getEmployee(@PathVariable Integer employeeId) {
         return employeeServiceImpl.getEmployee(employeeId);
     }
 
-    @PostMapping("{employeeId}/tickets")
-    public TicketResponse fileTicket(@PathVariable Integer employeeId, @Valid @RequestBody TicketRequest request) {
-        return ticketServiceImpl.fileTicket(employeeId, request);
+    @PostMapping
+    public EmployeeResponse addEmployee(@RequestBody @Valid EmployeeRequest request) {
+        return employeeServiceImpl.addEmployee(request);
     }
 
-    @GetMapping("{employeeId}/tickets")
-    public Page<TicketResponse> getTickets(@PathVariable Integer employeeId, @ModelAttribute TicketFilterRequest request) {
-        return ticketServiceImpl.getTickets(employeeId, request);
+    @PatchMapping("/{employeeId}")
+    public EmployeeResponse updateEmployee(@PathVariable Integer employeeId, @RequestBody EmployeeRequest request) {
+        return employeeServiceImpl.updateEmployee(employeeId, request);
     }
 
-    @GetMapping("{employeeId}/tickets/{ticketId}")
-    public TicketResponse getTicket(@PathVariable Integer employeeId, @PathVariable Integer ticketId) {
-        return ticketServiceImpl.getTicket(employeeId, ticketId);
-    }
-
-    @PatchMapping("{employeeId}/tickets/{ticketId}")
-    public TicketResponse updateTicket(@PathVariable Integer employeeId, @PathVariable Integer ticketId, @RequestBody TicketRequest ticketRequest) {
-        return ticketServiceImpl.updateTicket(employeeId, ticketId, ticketRequest);
-    }
-
-    @GetMapping("{employeeId}/tickets/assigned")
-    public List<TicketResponse> assignedTickets(@PathVariable Integer employeeId) {
-        return ticketServiceImpl.getAssignedTickets(employeeId);
+    @DeleteMapping("/{employeeId}")
+    public void deleteEmployee(@PathVariable Integer employeeId) {
+        employeeServiceImpl.deleteEmployee(employeeId);
     }
 }
