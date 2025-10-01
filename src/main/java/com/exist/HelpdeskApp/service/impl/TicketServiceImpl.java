@@ -1,4 +1,4 @@
-package com.exist.HelpdeskApp.service.Implementations;
+package com.exist.HelpdeskApp.service.impl;
 
 import com.exist.HelpdeskApp.dto.ticket.TicketFilterRequest;
 import com.exist.HelpdeskApp.dto.ticket.TicketMapper;
