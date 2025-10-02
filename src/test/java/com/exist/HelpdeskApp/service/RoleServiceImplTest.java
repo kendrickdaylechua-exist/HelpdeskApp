@@ -19,6 +19,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -27,9 +28,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class RoleServiceImplTest {
@@ -49,6 +48,8 @@ public class RoleServiceImplTest {
     private static RoleResponse roleResponse;
     private static RoleRequest roleRequest;
 
+    private static Pageable pageable = PageRequest.of(0, 5);;
+
     @BeforeEach
     void setup() {
         role = new Role(
@@ -63,40 +64,38 @@ public class RoleServiceImplTest {
     @Test
     void testGetValidRoles() {
         RoleFilterRequest request = new RoleFilterRequest();
-        request.setPage(0);
-        request.setSize(10);
-        request.setSortBy("id");
-        request.setSortDir("asc");
         request.setRoleName("Sample Role");
         request.setDeleted(false);
 
         Page<Role> rolePage = new PageImpl<>(List.of(role));
-        when(roleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(rolePage);
-        when(roleMapper.toResponseList(List.of(role))).thenReturn(List.of(roleResponse));
+        when(roleRepository.findAll(any(Specification.class), any(Pageable.class)))
+                .thenReturn(rolePage);
+        when(roleMapper.toResponse(any(Role.class))).thenReturn(roleResponse);
 
-        Page<RoleResponse> result = roleServiceImpl.getRoles(request);
+        Page<RoleResponse> result = roleServiceImpl.getRoles(request, pageable);
 
         assertEquals(1, result.getTotalElements());
         assertEquals("Sample Role", result.getContent().get(0).getRoleName());
+
         verify(roleRepository).findAll(any(Specification.class), any(Pageable.class));
-        verify(roleMapper).toResponseList(anyList());
+        verify(roleMapper).toResponse(any(Role.class));
     }
+
 
     @Test
     void getAllRolesDescending() {
         RoleFilterRequest request = new RoleFilterRequest();
-        request.setSortDir("desc");
 
         Page<Role> rolePage = new PageImpl<>(List.of(role));
         when(roleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(rolePage);
-        when(roleMapper.toResponseList(List.of(role))).thenReturn(List.of(roleResponse));
+        when(roleMapper.toResponse(any(Role.class))).thenReturn(roleResponse);
 
-        Page<RoleResponse> result = roleServiceImpl.getRoles(request);
+        Page<RoleResponse> result = roleServiceImpl.getRoles(request, pageable);
 
         assertEquals(1, result.getTotalElements());
         assertEquals("Sample Role", result.getContent().get(0).getRoleName());
         verify(roleRepository).findAll(any(Specification.class), any(Pageable.class));
-        verify(roleMapper).toResponseList(anyList());
+        verify(roleMapper).toResponse(any(Role.class));
     }
 
     @Test
@@ -104,31 +103,34 @@ public class RoleServiceImplTest {
         RoleFilterRequest request = new RoleFilterRequest();
         Page<Role> rolePage = new PageImpl<>(List.of(role));
         when(roleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(rolePage);
-        when(roleMapper.toResponseList(List.of(role))).thenReturn(List.of(roleResponse));
+        when(roleMapper.toResponse(any(Role.class))).thenReturn(roleResponse);
 
-        Page<RoleResponse> result = roleServiceImpl.getRoles(request);
+        Page<RoleResponse> result = roleServiceImpl.getRoles(request, pageable);
 
         assertEquals(1, result.getTotalElements());
         assertEquals("Sample Role", result.getContent().get(0).getRoleName());
         verify(roleRepository).findAll(any(Specification.class), any(Pageable.class));
-        verify(roleMapper).toResponseList(anyList());
+        verify(roleMapper).toResponse(any(Role.class));
     }
 
     @Test
     void testNoRolesFoundInFilter() {
         RoleFilterRequest request = new RoleFilterRequest();
         request.setRoleName("Invalid");
-        Page<Role> rolePage = new PageImpl<>(List.of(role));
-        when(roleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(rolePage);
-        when(roleMapper.toResponseList(List.of(role))).thenReturn(List.of());
 
-        Page<RoleResponse> result = roleServiceImpl.getRoles(request);
+        Page<Role> emptyPage = Page.empty(pageable);
+        when(roleRepository.findAll(any(Specification.class), any(Pageable.class)))
+                .thenReturn(emptyPage);
 
-        assertEquals(1, result.getTotalElements());
+        Page<RoleResponse> result = roleServiceImpl.getRoles(request, pageable);
+
+        assertEquals(0, result.getTotalElements());
         assertEquals(0, result.getContent().size());
+
         verify(roleRepository).findAll(any(Specification.class), any(Pageable.class));
-        verify(roleMapper).toResponseList(anyList());
+        verify(roleMapper, never()).toResponse(any(Role.class));
     }
+
 
     @Test
     void testGetValidRole() {

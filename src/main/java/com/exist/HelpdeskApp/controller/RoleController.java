@@ -6,6 +6,7 @@ import com.exist.HelpdeskApp.dto.role.RoleResponse;
 import com.exist.HelpdeskApp.service.impl.RoleServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,8 +23,8 @@ public class RoleController {
     }
 
     @GetMapping
-    public Page<RoleResponse> getRoles(@ModelAttribute @Valid RoleFilterRequest request) {
-        return roleService.getRoles(request);
+    public Page<RoleResponse> getRoles(@ModelAttribute @Valid RoleFilterRequest request, Pageable pageable) {
+        return roleService.getRoles(request, pageable);
     }
 
     @GetMapping("/{roleId}")

@@ -6,6 +6,7 @@ import com.exist.HelpdeskApp.dto.ticket.TicketResponse;
 import com.exist.HelpdeskApp.service.impl.TicketServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,8 +29,8 @@ public class TicketController {
     }
 
     @GetMapping("{employeeId}")
-    public Page<TicketResponse> getTickets(@PathVariable Integer employeeId, @ModelAttribute TicketFilterRequest request) {
-        return ticketService.getTickets(employeeId, request);
+    public Page<TicketResponse> getTickets(@PathVariable Integer employeeId, @ModelAttribute TicketFilterRequest request, Pageable pageable) {
+        return ticketService.getTickets(employeeId, request, pageable);
     }
 
     @GetMapping("{employeeId}/{ticketId}")

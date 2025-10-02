@@ -56,13 +56,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Transactional
-    public Page<EmployeeResponse> getEmployees(EmployeeFilterRequest request) {
+    public Page<EmployeeResponse> getEmployees(EmployeeFilterRequest request, Pageable pageable) {
         Specification<Employee> spec = request.toSpec();
-        Sort sort = request.getSortDir().equalsIgnoreCase("desc") ? Sort.by(request.getSortBy()).descending() : Sort.by(request.getSortBy()).ascending();
-        Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sort);
         Page<Employee> employeePage = employeeRepository.findAll(spec, pageable);
         List<EmployeeResponse> employeeResponses = employeeMapper.toResponseList(employeePage.getContent());
-        return new PageImpl<>(employeeResponses, pageable, employeePage.getTotalElements());
+        return employeePage.map(employeeMapper::toResponse);
     }
 
     @Transactional
