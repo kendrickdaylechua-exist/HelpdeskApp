@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EmployeeResponse {
     private Integer id;
+    private String username;
     private Name name;
     private Integer age;
     private Address address;

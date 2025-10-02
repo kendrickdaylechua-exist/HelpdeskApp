@@ -1,11 +1,13 @@
 package com.exist.HelpdeskApp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -22,8 +24,9 @@ public class Account {
     @JsonIgnore
     private String password;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_id")
+    @JsonManagedReference
     private Employee employee;
 
     private boolean enabled = true;
@@ -34,5 +37,20 @@ public class Account {
             joinColumns = @JoinColumn(name = "account_id"),
             inverseJoinColumns = @JoinColumn(name = "security_role_id")
     )
-    private Set<SecurityRole> securityRoles;
+    private Set<SecurityRole> securityRoles = new HashSet<>();
+
+    public void attachEmployee(Employee employee) {
+        this.employee = employee;
+        if (employee.getAccount() != this) {
+            employee.setAccount(this);
+        }
+    }
+
+    public void detachEmployee() {
+        if (this.employee.getAccount() != null) {
+            Employee temp = this.employee;
+            this.employee = null;
+            temp.setAccount(null);
+        }
+    }
 }

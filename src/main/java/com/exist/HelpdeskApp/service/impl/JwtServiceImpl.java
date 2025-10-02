@@ -1,4 +1,4 @@
-package com.exist.HelpdeskApp.service.Implementations;
+package com.exist.HelpdeskApp.service.impl;
 
 import com.exist.HelpdeskApp.exception.businessexceptions.InvalidCredentialsException;
 import com.exist.HelpdeskApp.service.JwtService;
@@ -25,7 +25,7 @@ public class JwtServiceImpl implements JwtService {
     @Value("${jwt.secret}")
     private String secretKey;
     private Key signingKey;
-    private final long EXPIRATION_TIME = 100L * 60 * 60 * 1000; // 1 HOUR
+    private final long EXPIRATION_TIME = 60 * 60 * 1000; // 1 HOUR
 
     @PostConstruct
     public void init() {

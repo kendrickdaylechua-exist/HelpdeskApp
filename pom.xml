@@ -143,6 +143,40 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.11</version> <!-- latest -->
+				<configuration>
+					<excludes>
+<!--						&lt;!&ndash; Exclude test classes &ndash;&gt;-->
+<!--						<exclude>**/*Test*.class</exclude>-->
+<!--						<exclude>**/test/**</exclude>-->
+						<!-- Exclude DTOs or config if needed -->
+						<exclude>**/config/**</exclude>
+						<exclude>**/controller/**</exclude>
+						<exclude>**/dto/**</exclude>
+						<exclude>**/exception/**</exclude>
+						<exclude>**/model/**</exclude>
+						<exclude>**/repository/**</exclude>
+						<exclude>**/util/**</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 

@@ -17,5 +17,5 @@ public class AccountRequest {
     private Integer employeeId;
 
     @NotNull(message = "Account must have at least a role")
-    private Set<SecurityRole> securityRoles;
+    private Set<String> securityRoles;
 }

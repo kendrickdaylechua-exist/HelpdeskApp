@@ -3,6 +3,7 @@ package com.exist.HelpdeskApp.model;
 import com.exist.HelpdeskApp.model.embeddable.Address;
 import com.exist.HelpdeskApp.model.embeddable.Contacts;
 import com.exist.HelpdeskApp.model.embeddable.Name;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,7 +39,8 @@ public class Employee {
 
     private boolean deleted;
 
-    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "employee", fetch = FetchType.EAGER)
+    @JsonBackReference
     private Account account;
 
     @Version

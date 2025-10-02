@@ -1,5 +1,6 @@
 package com.exist.HelpdeskApp.dto.account;
 
+import com.exist.HelpdeskApp.dto.SecurityRoleResponse;
 import com.exist.HelpdeskApp.model.Employee;
 import com.exist.HelpdeskApp.model.SecurityRole;
 import lombok.AllArgsConstructor;
@@ -16,5 +17,5 @@ public class AccountResponse {
     private String username;
     private String employeeName;
     private boolean enabled;
-    private Set<SecurityRole> securityRoles;
+    private Set<SecurityRoleResponse> securityRoles;
 }

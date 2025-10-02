@@ -9,7 +9,7 @@ import com.exist.HelpdeskApp.exception.businessexceptions.RoleNotFoundException;
 import com.exist.HelpdeskApp.model.Role;
 import com.exist.HelpdeskApp.repository.EmployeeRepository;
 import com.exist.HelpdeskApp.repository.RoleRepository;
-import com.exist.HelpdeskApp.service.Implementations.RoleServiceImpl;
+import com.exist.HelpdeskApp.service.impl.RoleServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

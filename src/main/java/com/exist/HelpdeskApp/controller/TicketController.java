@@ -3,7 +3,7 @@ package com.exist.HelpdeskApp.controller;
 import com.exist.HelpdeskApp.dto.ticket.TicketFilterRequest;
 import com.exist.HelpdeskApp.dto.ticket.TicketRequest;
 import com.exist.HelpdeskApp.dto.ticket.TicketResponse;
-import com.exist.HelpdeskApp.service.Implementations.TicketServiceImpl;
+import com.exist.HelpdeskApp.service.impl.TicketServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;

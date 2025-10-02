@@ -6,7 +6,7 @@ import com.exist.HelpdeskApp.dto.ticket.TicketResponse;
 import com.exist.HelpdeskApp.exception.businessexceptions.EmployeeNotFoundException;
 import com.exist.HelpdeskApp.exception.businessexceptions.TicketNotFoundException;
 import com.exist.HelpdeskApp.model.TicketStatus;
-import com.exist.HelpdeskApp.service.Implementations.TicketServiceImpl;
+import com.exist.HelpdeskApp.service.impl.TicketServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
