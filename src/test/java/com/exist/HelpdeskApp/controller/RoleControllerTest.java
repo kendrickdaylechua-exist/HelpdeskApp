@@ -3,7 +3,7 @@ package com.exist.HelpdeskApp.controller;
 import com.exist.HelpdeskApp.dto.role.RoleFilterRequest;
 import com.exist.HelpdeskApp.dto.role.RoleRequest;
 import com.exist.HelpdeskApp.dto.role.RoleResponse;
-import com.exist.HelpdeskApp.service.Implementations.RoleServiceImpl;
+import com.exist.HelpdeskApp.service.impl.RoleServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

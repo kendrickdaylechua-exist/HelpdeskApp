@@ -16,7 +16,7 @@ import com.exist.HelpdeskApp.model.embeddable.Name;
 import com.exist.HelpdeskApp.repository.EmployeeRepository;
 import com.exist.HelpdeskApp.repository.RoleRepository;
 import com.exist.HelpdeskApp.repository.TicketRepository;
-import com.exist.HelpdeskApp.service.Implementations.EmployeeServiceImpl;
+import com.exist.HelpdeskApp.service.impl.EmployeeServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

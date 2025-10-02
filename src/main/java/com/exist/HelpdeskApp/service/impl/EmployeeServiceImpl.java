@@ -63,6 +63,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Page<Employee> employeePage = employeeRepository.findAll(spec, pageable);
         List<EmployeeResponse> employeeResponses = employeeMapper.toResponseList(employeePage.getContent());
         return new PageImpl<>(employeeResponses, pageable, employeePage.getTotalElements());
+        //use streams to map page employeeResponse
     }
 
     @Transactional

@@ -3,7 +3,7 @@ package com.exist.HelpdeskApp.controller;
 import com.exist.HelpdeskApp.dto.role.RoleFilterRequest;
 import com.exist.HelpdeskApp.dto.role.RoleRequest;
 import com.exist.HelpdeskApp.dto.role.RoleResponse;
-import com.exist.HelpdeskApp.service.Implementations.RoleServiceImpl;
+import com.exist.HelpdeskApp.service.impl.RoleServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;

@@ -5,13 +5,13 @@ spring:
   application:
     name: HelpdeskApp
   profiles:
-    active: test
+    active: dev
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.yaml
   hikari:
     maximum-pool-size: 10     # max number of connections in pool
     minimum-idle: 5           # min idle connections
-    idle-timeout: 30000       # 30s before idle connection is removed
+    idle-timeout: 30000       # 30s before idle connection  is removed
     max-lifetime: 1800000     # 30 mins, max lifetime of a connection
     connection-timeout: 20000 # 20s timeout for getting a connection
   cache:
