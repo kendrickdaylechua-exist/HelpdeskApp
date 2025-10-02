@@ -26,6 +26,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -34,9 +35,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class EmployeeServiceImplTest {
@@ -56,10 +55,11 @@ public class EmployeeServiceImplTest {
     @InjectMocks
     private EmployeeServiceImpl employeeServiceImpl;
 
-    private Employee employee;
-    private EmployeeResponse response;
-    private EmployeeRequest request;
-    private Role role;
+    private static Employee employee;
+    private static EmployeeResponse response;
+    private static EmployeeRequest request;
+    private static Role role;
+    private static final Pageable pageable = PageRequest.of(0, 5);
 
     @BeforeEach
     void setup() {
@@ -99,55 +99,49 @@ public class EmployeeServiceImplTest {
         );
     }
 
-    @Test
-    void testGetAllEmployeesAscending() {
-        EmployeeFilterRequest request = new EmployeeFilterRequest();
-        request.setPage(0);
-        request.setSize(10);
-        request.setSortBy("id");
-        request.setSortDir("asc");
-        request.setName("first");
-        request.setAddress("phil");
-        request.setContacts("region");
-        request.setStatus("full_time");
-        request.setRoleId(1);
-        request.setRoleName("Sample Role");
-        request.setDeleted(false);
+//    @Test
+//    void testGetAllEmployeesAscending() {
+//        EmployeeFilterRequest request = new EmployeeFilterRequest();
+//        request.setName("first");
+//        request.setAddress("phil");
+//        request.setContacts("region");
+//        request.setStatus("full_time");
+//        request.setRoleId(1);
+//        request.setRoleName("Sample Role");
+//        request.setDeleted(false);
+//
+//
+//        Page<Employee> employeePage = new PageImpl<>(List.of(employee));
+//        when(employeeRepository.findAll(any(Specification.class), any(Pageable.class)))
+//                .thenReturn(employeePage);
+//        when(employeeMapper.toResponseList(anyList())).thenReturn(List.of(response));
+//
+//        Page<EmployeeResponse> result = employeeServiceImpl.getEmployees(request, pageable);
+//
+//        assertEquals(1, result.getTotalElements());
+//        assertEquals("First1", result.getContent().get(0).getName().getFirstName());
+//        verify(employeeRepository).findAll(any(Specification.class), any(Pageable.class));
+//        verify(employeeMapper).toResponseList(anyList());
+//    }
 
+    @Test
+    void testGetAllEmployees() {
+        EmployeeFilterRequest request = new EmployeeFilterRequest();
 
         Page<Employee> employeePage = new PageImpl<>(List.of(employee));
+
         when(employeeRepository.findAll(any(Specification.class), any(Pageable.class)))
                 .thenReturn(employeePage);
-        when(employeeMapper.toResponseList(List.of(employee))).thenReturn(List.of(response));
+        when(employeeMapper.toResponse(any(Employee.class))).thenReturn(response);
 
-        Page<EmployeeResponse> result = employeeServiceImpl.getEmployees(request);
+        Page<EmployeeResponse> result = employeeServiceImpl.getEmployees(request, pageable);
 
         assertEquals(1, result.getTotalElements());
         assertEquals("First1", result.getContent().get(0).getName().getFirstName());
+
         verify(employeeRepository).findAll(any(Specification.class), any(Pageable.class));
-        verify(employeeMapper).toResponseList(anyList());
     }
 
-    @Test
-    void testGetAllEmployeesDescending() {
-        EmployeeFilterRequest request = new EmployeeFilterRequest();
-        request.setPage(0);
-        request.setSize(10);
-        request.setSortBy("id");
-        request.setSortDir("desc");
-
-        Page<Employee> employeePage = new PageImpl<>(List.of(employee));
-        when(employeeRepository.findAll(any(Specification.class), any(Pageable.class)))
-                .thenReturn(employeePage);
-        when(employeeMapper.toResponseList(List.of(employee))).thenReturn(List.of(response));
-
-        Page<EmployeeResponse> result = employeeServiceImpl.getEmployees(request);
-
-        assertEquals(1, result.getTotalElements());
-        assertEquals("First1", result.getContent().get(0).getName().getFirstName());
-        verify(employeeRepository).findAll(any(Specification.class), any(Pageable.class));
-        verify(employeeMapper).toResponseList(anyList());
-    }
 
     @Test
     void testNoFilterGetEmployees() {
@@ -156,31 +150,30 @@ public class EmployeeServiceImplTest {
         Page<Employee> employeePage = new PageImpl<>(List.of(employee));
         when(employeeRepository.findAll(any(Specification.class), any(Pageable.class)))
                 .thenReturn(employeePage);
-        when(employeeMapper.toResponseList(List.of(employee))).thenReturn(List.of(response));
+        when(employeeMapper.toResponse(any(Employee.class))).thenReturn(response);
 
-        Page<EmployeeResponse> result = employeeServiceImpl.getEmployees(request);
+        Page<EmployeeResponse> result = employeeServiceImpl.getEmployees(request, pageable);
 
         assertEquals(1, result.getTotalElements());
         assertEquals("First1", result.getContent().get(0).getName().getFirstName());
         verify(employeeRepository).findAll(any(Specification.class), any(Pageable.class));
-        verify(employeeMapper).toResponseList(anyList());
+        verify(employeeMapper).toResponse(any(Employee.class));
     }
 
     @Test
     void testNoEmployeeFoundInFilter() {
         EmployeeFilterRequest request = new EmployeeFilterRequest();
-        request.setName("First1");
-        Page<Employee> employeePage = new PageImpl<>(List.of(employee));
+        request.setName("Invalid");
+        Page<Role> emptyPage = Page.empty(pageable);
         when(employeeRepository.findAll(any(Specification.class), any(Pageable.class)))
-                .thenReturn(employeePage);
-        when(employeeMapper.toResponseList(List.of(employee))).thenReturn(List.of());
+                .thenReturn(emptyPage);
 
-        Page<EmployeeResponse> result = employeeServiceImpl.getEmployees(request);
+        Page<EmployeeResponse> result = employeeServiceImpl.getEmployees(request, pageable);
 
-        assertEquals(1, result.getTotalElements());
+        assertEquals(0, result.getTotalElements());
         assertEquals(0, result.getContent().size());
         verify(employeeRepository).findAll(any(Specification.class), any(Pageable.class));
-        verify(employeeMapper).toResponseList(anyList());
+        verify(employeeMapper, never()).toResponse(any(Employee.class));
     }
 
     @Test

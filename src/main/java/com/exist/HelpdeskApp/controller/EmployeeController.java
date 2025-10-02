@@ -28,11 +28,11 @@ public class EmployeeController {
 
     @GetMapping
     public Page<EmployeeResponse> getEmployees(@ModelAttribute @Valid EmployeeFilterRequest employeeFilterRequest, Pageable pageable) {
-        return employeeServiceImpl.getEmployees(employeeFilterRequest);
+        return employeeServiceImpl.getEmployees(employeeFilterRequest, pageable);
     }
 
     @GetMapping("{employeeId}")
-    public EmployeeResponse getEmployee(@PathVariable Integer employeeId) {
+    public EmployeeResponse getEmployeeById(@PathVariable Integer employeeId) {
         return employeeServiceImpl.getEmployee(employeeId);
     }
 

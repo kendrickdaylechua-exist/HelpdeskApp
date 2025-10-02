@@ -38,17 +38,12 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Transactional
-    public Page<TicketResponse> getTickets(Integer employeeId, TicketFilterRequest request) {
+    public Page<TicketResponse> getTickets(Integer employeeId, TicketFilterRequest request, Pageable pageable) {
         Employee employee = employeeRepository.findByIdAndDeletedFalse(employeeId)
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + employeeId + " not found!"));
-
         Specification<Ticket> spec = request.toSpec();
-
-        Sort sort = request.getSortDir().equalsIgnoreCase("desc") ? Sort.by(request.getSortBy()).descending() : Sort.by(request.getSortBy()).ascending();
-        Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sort);
         Page<Ticket> ticketPage = ticketRepository.findAll(spec, pageable);
-        List<TicketResponse> ticketResponses = ticketMapper.toResponseList(ticketPage.getContent());
-        return new PageImpl<>(ticketResponses, pageable, ticketPage.getTotalElements());
+        return ticketPage.map(ticketMapper::toResponse);
     }
 
     @Transactional

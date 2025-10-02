@@ -8,12 +8,11 @@ import liquibase.util.StringUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Formula;
 import org.springframework.data.jpa.domain.Specification;
 
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,18 +22,20 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmployeeFilterRequest {
-    @Min(0)
-    private int page = 0;
-
-    @Min(1)
-    @Max(10)
-    private int size = 5;
-    private String sortBy = "id";
-
-    @Pattern(regexp = "asc|desc", message = "sortDir must be 'asc' or 'desc'")
-    private String sortDir = "asc";
+//    @Min(0)
+//    private int page = 0;
+//
+//    @Min(1)
+//    @Max(10)
+//    private int size = 5;
+//    private String sortBy = "id";
+//
+//    @Pattern(regexp = "asc|desc", message = "sortDir must be 'asc' or 'desc'")
+//    private String sortDir = "asc";
 
     private String name;
+
+    private String age;
 
     private String address;
 
@@ -51,13 +52,20 @@ public class EmployeeFilterRequest {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(cb.equal(root.get("deleted"), this.deleted));
+
             if (StringUtil.isNotEmpty(this.name)) {
+                Expression<String> fullName = cb.concat(
+                        cb.concat(
+                                cb.concat(root.get("name").get("firstName"), " "),
+                                cb.concat(root.get("name").get("middleName"), " ")
+                        ), root.get("name").get("lastName")
+                );
                 String pattern = StringConverters.likePattern(this.name);
-                 predicates.add(cb.or(
-                        cb.like(cb.lower(root.get("name").get("firstName")), pattern),
-                        cb.like(cb.lower(root.get("name").get("middleName")), pattern),
-                        cb.like(cb.lower(root.get("name").get("lastName")), pattern)
-                ));
+                predicates.add(cb.like(fullName, pattern));
+            }
+
+            if (this.age != null) {
+                predicates.add(cb.equal(root.get("age"), this.age));
             }
 
             if (StringUtil.isNotEmpty(this.address)) {

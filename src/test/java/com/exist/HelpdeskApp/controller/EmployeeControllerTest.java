@@ -24,6 +24,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -107,7 +108,7 @@ public class EmployeeControllerTest {
     void testGetAllValidEmployees() throws Exception {
         Page<EmployeeResponse> page = new PageImpl<>(List.of(employee1));
 
-        when(employeeServiceImpl.getEmployees(any(EmployeeFilterRequest.class))).thenReturn(page);
+        when(employeeServiceImpl.getEmployees(any(EmployeeFilterRequest.class), any(Pageable.class))).thenReturn(page);
         mockMvc.perform(get("/employee")
                         .param("page", "0")
                         .param("size", "5")

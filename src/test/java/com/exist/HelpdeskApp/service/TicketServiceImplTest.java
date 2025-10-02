@@ -16,7 +16,6 @@ import com.exist.HelpdeskApp.model.embeddable.Contacts;
 import com.exist.HelpdeskApp.model.embeddable.Name;
 import com.exist.HelpdeskApp.repository.EmployeeRepository;
 import com.exist.HelpdeskApp.repository.TicketRepository;
-//import com.exist.HelpdeskApp.repository.specifications.MatchType;
 import com.exist.HelpdeskApp.service.impl.TicketServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +26,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -38,8 +38,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class TicketServiceImplTest {
@@ -62,6 +61,7 @@ public class TicketServiceImplTest {
     private static final Integer VALID_EMPLOYEE_ID = 2;
     private static final Integer INVALID_EMPLOYEE_ID = 99;
     private static final Integer ADMIN_EMPLOYEE_ID = 1;
+    private static Pageable pageable = PageRequest.of(0, 5);;
 
     @BeforeEach
     void setup() {
@@ -117,13 +117,8 @@ public class TicketServiceImplTest {
     @Test
     void testGetValidTicketsAscending() {
         TicketFilterRequest request = new TicketFilterRequest();
-        request.setPage(0);
-        request.setSize(10);
-        request.setSortBy("id");
-        request.setSortDir("asc");
         request.setTitle("Sample Ticket");
         request.setBody("Sample Body");
-//        request.setTitleMatchType(MatchType.CONTAINS);
         request.setStatus("filed");
         request.setAssigneeId(2);
         request.setAssigneeName("First1");
@@ -141,35 +136,31 @@ public class TicketServiceImplTest {
         Page<Ticket> ticketPage = new PageImpl<>(List.of(ticket));
         when(employeeRepository.findByIdAndDeletedFalse(VALID_EMPLOYEE_ID)).thenReturn(Optional.of(employee));
         when(ticketRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(ticketPage);
-        when(ticketMapper.toResponseList(List.of(ticket))).thenReturn(List.of(ticketResponse1));
+        when(ticketMapper.toResponse(ticket)).thenReturn(ticketResponse1);
 
-        Page<TicketResponse> result = ticketServiceImpl.getTickets(VALID_EMPLOYEE_ID, request);
+        Page<TicketResponse> result = ticketServiceImpl.getTickets(VALID_EMPLOYEE_ID, request, pageable);
 
         assertEquals(1, result.getTotalElements());
         assertEquals("Sample Ticket", result.getContent().get(0).getTitle());
         verify(ticketRepository).findAll(any(Specification.class), any(Pageable.class));
-        verify(ticketMapper).toResponseList(anyList());
+        verify(ticketMapper).toResponse(any(Ticket.class));
     }
 
     @Test
     void testGetAllTicketsDescending() {
         TicketFilterRequest request = new TicketFilterRequest();
-        request.setPage(0);
-        request.setSize(10);
-        request.setSortBy("id");
-        request.setSortDir("desc");
 
         Page<Ticket> ticketPage = new PageImpl<>(List.of(ticket));
         when(employeeRepository.findByIdAndDeletedFalse(VALID_EMPLOYEE_ID)).thenReturn(Optional.of(employee));
         when(ticketRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(ticketPage);
-        when(ticketMapper.toResponseList(List.of(ticket))).thenReturn(List.of(ticketResponse1));
+        when(ticketMapper.toResponse(ticket)).thenReturn(ticketResponse1);
 
-        Page<TicketResponse> result = ticketServiceImpl.getTickets(VALID_EMPLOYEE_ID, request);
+        Page<TicketResponse> result = ticketServiceImpl.getTickets(VALID_EMPLOYEE_ID, request, pageable);
 
         assertEquals(1, result.getTotalElements());
         assertEquals("Sample Ticket", result.getContent().get(0).getTitle());
         verify(ticketRepository).findAll(any(Specification.class), any(Pageable.class));
-        verify(ticketMapper).toResponseList(anyList());
+        verify(ticketMapper).toResponse(any(Ticket.class));
     }
 
     @Test
@@ -181,14 +172,14 @@ public class TicketServiceImplTest {
         Page<Ticket> ticketPage = new PageImpl<>(List.of(ticket));
         when(employeeRepository.findByIdAndDeletedFalse(VALID_EMPLOYEE_ID)).thenReturn(Optional.of(employee));
         when(ticketRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(ticketPage);
-        when(ticketMapper.toResponseList(List.of(ticket))).thenReturn(List.of(ticketResponse1));
+        when(ticketMapper.toResponse(ticket)).thenReturn(ticketResponse1);
 
-        Page<TicketResponse> result = ticketServiceImpl.getTickets(VALID_EMPLOYEE_ID, request);
+        Page<TicketResponse> result = ticketServiceImpl.getTickets(VALID_EMPLOYEE_ID, request, pageable);
 
         assertEquals(1, result.getTotalElements());
         assertEquals("Sample Ticket", result.getContent().get(0).getTitle());
         verify(ticketRepository).findAll(any(Specification.class), any(Pageable.class));
-        verify(ticketMapper).toResponseList(anyList());
+        verify(ticketMapper).toResponse(any(Ticket.class));
     }
 
     @Test
@@ -200,56 +191,64 @@ public class TicketServiceImplTest {
         Page<Ticket> ticketPage = new PageImpl<>(List.of(ticket));
         when(employeeRepository.findByIdAndDeletedFalse(VALID_EMPLOYEE_ID)).thenReturn(Optional.of(employee));
         when(ticketRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(ticketPage);
-        when(ticketMapper.toResponseList(List.of(ticket))).thenReturn(List.of(ticketResponse1));
+        when(ticketMapper.toResponse(ticket)).thenReturn(ticketResponse1);
 
-        Page<TicketResponse> result = ticketServiceImpl.getTickets(VALID_EMPLOYEE_ID, request);
+        Page<TicketResponse> result = ticketServiceImpl.getTickets(VALID_EMPLOYEE_ID, request, pageable);
 
         assertEquals(1, result.getTotalElements());
         assertEquals("Sample Ticket", result.getContent().get(0).getTitle());
         verify(ticketRepository).findAll(any(Specification.class), any(Pageable.class));
-        verify(ticketMapper).toResponseList(anyList());
+        verify(ticketMapper).toResponse(any(Ticket.class));
     }
-    
+
     @Test
     void testNoFilterGetTickets() {
         TicketFilterRequest request = new TicketFilterRequest();
 
         Page<Ticket> ticketPage = new PageImpl<>(List.of(ticket));
-        when(employeeRepository.findByIdAndDeletedFalse(VALID_EMPLOYEE_ID)).thenReturn(Optional.of(employee));
-        when(ticketRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(ticketPage);
-        when(ticketMapper.toResponseList(List.of(ticket))).thenReturn(List.of(ticketResponse1));
 
-        Page<TicketResponse> result = ticketServiceImpl.getTickets(VALID_EMPLOYEE_ID, request);
+        when(employeeRepository.findByIdAndDeletedFalse(VALID_EMPLOYEE_ID))
+                .thenReturn(Optional.of(employee));
+        when(ticketRepository.findAll(any(Specification.class), any(Pageable.class)))
+                .thenReturn(ticketPage);
+        when(ticketMapper.toResponse(any(Ticket.class)))
+                .thenReturn(ticketResponse1);
+
+        Page<TicketResponse> result = ticketServiceImpl.getTickets(VALID_EMPLOYEE_ID, request, pageable);
 
         assertEquals(1, result.getTotalElements());
         assertEquals("Sample Ticket", result.getContent().get(0).getTitle());
+
         verify(ticketRepository).findAll(any(Specification.class), any(Pageable.class));
-        verify(ticketMapper).toResponseList(anyList());
+        verify(ticketMapper).toResponse(any(Ticket.class));
     }
+
 
     @Test
     void testNoTicketFoundInFilter() {
         TicketFilterRequest request = new TicketFilterRequest();
         request.setTitle("invalid title");
 
-        Page<Ticket> ticketPage = new PageImpl<>(List.of(ticket));
-        when(employeeRepository.findByIdAndDeletedFalse(VALID_EMPLOYEE_ID)).thenReturn(Optional.of(employee));
-        when(ticketRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(ticketPage);
-        when(ticketMapper.toResponseList(List.of(ticket))).thenReturn(List.of());
+        Page<Ticket> emptyPage = Page.empty(pageable);
+        when(employeeRepository.findByIdAndDeletedFalse(VALID_EMPLOYEE_ID))
+                .thenReturn(Optional.of(employee));
+        when(ticketRepository.findAll(any(Specification.class), any(Pageable.class)))
+                .thenReturn(emptyPage);
 
-        Page<TicketResponse> result = ticketServiceImpl.getTickets(VALID_EMPLOYEE_ID, request);
+        Page<TicketResponse> result = ticketServiceImpl.getTickets(VALID_EMPLOYEE_ID, request, pageable);
 
-        assertEquals(1, result.getTotalElements());
+        assertEquals(0, result.getTotalElements());
         assertEquals(0, result.getContent().size());
         verify(ticketRepository).findAll(any(Specification.class), any(Pageable.class));
-        verify(ticketMapper).toResponseList(anyList());
+        verify(ticketMapper, never()).toResponse(any());
     }
+
 
     @Test
     void testGetValidTicketsButEmployeeNotFound() {
         TicketFilterRequest request = new TicketFilterRequest();
         when(employeeRepository.findByIdAndDeletedFalse(INVALID_EMPLOYEE_ID)).thenReturn(Optional.empty());
-        assertThrows(EmployeeNotFoundException.class, () -> ticketServiceImpl.getTickets(INVALID_EMPLOYEE_ID, request));
+        assertThrows(EmployeeNotFoundException.class, () -> ticketServiceImpl.getTickets(INVALID_EMPLOYEE_ID, request, pageable));
     }
 
     @Test
@@ -267,7 +266,7 @@ public class TicketServiceImplTest {
     void testGetValidTicketButEmployeeNotFound() {
         TicketFilterRequest request = new TicketFilterRequest();
         when(employeeRepository.findByIdAndDeletedFalse(INVALID_EMPLOYEE_ID)).thenReturn(Optional.empty());
-        assertThrows(EmployeeNotFoundException.class, () -> ticketServiceImpl.getTickets(INVALID_EMPLOYEE_ID, request));
+        assertThrows(EmployeeNotFoundException.class, () -> ticketServiceImpl.getTickets(INVALID_EMPLOYEE_ID, request, pageable));
     }
 
     @Test
@@ -383,7 +382,7 @@ public class TicketServiceImplTest {
     void testUpdateTicketButEmployeeNotFound() {
         TicketFilterRequest request = new TicketFilterRequest();
         when(employeeRepository.findByIdAndDeletedFalse(INVALID_EMPLOYEE_ID)).thenReturn(Optional.empty());
-        assertThrows(EmployeeNotFoundException.class, () -> ticketServiceImpl.getTickets(INVALID_EMPLOYEE_ID, request));
+        assertThrows(EmployeeNotFoundException.class, () -> ticketServiceImpl.getTickets(INVALID_EMPLOYEE_ID, request, pageable));
     }
 
     @Test
