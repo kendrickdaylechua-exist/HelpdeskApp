@@ -24,8 +24,8 @@ public class Account {
     @JsonIgnore
     private String password;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "employee_id")
+    @OneToOne
+    @JoinColumn(name = "employee_id", referencedColumnName = "id", unique = true)
     @JsonManagedReference
     private Employee employee;
 
@@ -39,18 +39,18 @@ public class Account {
     )
     private Set<SecurityRole> securityRoles = new HashSet<>();
 
-    public void attachEmployee(Employee employee) {
-        this.employee = employee;
-        if (employee.getAccount() != this) {
-            employee.setAccount(this);
-        }
-    }
-
-    public void detachEmployee() {
-        if (this.employee.getAccount() != null) {
-            Employee temp = this.employee;
-            this.employee = null;
-            temp.setAccount(null);
-        }
-    }
+//    public void attachEmployee(Employee employee) {
+//        this.employee = employee;
+//        if (employee.getAccount() != this) {
+//            employee.setAccount(this);
+//        }
+//    }
+//
+//    public void detachEmployee() {
+//        if (this.employee.getAccount() != null) {
+//            Employee temp = this.employee;
+//            this.employee = null;
+//            temp.setAccount(null);
+//        }
+//    }
 }

@@ -16,12 +16,15 @@ public interface TicketMapper {
     @Mapping(target = "updatedBy", ignore = true)
     Ticket toEntity(TicketRequest request);
 
+    List<TicketResponse> toResponseList(List<Ticket> tickets);
+
     @Mapping(target = "assigneeName", expression = "java(concatName(entity.getAssignee().getName()))")
     @Mapping(target = "createdByEmployeeName", expression = "java(concatName(entity.getCreatedBy().getName()))")
     @Mapping(target = "updatedByEmployeeName", expression = "java(concatName(entity.getUpdatedBy().getName()))")
+    @Mapping(target = "assigneeId", source = "assignee.id")
+    @Mapping(target = "createdByEmployeeId", source = "createdBy.id")
+    @Mapping(target = "updatedByEmployeeId", source = "updatedBy.id")
     TicketResponse toResponse(Ticket entity);
-
-    List<TicketResponse> toResponseList(List<Ticket> tickets);
 
     void toUpdate(TicketRequest ticketRequest, @MappingTarget Ticket ticket);
 

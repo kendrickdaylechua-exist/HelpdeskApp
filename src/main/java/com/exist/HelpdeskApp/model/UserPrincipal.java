@@ -5,8 +5,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class UserPrincipal implements UserDetails {
     private final Account account;
@@ -15,10 +15,18 @@ public class UserPrincipal implements UserDetails {
         this.account = account;
     }
 
+    public Integer getId() {
+        return account.getId();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return account.getSecurityRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .flatMap(role -> Stream.concat(
+                    Stream.of(new SimpleGrantedAuthority("ROLE_" + role.getName())),
+                    role.getPermissions().stream()
+                        .map(permission -> new SimpleGrantedAuthority(permission.getName()))
+                ))
                 .collect(Collectors.toSet());
     }
 
@@ -49,6 +57,6 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return account.isEnabled();
     }
 }

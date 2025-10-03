@@ -7,10 +7,11 @@ import com.exist.HelpdeskApp.service.impl.TicketServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/ticket")
@@ -23,28 +24,28 @@ public class TicketController {
         this.ticketService = ticketService;
     }
 
-    @PostMapping("{employeeId}")
-    public TicketResponse fileTicket(@PathVariable Integer employeeId, @Valid @RequestBody TicketRequest request) {
-        return ticketService.fileTicket(employeeId, request);
+    @PostMapping
+    @PreAuthorize("hasRole('USER')")
+    public TicketResponse fileTicket(@Valid @RequestBody TicketRequest request, Authentication authentication) {
+        return ticketService.fileTicket(request, authentication);
     }
 
-    @GetMapping("{employeeId}")
-    public Page<TicketResponse> getTickets(@PathVariable Integer employeeId, @ModelAttribute TicketFilterRequest request, Pageable pageable) {
-        return ticketService.getTickets(employeeId, request, pageable);
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    public Page<TicketResponse> getTickets(@ModelAttribute TicketFilterRequest request, Pageable pageable,
+                                           Authentication authentication, @RequestParam(defaultValue = "false") boolean assigned) {
+        return ticketService.getTickets(authentication, request, pageable, assigned);
     }
 
-    @GetMapping("{employeeId}/{ticketId}")
-    public TicketResponse getTicket(@PathVariable Integer employeeId, @PathVariable Integer ticketId) {
-        return ticketService.getTicket(employeeId, ticketId);
+    @GetMapping("/{ticketId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    public TicketResponse getTicket(Authentication authentication, @PathVariable Integer ticketId) {
+        return ticketService.getTicket(authentication, ticketId);
     }
 
-    @PatchMapping("{employeeId}/{ticketId}")
-    public TicketResponse updateTicket(@PathVariable Integer employeeId, @PathVariable Integer ticketId, @RequestBody TicketRequest ticketRequest) {
-        return ticketService.updateTicket(employeeId, ticketId, ticketRequest);
-    }
-
-    @GetMapping("{employeeId}/assigned")
-    public List<TicketResponse> assignedTickets(@PathVariable Integer employeeId) {
-        return ticketService.getAssignedTickets(employeeId);
+    @PatchMapping("/{ticketId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    public TicketResponse updateTicket(Authentication authentication, @PathVariable Integer ticketId, @RequestBody TicketRequest ticketRequest) {
+        return ticketService.updateTicket(authentication, ticketId, ticketRequest);
     }
 }

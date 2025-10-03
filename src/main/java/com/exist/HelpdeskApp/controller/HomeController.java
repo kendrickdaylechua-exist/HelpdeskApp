@@ -1,23 +1,18 @@
 package com.exist.HelpdeskApp.controller;
 
 import com.exist.HelpdeskApp.dto.account.AccountRequest;
-import com.exist.HelpdeskApp.exception.businessexceptions.InvalidCredentialsException;
-import com.exist.HelpdeskApp.service.impl.JwtServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
+import com.exist.HelpdeskApp.dto.account.AccountResponse;
+import com.exist.HelpdeskApp.service.impl.AccountServiceImpl;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class HomeController {
-    private JwtServiceImpl jwtService;
-    private AuthenticationManager authenticationManager;
 
-    @Autowired
-    public HomeController(JwtServiceImpl jwtService, AuthenticationManager authenticationManager) {
-        this.jwtService = jwtService;
-        this.authenticationManager = authenticationManager;
+    private final AccountServiceImpl accountService;
+
+    public HomeController(AccountServiceImpl accountService) {
+        this.accountService = accountService;
     }
 
     @RequestMapping("/about")
@@ -32,13 +27,18 @@ public class HomeController {
 
     @PostMapping("/login")
     public String login(@RequestBody AccountRequest accountRequest){
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(accountRequest.getUsername(), accountRequest.getPassword())
-            );
-        } catch (AuthenticationException e) {
-            throw new InvalidCredentialsException("Your username or password is incorrect!");
-        }
-        return jwtService.generateToken(accountRequest.getUsername());
+        return accountService.accountLogin(accountRequest);
+    }
+
+    @GetMapping("/me")
+    public AccountResponse getOwnAccount(Authentication authentication) {
+        return accountService.getAccountByUsername(authentication.getName());
+    }
+
+    @PatchMapping("/me")
+    public AccountResponse updateAccount(@RequestBody AccountRequest request,
+                                         Authentication authentication,
+                                         @RequestParam(defaultValue = "false") boolean dissociate) {
+        return accountService.updateAccount(authentication.getName(), request, authentication, dissociate);
     }
 }

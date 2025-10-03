@@ -7,6 +7,7 @@ import com.exist.HelpdeskApp.service.impl.RoleServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,13 +24,9 @@ public class RoleController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public Page<RoleResponse> getRoles(@ModelAttribute @Valid RoleFilterRequest request, Pageable pageable) {
         return roleService.getRoles(request, pageable);
-    }
-
-    @GetMapping("/{roleId}")
-    public RoleResponse getRole(@PathVariable Integer roleId) {
-        return roleService.getRole(roleId);
     }
 
     @PostMapping
@@ -38,11 +35,13 @@ public class RoleController {
     }
 
     @PatchMapping("/{roleId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public RoleResponse updateRole(@PathVariable Integer roleId, @RequestBody RoleRequest request) {
         return roleService.updateRole(roleId, request);
     }
 
     @DeleteMapping("/{roleId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteRole(@PathVariable Integer roleId) {
         roleService.deleteRole(roleId);
     }

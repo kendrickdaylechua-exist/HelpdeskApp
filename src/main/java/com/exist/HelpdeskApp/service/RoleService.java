@@ -11,7 +11,6 @@ import java.util.List;
 
 public interface RoleService {
     Page<RoleResponse> getRoles(RoleFilterRequest request, Pageable pageable);
-    RoleResponse getRole(Integer roleId);
     RoleResponse addRole(@Valid RoleRequest request);
     RoleResponse updateRole(Integer roleId, RoleRequest request);
     void deleteRole(Integer roleId);

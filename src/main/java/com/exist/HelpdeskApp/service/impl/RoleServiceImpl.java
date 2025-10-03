@@ -46,13 +46,6 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Transactional
-    public RoleResponse getRole(Integer roleId) {
-        Role role = roleRepository.findByIdAndDeletedFalse(roleId)
-                .orElseThrow(() -> new RoleNotFoundException("Role with ID " + roleId + " not found!"));
-        return roleMapper.toResponse(role);
-    }
-
-    @Transactional
     public RoleResponse addRole(@Valid RoleRequest request) {
         Role role = roleMapper.toEntity(request);
         Role updated = roleRepository.save(role);
