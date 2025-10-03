@@ -7,6 +7,7 @@ import com.exist.HelpdeskApp.service.impl.EmployeeServiceImpl;
 import com.exist.HelpdeskApp.service.impl.TicketServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,12 +27,12 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public Page<EmployeeResponse> getEmployees(@ModelAttribute @Valid EmployeeFilterRequest employeeFilterRequest) {
-        return employeeServiceImpl.getEmployees(employeeFilterRequest);
+    public Page<EmployeeResponse> getEmployees(@ModelAttribute @Valid EmployeeFilterRequest employeeFilterRequest, Pageable pageable) {
+        return employeeServiceImpl.getEmployees(employeeFilterRequest, pageable);
     }
 
-    @GetMapping("/{employeeId}")
-    public EmployeeResponse getEmployee(@PathVariable Integer employeeId) {
+    @GetMapping("{employeeId}")
+    public EmployeeResponse getEmployeeById(@PathVariable Integer employeeId) {
         return employeeServiceImpl.getEmployee(employeeId);
     }
 
