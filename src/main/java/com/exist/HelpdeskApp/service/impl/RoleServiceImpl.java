@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -39,6 +40,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public Page<RoleResponse> getRoles(RoleFilterRequest request, Pageable pageable) {
         Specification<Role> spec = request.toSpec();
         Page<Role> rolePage = roleRepository.findAll(spec, pageable);
@@ -46,6 +48,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public RoleResponse addRole(@Valid RoleRequest request) {
         Role role = roleMapper.toEntity(request);
         Role updated = roleRepository.save(role);
@@ -53,6 +56,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public RoleResponse updateRole(Integer roleId, RoleRequest request) {
         Role role = roleRepository.findByIdAndDeletedFalse(roleId)
                 .orElseThrow(() -> new RoleNotFoundException("Role with ID " + roleId + " not found!"));
@@ -62,6 +66,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteRole(Integer roleId) {
         Role role = roleRepository.findByIdAndDeletedFalse(roleId)
                 .orElseThrow(() -> new RoleNotFoundException("Role with ID " + roleId + " not found!"));

@@ -88,7 +88,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Transactional
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public TicketResponse getTicket(Authentication authentication, Integer ticketId) {
+    public TicketResponse getTicket(Integer ticketId) {
 //        Set<String> permissions = authentication.getAuthorities().stream()
 //                .map(GrantedAuthority::getAuthority)
 //                .collect(Collectors.toSet());
@@ -122,19 +122,13 @@ public class TicketServiceImpl implements TicketService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public TicketResponse updateTicket(Authentication authentication, Integer ticketId, TicketRequest ticketRequest) {
+        Employee loggedInEmployee = getLoggedInEmployee(authentication);
+        String updaterNotFoundMessage = "Updater employee with ID " + loggedInEmployee.getId() + " not found!";
+
         Set<String> permissions = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toSet());
 
-        Consumer<String> requirePermission = perm -> {
-            if (!permissions.contains(perm)) {
-                logger.info("User {} attempted to perform this action: {}", authentication.getName(), perm);
-                throw new AccessDeniedException("You do not have permission to perform this action");
-            }
-        };
-
-        Employee loggedInEmployee = getLoggedInEmployee(authentication);
-        String updaterNotFoundMessage = "Updater employee with ID " + loggedInEmployee.getId() + " not found!";
         Employee updater = checkEmployeeById(loggedInEmployee.getId(), updaterNotFoundMessage);
 
         Ticket ticket = checkticketById(ticketId);

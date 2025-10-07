@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,22 +34,22 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class RoleServiceImplTest {
     @Mock
-    RoleMapper roleMapper;
+    private RoleMapper roleMapper;
 
     @Mock
-    RoleRepository roleRepository;
+    private RoleRepository roleRepository;
 
     @Mock
-    EmployeeRepository employeeRepository;
+    private EmployeeRepository employeeRepository;
 
     @InjectMocks
-    RoleServiceImpl roleServiceImpl;
+    private RoleServiceImpl roleService;
 
     private static Role role;
     private static RoleResponse roleResponse;
     private static RoleRequest roleRequest;
 
-    private static Pageable pageable = PageRequest.of(0, 5);;
+    private static Pageable pageable = PageRequest.of(0, 5);
 
     @BeforeEach
     void setup() {
@@ -72,7 +73,7 @@ public class RoleServiceImplTest {
                 .thenReturn(rolePage);
         when(roleMapper.toResponse(any(Role.class))).thenReturn(roleResponse);
 
-        Page<RoleResponse> result = roleServiceImpl.getRoles(request, pageable);
+        Page<RoleResponse> result = roleService.getRoles(request, pageable);
 
         assertEquals(1, result.getTotalElements());
         assertEquals("Sample Role", result.getContent().get(0).getRoleName());
@@ -90,7 +91,7 @@ public class RoleServiceImplTest {
         when(roleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(rolePage);
         when(roleMapper.toResponse(any(Role.class))).thenReturn(roleResponse);
 
-        Page<RoleResponse> result = roleServiceImpl.getRoles(request, pageable);
+        Page<RoleResponse> result = roleService.getRoles(request, pageable);
 
         assertEquals(1, result.getTotalElements());
         assertEquals("Sample Role", result.getContent().get(0).getRoleName());
@@ -105,7 +106,7 @@ public class RoleServiceImplTest {
         when(roleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(rolePage);
         when(roleMapper.toResponse(any(Role.class))).thenReturn(roleResponse);
 
-        Page<RoleResponse> result = roleServiceImpl.getRoles(request, pageable);
+        Page<RoleResponse> result = roleService.getRoles(request, pageable);
 
         assertEquals(1, result.getTotalElements());
         assertEquals("Sample Role", result.getContent().get(0).getRoleName());
@@ -122,7 +123,7 @@ public class RoleServiceImplTest {
         when(roleRepository.findAll(any(Specification.class), any(Pageable.class)))
                 .thenReturn(emptyPage);
 
-        Page<RoleResponse> result = roleServiceImpl.getRoles(request, pageable);
+        Page<RoleResponse> result = roleService.getRoles(request, pageable);
 
         assertEquals(0, result.getTotalElements());
         assertEquals(0, result.getContent().size());
@@ -131,32 +132,13 @@ public class RoleServiceImplTest {
         verify(roleMapper, never()).toResponse(any(Role.class));
     }
 
-
-    @Test
-    void testGetValidRole() {
-        Integer roleId = 1;
-        when(roleRepository.findByIdAndDeletedFalse(roleId)).thenReturn(Optional.of(role));
-        when(roleMapper.toResponse(role)).thenReturn(roleResponse);
-
-        RoleResponse result = roleServiceImpl.getRole(roleId);
-
-        assertEquals("Sample Role", result.getRoleName());
-    }
-
-    @Test
-    void testGetRoleNotFound() {
-        Integer roleId = 99;
-        when(roleRepository.findByIdAndDeletedFalse(roleId)).thenReturn(Optional.empty());
-        assertThrows(RoleNotFoundException.class, () -> roleServiceImpl.getRole(roleId));
-    }
-
     @Test
     void addValidRole() {
         when(roleMapper.toEntity(roleRequest)).thenReturn(role);
         when(roleRepository.save(role)).thenReturn(role);
         when(roleMapper.toResponse(role)).thenReturn(roleResponse);
 
-        RoleResponse result = roleServiceImpl.addRole(roleRequest);
+        RoleResponse result = roleService.addRole(roleRequest);
         assertEquals("Sample Role", result.getRoleName());
     }
 
@@ -172,7 +154,7 @@ public class RoleServiceImplTest {
         when(roleRepository.save(role)).thenReturn(newRole);
         when(roleMapper.toResponse(newRole)).thenReturn(newRoleResponse);
 
-        RoleResponse result = roleServiceImpl.updateRole(roleId, newRequest);
+        RoleResponse result = roleService.updateRole(roleId, newRequest);
 
         assertEquals("New Role", result.getRoleName());
     }
@@ -181,7 +163,7 @@ public class RoleServiceImplTest {
     void updateRoleButRoleNotFound() {
         Integer roleId = 99;
         when(roleRepository.findByIdAndDeletedFalse(roleId)).thenReturn(Optional.empty());
-        assertThrows(RoleNotFoundException.class, () -> roleServiceImpl.getRole(roleId));
+        assertThrows(RoleNotFoundException.class, () -> roleService.updateRole(roleId, any(RoleRequest.class)));
     }
 
     @Test
@@ -190,7 +172,7 @@ public class RoleServiceImplTest {
         role.setDeleted(true);
         when(roleRepository.findByIdAndDeletedFalse(roleId)).thenReturn(Optional.of(role));
         when(employeeRepository.existsByRole(role)).thenReturn(false);
-        roleServiceImpl.deleteRole(roleId);
+        roleService.deleteRole(roleId);
         assertTrue(role.isDeleted());
         verify(roleRepository).save(role);
     }
@@ -199,7 +181,7 @@ public class RoleServiceImplTest {
     void testDeleteEmployeeButEmployeeNotFound() {
         Integer roleId = 99;
         when(roleRepository.findByIdAndDeletedFalse(roleId)).thenReturn(Optional.empty());
-        assertThrows(RoleNotFoundException.class, () -> roleServiceImpl.deleteRole(roleId));
+        assertThrows(RoleNotFoundException.class, () -> roleService.deleteRole(roleId));
     }
 
     @Test
@@ -208,6 +190,58 @@ public class RoleServiceImplTest {
         role.setDeleted(true);
         when(roleRepository.findByIdAndDeletedFalse(roleId)).thenReturn(Optional.of(role));
         when(employeeRepository.existsByRole(role)).thenReturn(true);
-        assertThrows(EntityInUseException.class, () -> roleServiceImpl.deleteRole(roleId));
+        assertThrows(EntityInUseException.class, () -> roleService.deleteRole(roleId));
+    }
+
+    @Test
+    void testUserAttemptsToGetAllRoles() {
+        RoleServiceImpl roleServiceSpy = spy(roleService);
+
+        doThrow(new AccessDeniedException("Access is denied"))
+                .when(roleServiceSpy)
+                .getRoles(any(), any());
+
+        assertThrows(AccessDeniedException.class, () -> {
+            roleServiceSpy.getRoles(any(), any());
+        });
+    }
+
+    @Test
+    void testUserAttemptsToGetAddRole() {
+        RoleServiceImpl roleServiceSpy = spy(roleService);
+
+        doThrow(new AccessDeniedException("Access is denied"))
+                .when(roleServiceSpy)
+                .addRole(any());
+
+        assertThrows(AccessDeniedException.class, () -> {
+            roleServiceSpy.addRole(any());
+        });
+    }
+
+    @Test
+    void testUserAttemptsToUpdateRole() {
+        RoleServiceImpl roleServiceSpy = spy(roleService);
+
+        doThrow(new AccessDeniedException("Access is denied"))
+                .when(roleServiceSpy)
+                .updateRole(any(), any());
+
+        assertThrows(AccessDeniedException.class, () -> {
+            roleServiceSpy.updateRole(any(), any());
+        });
+    }
+
+    @Test
+    void testUserAttemptsToDeleteRole() {
+        RoleServiceImpl roleServiceSpy = spy(roleService);
+
+        doThrow(new AccessDeniedException("Access is denied"))
+                .when(roleServiceSpy)
+                .deleteRole(any());
+
+        assertThrows(AccessDeniedException.class, () -> {
+            roleServiceSpy.deleteRole(any());
+        });
     }
 }

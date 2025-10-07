@@ -3,10 +3,12 @@ package com.exist.HelpdeskApp.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.*;
 import com.exist.HelpdeskApp.model.Permission;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,6 +16,8 @@ import java.util.Set;
 @Entity
 @Table(name = "security_role")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class SecurityRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

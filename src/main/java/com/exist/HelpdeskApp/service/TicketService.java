@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface TicketService {
     Page<TicketResponse> getTickets(Authentication authentication, TicketFilterRequest request, Pageable pageable, boolean assigned);
-    TicketResponse getTicket(Authentication authentication, Integer ticketId);
+    TicketResponse getTicket(Integer ticketId);
     TicketResponse fileTicket(TicketRequest ticketRequest, Authentication authentication);
     TicketResponse updateTicket(Authentication authentication, Integer ticketId, TicketRequest ticketRequest);
 }

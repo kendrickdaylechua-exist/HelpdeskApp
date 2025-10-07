@@ -39,8 +39,8 @@ public class TicketController {
 
     @GetMapping("/{ticketId}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public TicketResponse getTicket(Authentication authentication, @PathVariable Integer ticketId) {
-        return ticketService.getTicket(authentication, ticketId);
+    public TicketResponse getTicket(@PathVariable Integer ticketId) {
+        return ticketService.getTicket(ticketId);
     }
 
     @PatchMapping("/{ticketId}")
