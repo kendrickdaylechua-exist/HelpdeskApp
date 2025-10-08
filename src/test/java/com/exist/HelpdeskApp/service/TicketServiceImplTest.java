@@ -7,6 +7,7 @@ import com.exist.HelpdeskApp.dto.ticket.TicketResponse;
 import com.exist.HelpdeskApp.exception.businessexceptions.AccountNotFoundException;
 import com.exist.HelpdeskApp.exception.businessexceptions.EmployeeNotFoundException;
 import com.exist.HelpdeskApp.exception.businessexceptions.TicketNotFoundException;
+import com.exist.HelpdeskApp.exception.businessexceptions.UnauthorizedActionException;
 import com.exist.HelpdeskApp.model.*;
 import com.exist.HelpdeskApp.model.embeddable.Address;
 import com.exist.HelpdeskApp.model.embeddable.Contacts;
@@ -32,6 +33,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -494,8 +496,6 @@ public class TicketServiceImplTest {
         Account account = new Account();
         TicketRequest request = new TicketRequest();
         when(accountRepository.findByUsername(anyString())).thenReturn(Optional.of(account));
-        when(employeeRepository.findByIdAndDeletedFalse(INVALID_EMPLOYEE_ID)).thenReturn(Optional.empty());
-//        when(ticketRepository.findByTicketNumberAndDeletedFalse(anyInt())).thenReturn(Optional.empty());
         assertThrows(EmployeeNotFoundException.class, () -> ticketService.updateTicket(authAdmin, anyInt(), request));
     }
 
@@ -507,166 +507,109 @@ public class TicketServiceImplTest {
         when(ticketRepository.findByTicketNumberAndDeletedFalse(99)).thenReturn(Optional.empty());
         assertThrows(TicketNotFoundException.class, () -> ticketService.updateTicket(authAdmin, 99, request));
     }
-//
-//    @Test
-//    void testUnauthorizedAttemptToAlterTicketsThatAreNotAssigned() {
-//        Employee employee1 = new Employee();
-//        employee1.setId(3);
-//        Ticket ticket = new Ticket(
-//                2,
-//                "Sample Ticket",
-//                "Sample Body",
-//                employee1,
-//                TicketStatus.FILED,
-//                Instant.now(),
-//                employee1,
-//                Instant.now(),
-//                employee1,
-//                "Sample Remarks",
-//                false,
-//                1
-//        );
-//        TicketRequest ticketRequest = new TicketRequest(
-//                null,
-//                null,
-//                null,
-//                TicketStatus.CLOSED,
-//                "Updated Remarks"
-//        );
-//
-//        when(employeeRepository.findByIdAndDeletedFalse(VALID_EMPLOYEE_ID)).thenReturn(Optional.of(employee1));
-//        when(ticketRepository.findByTicketNumberAndDeletedFalse(2)).thenReturn(Optional.of(ticket));
-//        assertThrows(UnauthorizedActionException.class, () -> ticketServiceImpl.updateTicket(VALID_EMPLOYEE_ID, 2, ticketRequest));
-//    }
-//
-//    @Test
-//    void testUnauthorizedAttemptToUpdateAssignedEmployee() {
-//        TicketRequest ticketRequest = new TicketRequest(
-//                null,
-//                null,
-//                3,
-//                null,
-//                null
-//        );
-//
-//        when(employeeRepository.findByIdAndDeletedFalse(VALID_EMPLOYEE_ID)).thenReturn(Optional.of(employee));
-//        when(ticketRepository.findByTicketNumberAndDeletedFalse(1)).thenReturn(Optional.of(ticket));
-//        assertThrows(UnauthorizedActionException.class, () -> ticketServiceImpl.updateTicket(VALID_EMPLOYEE_ID, 1, ticketRequest));
-//    }
-//
-//    @Test
-//    void testAdminUpdateAssignedEmployee() {
-//        Employee employee1 = new Employee();
-//        employee1.setId(3);
-//        Ticket ticket = new Ticket(
-//                2,
-//                "Sample Ticket",
-//                "Sample Body",
-//                employee1,
-//                TicketStatus.FILED,
-//                Instant.now(),
-//                employee1,
-//                Instant.now(),
-//                employee1,
-//                "Sample Remarks",
-//                false,
-//                1
-//        );
-//        TicketRequest ticketRequest = new TicketRequest(
-//                null,
-//                null,
-//                1,
-//                null,
-//                null
-//        );
-//        Ticket updatedTicket = new Ticket(
-//                2,
-//                "Sample Ticket",
-//                "Sample Body",
-//                employee1,
-//                TicketStatus.CLOSED,
-//                Instant.now(),
-//                employee1,
-//                Instant.now(),
-//                TestDataFactory.admin(),
-//                "Updated Remarks",
-//                false,
-//                1
-//        );
-//        TicketResponse ticketResponse = new TicketResponse(
-//                1,
-//                "Sample Ticket",
-//                "Sample Body",
-//                "Employee 2",
-//                TicketStatus.CLOSED,
-//                Instant.now(),
-//                "Employee 1",
-//                Instant.now(),
-//                "Admin",
-//                "Updated Remarks"
-//        );
-//        when(employeeRepository.findByIdAndDeletedFalse(TestDataFactory.admin().getId())).thenReturn(Optional.of(TestDataFactory.admin()));
-//        when(ticketRepository.findByTicketNumberAndDeletedFalse(2)).thenReturn(Optional.of(ticket));
-//        Mockito.doNothing().when(ticketMapper).toUpdate(ticketRequest, ticket);
-//        when(ticketRepository.save(ticket)).thenReturn(updatedTicket);
-//        when(ticketMapper.toResponse(updatedTicket)).thenReturn(ticketResponse);
-//
-//        TicketResponse result = ticketServiceImpl.updateTicket(ADMIN_EMPLOYEE_ID, 2, ticketRequest);
-//
-//        assertEquals("Employee 2", result.getAssigneeName());
-//        assertEquals("Admin", result.getUpdatedByEmployeeName());
-//    }
-//
-//    @Test
-//    void testAdminUpdateAssignedEmployeeButEmployeeNotFound() {
-//        TicketRequest ticketRequest = new TicketRequest(
-//                null,
-//                null,
-//                99,
-//                null,
-//                null
-//        );
-//        when(employeeRepository.findByIdAndDeletedFalse(TestDataFactory.admin().getId())).thenReturn(Optional.of(TestDataFactory.admin()));
-//        when(ticketRepository.findByTicketNumberAndDeletedFalse(2)).thenReturn(Optional.of(ticket));
-//        when(employeeRepository.findByIdAndDeletedFalse(99)).thenReturn(Optional.empty());
-//        assertThrows(EmployeeNotFoundException.class, () -> ticketServiceImpl.updateTicket(ADMIN_EMPLOYEE_ID, 2, ticketRequest));
-//    }
-//
-//    @Test
-//    void testGetAssignedTickets() {
-//        Employee employee1 = new Employee();
-//        employee1.setId(3);
-//        Ticket ticket2 = new Ticket(
-//                2,
-//                "Sample Ticket",
-//                "Sample Body",
-//                employee,
-//                TicketStatus.FILED,
-//                Instant.now(),
-//                employee,
-//                Instant.now(),
-//                employee,
-//                "Sample Remarks",
-//                false,
-//                1
-//        );
-//        List<Ticket> tickets = new ArrayList<>();
-//        tickets.add(ticket);
-//        tickets.add(ticket2); //should not be included
-//        List<TicketResponse> ticketResponses = new ArrayList<>();
-//        ticketResponses.add(ticketResponse1);
-//
-//        when(employeeRepository.findByIdAndDeletedFalse(VALID_EMPLOYEE_ID)).thenReturn(Optional.of(TicketServiceImplTest.employee));
-//        when(ticketRepository.findByAssigneeIdAndDeletedFalse(VALID_EMPLOYEE_ID)).thenReturn(tickets);
-//        when(ticketMapper.toResponseList(tickets)).thenReturn(ticketResponses);
-//
-//        List<TicketResponse> result = ticketServiceImpl.getAssignedTickets(VALID_EMPLOYEE_ID);
-//        assertEquals(1, result.size());
-//    }
-//
-//    @Test
-//    void testGetAssignedTicketsButEmployeeNotFound() {
-//        when(employeeRepository.findByIdAndDeletedFalse(INVALID_EMPLOYEE_ID)).thenReturn(Optional.empty());
-//        assertThrows(EmployeeNotFoundException.class, () -> ticketServiceImpl.getAssignedTickets(INVALID_EMPLOYEE_ID));
-//    }
+
+    @Test
+    void testUserUnauthorizedAttemptToAlterTicketsThatAreNotAssigned_ThrowsAccessDeniedException() {
+        Employee employee1 = new Employee();
+        employee1.setId(3);
+        Account account = new Account();
+        account.setEmployee(employee1);
+        Ticket ticket = new Ticket(
+                2,
+                "Sample Ticket",
+                "Sample Body",
+                employee,
+                TicketStatus.FILED,
+                Instant.now(),
+                employee1,
+                Instant.now(),
+                employee1,
+                "Sample Remarks",
+                false,
+                1
+        );
+        TicketRequest ticketRequest = new TicketRequest(
+                null,
+                null,
+                null,
+                TicketStatus.CLOSED,
+                "Updated Remarks"
+        );
+        when(accountRepository.findByUsername(anyString())).thenReturn(Optional.of(account));
+        when(employeeRepository.findByIdAndDeletedFalse(3)).thenReturn(Optional.of(employee1));
+        when(ticketRepository.findByTicketNumberAndDeletedFalse(2)).thenReturn(Optional.of(ticket));
+        assertThrows(AccessDeniedException.class, () -> ticketService.updateTicket(authUser, 2, ticketRequest));
+    }
+
+    @Test
+    void testUserUnauthorizedAttemptToUpdateAssignedEmployee_ThrowsAccessDeniedException() {
+        Employee employee1 = new Employee();
+        employee1.setId(3);
+        Account account = new Account();
+        account.setEmployee(employee1);
+        TicketRequest ticketRequest = new TicketRequest(
+                null,
+                null,
+                3,
+                null,
+                null
+        );
+        Ticket ticket = new Ticket(
+                2,
+                "Sample Ticket",
+                "Sample Body",
+                employee,
+                TicketStatus.FILED,
+                Instant.now(),
+                employee1,
+                Instant.now(),
+                employee1,
+                "Sample Remarks",
+                false,
+                1
+        );
+        when(accountRepository.findByUsername(anyString())).thenReturn(Optional.of(account));
+        when(employeeRepository.findByIdAndDeletedFalse(3)).thenReturn(Optional.of(employee1));
+        when(ticketRepository.findByTicketNumberAndDeletedFalse(2)).thenReturn(Optional.of(ticket));
+        assertThrows(AccessDeniedException.class, () -> ticketService.updateTicket(authUser, 2, ticketRequest));
+    }
+
+    @Test
+    void testGetAssignedTicket() {
+        when(ticketRepository.findByTicketNumberAndDeletedFalse(ticket.getTicketNumber())).thenReturn(Optional.of(ticket));
+        when(ticketMapper.toResponse(ticket)).thenReturn(ticketResponse1);
+        TicketResponse result = ticketService.getTicket(ticket.getTicketNumber());
+
+        assertEquals("Sample Ticket", result.getTitle());
+    }
+
+    @Test
+    void testAdminGetAssignedTickets() {
+        TicketFilterRequest request = new TicketFilterRequest();
+        Employee employee1 = new Employee();
+        employee1.setId(3);
+
+        Employee employee2 = new Employee();
+        employee2.setId(4);
+
+        Account account = new Account();
+        account.setUsername("ADMIN");
+        account.setEmployee(employee1);
+
+        Ticket ticket1 = new Ticket();
+        ticket1.setAssignee(employee1);
+
+        Ticket ticket2 = new Ticket(); //should not be included
+        ticket2.setAssignee(employee2);
+
+        List<Ticket> tickets = List.of(ticket1);
+
+        Page<Ticket> ticketPage = new PageImpl<>(tickets);
+
+        when(accountRepository.findByUsername("ADMIN")).thenReturn(Optional.of(account));
+        when(ticketRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(ticketPage);
+
+        Page<TicketResponse> result = ticketService.getTickets(authAdmin, request, pageable, true);
+        assertEquals(1, result.getTotalElements());
+    }
 }

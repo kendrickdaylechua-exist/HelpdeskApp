@@ -76,11 +76,14 @@ public class TicketServiceImpl implements TicketService {
 //        else if (request.getAssigneeName() != null || request.getAssigneeId() != null) {
 //            requirePermission.accept("GET_OTHER_TICKETS");
 //        }
+        Specification<Ticket> spec = request.toSpec();
 
         if (assigned) {
-            request.setAssigneeId(getLoggedInEmployee(authentication).getId());
+            Integer employeeId = getLoggedInEmployee(authentication).getId();
+            Specification<Ticket> assignedSpec = (root, query, cb) ->
+                    cb.equal(root.get("assignee").get("id"), employeeId);
+            spec = spec.and(assignedSpec);
         }
-        Specification<Ticket> spec = request.toSpec();
 
         Page<Ticket> ticketPage = ticketRepository.findAll(spec, pageable);
         return ticketPage.map(ticketMapper::toResponse);
@@ -135,7 +138,7 @@ public class TicketServiceImpl implements TicketService {
 
         if (permissions.contains("UPDATE_ASSIGNED_TICKETS") && !permissions.contains("UPDATE_ANY_TICKETS") &&
                 loggedInEmployee.getId() != ticket.getAssignee().getId()) {
-            logger.info("User {} attempted to update unassigned ticket with ID {}", authentication.getName(), ticketId);
+            logger.info("User {} attempted to update unassigned ticket with Ticket Number: {}", authentication.getName(), ticketId);
             throw new AccessDeniedException("You cannot alter tickets that you are not assigned to!");
         }
 

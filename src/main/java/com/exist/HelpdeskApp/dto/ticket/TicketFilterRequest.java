@@ -71,11 +71,11 @@ public class TicketFilterRequest {
             }
 
             if (this.createdBefore != null) {
-                predicates.add(cb.lessThanOrEqualTo(root.get("createDate"), this.createdAfter));
+                predicates.add(cb.lessThanOrEqualTo(root.get("createDate"), this.createdBefore));
             }
 
             if (this.createdAfter != null && this.createdBefore != null) {
-                predicates.add(cb.between(root.get("createdDate"), this.createdAfter, this.createdBefore));
+                predicates.add(cb.between(root.get("createDate"), this.createdAfter, this.createdBefore));
             }
 
             if (this.creatorId != null) {
@@ -96,7 +96,7 @@ public class TicketFilterRequest {
             }
 
             if (this.updatedBefore != null) {
-                predicates.add(cb.lessThanOrEqualTo(root.get("updatedDate"), this.updatedAfter));
+                predicates.add(cb.lessThanOrEqualTo(root.get("updatedDate"), this.updatedBefore));
             }
 
             if (this.updatedAfter != null && this.updatedBefore != null) {
@@ -104,7 +104,7 @@ public class TicketFilterRequest {
             }
 
             if (this.updaterId != null) {
-                predicates.add(cb.equal(root.get("updaterBy").get("id"), this.updaterId));
+                predicates.add(cb.equal(root.get("updatedBy").get("id"), this.updaterId));
             }
 
             if (StringUtil.isNotEmpty(this.updaterName)) {
