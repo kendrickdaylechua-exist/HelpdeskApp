@@ -14,6 +14,7 @@ import com.exist.HelpdeskApp.repository.SecurityRoleRepository;
 import com.exist.HelpdeskApp.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -64,14 +65,12 @@ public class AccountServiceImpl implements AccountService {
         this.authenticationManager = authenticationManager;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public Page<AccountResponse> getAccounts(AccountListRequest request) {
-        Sort sort = request.getSortDir().equalsIgnoreCase("desc") ? Sort.by(request.getSortBy()).descending() : Sort.by(request.getSortBy()).ascending();
-        Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), sort);
-        Page<Account> accountPage = accountRepository.findAll(pageable);
-        List<AccountResponse> accountResponses = accountMapper.toResponseList(accountPage.getContent());
-        return new PageImpl<>(accountResponses, pageable, accountPage.getTotalElements());
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    public Page<AccountResponse> getAccounts(AccountListRequest request, Pageable pageable) {
+        Specification<Account> spec = request.toSpec();
+        Page<Account> accountPage = accountRepository.findAll(spec, pageable);
+        return accountPage.map(accountMapper::toResponse);
     }
 
     @Transactional
@@ -182,12 +181,16 @@ public class AccountServiceImpl implements AccountService {
             throw new DissabledAccountException("Your account is disabled!");
         }
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        accountRequest.getUsername(),
-                        accountRequest.getPassword()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            accountRequest.getUsername(),
+                            accountRequest.getPassword()
+                    )
+            );
+        } catch (AuthenticationException e) {
+            throw new InvalidCredentialsException("Your username or password is incorrect! ");
+        }
 
         return jwtService.generateToken(account.getUsername());
     }

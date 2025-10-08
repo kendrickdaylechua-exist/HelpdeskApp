@@ -6,6 +6,7 @@ import com.exist.HelpdeskApp.dto.account.AccountResponse;
 import com.exist.HelpdeskApp.service.impl.AccountServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -26,8 +27,8 @@ public class AccountController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Page<AccountResponse> getAccounts(@ModelAttribute AccountListRequest request) {
-        return accountService.getAccounts(request);
+    public Page<AccountResponse> getAccounts(@ModelAttribute AccountListRequest request, Pageable pageable) {
+        return accountService.getAccounts(request, pageable);
     }
 
     @PostMapping
