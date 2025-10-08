@@ -11,8 +11,11 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,10 +24,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    private JwtFilter jwtFilter;
-    private AccountDetailsService accountDetailsService;
+    private final JwtFilter jwtFilter;
+    private final AccountDetailsService accountDetailsService;
 
     @Autowired
     public SecurityConfig(JwtFilter jwtFilter, AccountDetailsService accountDetailsService) {
@@ -35,12 +39,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
-                        request.antMatchers("/h2-console/**", "/login", "/", "/home", "/employees").permitAll()
-                                .antMatchers("/admin/**").hasRole("ADMIN")
+                        request.antMatchers("/h2-console/**", "/login", "/", "/home").permitAll()
+                                .antMatchers("/role/**").hasRole("ADMIN")
                                 .anyRequest().authenticated())
-                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .httpBasic(Customizer.withDefaults())
 //                .formLogin(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -51,7 +55,7 @@ public class SecurityConfig {
     @Bean
     public RoleHierarchy roleHierarchy() {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_USER");
+        roleHierarchy.setHierarchy("ADMIN > USER");
         return roleHierarchy;
     }
 

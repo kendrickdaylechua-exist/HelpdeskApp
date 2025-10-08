@@ -14,15 +14,18 @@ spring:
     idle-timeout: 30000       # 30s before idle connection  is removed
     max-lifetime: 1800000     # 30 mins, max lifetime of a connection
     connection-timeout: 20000 # 20s timeout for getting a connection
-#  cache:
-#    type: redis
-#    data:
-#      redis:
-#        host: localhost
-#        port: 6379
+  output:
+    ansi:
+      enabled: ALWAYS  # ENABLE ANSI colors in console
 
+  logging:
+    pattern:
+      console: "%d{HH:mm:ss.SSS} %highlight(%-5level) [%thread] %logger{36} - %msg%n"
+    level:
+      root: INFO
 jwt:
   secret: q9XoxXZz3lMP0x6Hf5t2jQ3O4tyZXGzN9qXfW2wM8+o= #from OpenSSL
+debug: false
 #  jpa:
 #    properties:
 #      hibernate:
@@ -31,4 +34,9 @@ jwt:
 #          use_query_cache: true
 #          region:
 #            factory_class: com.orange.redis.hibernate4.RedisRegionFactory
-debug: false
+#  cache:
+#    type: redis
+#    data:
+#      redis:
+#        host: localhost
+#        port: 6379

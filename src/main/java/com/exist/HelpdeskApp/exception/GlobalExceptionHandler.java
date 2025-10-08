@@ -1,15 +1,14 @@
 package com.exist.HelpdeskApp.exception;
 
 import com.exist.HelpdeskApp.dto.error.ErrorResponse;
-import com.exist.HelpdeskApp.exception.businessexceptions.InvalidCredentialsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -70,5 +69,17 @@ public class GlobalExceptionHandler {
                 request.getRequestURI()
         );
         return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDenied(HttpServletRequest request, AccessDeniedException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                Instant.now().toString(),
+                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.FORBIDDEN.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 }
